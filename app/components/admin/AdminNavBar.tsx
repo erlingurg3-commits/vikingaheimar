@@ -6,13 +6,13 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/control-room/overview-v1" },
   { label: "Forecast", href: "/control-room" },
-  { label: "Air Arrivals", href: "/control-room/air-arrivals" },
   { label: "Capacity", href: "/control-room/capacity" },
   { label: "Group Requests", href: "/control-room/group-requests" },
   { label: "Travel Agent KPIs", href: "/control-room/agents" },
   { label: "Travel Agencies", href: "/control-room/travel-agencies" },
   { label: "Website Behavior", href: "/control-room/behavior" },
   { label: "Cruise Intelligence", href: "/admin/cruise-intelligence" },
+  { label: "Air Arrivals", href: "/control-room/air-arrivals" },
   { label: "Settings", href: "/control-room/settings" },
 ] as const;
 
