@@ -8,6 +8,11 @@ type Message = {
   content: string;
 };
 
+const CONTROL_INTELLIGENCE_PROMPT = `You are Vikingaheimar Control Intelligence.
+Provide factual, concise, read-only operational analysis.
+Use bullet points where appropriate.
+Do not speculate or invent data.`;
+
 export default function ControlRoomAiIntelligencePage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -29,13 +34,21 @@ export default function ControlRoomAiIntelligencePage() {
       const res = await fetch("/api/control-intelligence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({
+          mode: "summary",
+          systemPrompt: CONTROL_INTELLIGENCE_PROMPT,
+          userPrompt: text,
+          dataBlocks: JSON.stringify({
+            source: "control-room-ai-intelligence",
+            conversation: next,
+          }),
+        }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || data.error) {
-        throw new Error(data.error ?? "Request failed");
+      if (!res.ok || !data.success) {
+        throw new Error(data.message ?? "Request failed");
       }
 
       setMessages([...next, { role: "assistant", content: data.response }]);

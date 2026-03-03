@@ -8,6 +8,11 @@ import AIPanel from "@/app/components/dashboard/AIPanel";
 import NextHighDaySignalCard from "@/app/components/dashboard/NextHighDaySignalCard";
 import { useControlRoomOrders } from "@/app/components/dashboard/useControlRoomOrders";
 
+const CONTROL_INTELLIGENCE_PROMPT = `You are Vikingaheimar Control Intelligence.
+Provide factual, concise, read-only operational analysis.
+Use bullet points where appropriate.
+Do not speculate or invent data.`;
+
 export default function ControlRoomDashboard() {
   const { orders, loading, stats } = useControlRoomOrders();
   const [aiResponse, setAiResponse] = useState("");
@@ -20,23 +25,53 @@ export default function ControlRoomDashboard() {
     setAiLoading(true);
     setAiResponse("");
 
-    const response = await fetch("/api/ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt,
-        stats: {
-          totalRevenue: stats.totalRevenue,
-          totalBookings: stats.totalOrders,
-          pending: stats.pending,
-          confirmed: stats.confirmed,
-        },
-      }),
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 35_000);
 
-    const data = await response.json();
-    setAiResponse(data.response ?? "");
-    setAiLoading(false);
+    try {
+      const response = await fetch("/api/control-intelligence", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          mode: "summary",
+          systemPrompt: CONTROL_INTELLIGENCE_PROMPT,
+          userPrompt: prompt,
+          dataBlocks: JSON.stringify({
+            source: "control-room-overview-ai-panel",
+            stats: {
+              totalRevenue: stats.totalRevenue,
+              totalBookings: stats.totalOrders,
+              pending: stats.pending,
+              confirmed: stats.confirmed,
+            },
+          }),
+        }),
+      });
+
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
+      }
+
+      if (!response.ok) {
+        setAiResponse(data?.message ?? `Request failed (${response.status})`);
+        return;
+      }
+
+      setAiResponse(data?.success ? (data.response ?? "") : (data?.message ?? "Request failed"));
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
+        setAiResponse("Request timed out. Please try again.");
+      } else {
+        setAiResponse("Unable to fetch AI response right now.");
+      }
+    } finally {
+      clearTimeout(timeoutId);
+      setAiLoading(false);
+    }
   };
 
   return (
