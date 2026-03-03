@@ -87,18 +87,37 @@ export async function GET() {
       });
     }
 
-    const { data: flightRows, error: flightError } = await supabaseAdmin
+    let arrivals: FlightArrivalRow[] = [];
+
+    const richFlightsQuery = await supabaseAdmin
       .from("flight_arrivals")
       .select("date, flight_number, origin, aircraft_type, is_widebody, provider, source_confidence")
       .gte("date", today)
       .order("date", { ascending: true })
       .limit(100);
 
-    if (flightError) {
-      return Response.json({ ok: false, message: flightError.message }, { status: 500 });
-    }
+    if (!richFlightsQuery.error) {
+      arrivals = (richFlightsQuery.data ?? []) as FlightArrivalRow[];
+    } else {
+      const fallbackFlightsQuery = await supabaseAdmin
+        .from("flight_arrivals")
+        .select("date, flight_number, origin, aircraft_type, is_widebody")
+        .gte("date", today)
+        .order("date", { ascending: true })
+        .limit(100);
 
-    const arrivals = (flightRows ?? []) as FlightArrivalRow[];
+      if (fallbackFlightsQuery.error) {
+        return Response.json({ ok: false, message: fallbackFlightsQuery.error.message }, { status: 500 });
+      }
+
+      arrivals = ((fallbackFlightsQuery.data ?? []) as Omit<FlightArrivalRow, "provider" | "source_confidence">[]).map(
+        (row) => ({
+          ...row,
+          provider: null,
+          source_confidence: null,
+        })
+      );
+    }
 
     const totals = {
       flights7d: demandRows.slice(0, 7).reduce((sum, row) => sum + toInt(row.flights), 0),
