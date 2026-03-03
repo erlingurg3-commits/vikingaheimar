@@ -23,7 +23,7 @@ export async function GET(
     .single();
 
   if (error || !data) {
-    return Response.json({ message: error?.message ?? "Group request not found" }, { status: 404 });
+    return Response.json({ message: "Group request not found" }, { status: 404 });
   }
 
   const [allocationsResponse, ordersResponse] = await Promise.all([
