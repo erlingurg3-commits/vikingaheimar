@@ -123,6 +123,24 @@ CRUISE_CRM_FOLLOWUP_TO=ops@yourdomain.com,saleslead@yourdomain.com
 CRUISE_CRM_DIGEST_TO=ops@yourdomain.com,sales@yourdomain.com
 ```
 
+## Air Arrivals Ingestion
+
+`supabase/functions/ingest-air-arrivals` now supports provider adapters with priority and fallback (no browser endpoint scraping).
+
+### Air-arrivals env vars
+
+```bash
+AIR_ARRIVALS_AIRPORT_IATA=KEF
+AIR_ARRIVALS_PROVIDERS=flightaware,aviationstack
+
+FLIGHTAWARE_API_KEY=...
+FLIGHTAWARE_BASE_URL=https://aeroapi.flightaware.com/aeroapi
+
+AVIATIONSTACK_API_KEY=...
+```
+
+Provider order in `AIR_ARRIVALS_PROVIDERS` is priority order for dedupe when multiple sources return the same `date + flight_number`.
+
 ### Deep link format
 
 `/admin/cruise-intelligence?lead=<lead_id>`
