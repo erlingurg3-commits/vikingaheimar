@@ -34,7 +34,7 @@ export async function GET(
       .order("created_at", { ascending: false }),
     supabaseAdmin
       .from("orders")
-      .select("id, visit_date, visit_time, status, source_type, source_id, ticket_general, ticket_youth, ticket_family")
+      .select("id, visit_date, visit_time, status, source_type, source_id, ticket_general, ticket_youth, ticket_family, group_size, total_amount, admin_decision_reason")
       .eq("source_type", "group_request")
       .eq("source_id", parsed.data.id)
       .order("created_at", { ascending: false }),

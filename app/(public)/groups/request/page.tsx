@@ -25,9 +25,10 @@ type CapacityPayload = {
 
 type GroupRequestPayload = {
   requestId: string;
-  outcome: "pending_admin_review" | "suggested_alternatives";
+  outcome: "pending_admin_review" | "suggested_alternatives" | "approved_mock_booking";
   suggestedTimes: string[];
   preferredVisitTime: string;
+  mockBookingId?: string | null;
   message?: string;
 };
 
@@ -54,6 +55,8 @@ export default function GroupRequestPage() {
   const [error, setError] = useState("");
 
   const [requestId, setRequestId] = useState<string | null>(null);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [submittedVisitTime, setSubmittedVisitTime] = useState("");
   const [state, setState] = useState<"form" | "submitted" | "suggestions">("form");
   const [suggestedTimes, setSuggestedTimes] = useState<string[]>([]);
 
@@ -167,7 +170,21 @@ export default function GroupRequestPage() {
       }
 
       setRequestId(payload.requestId);
+      setBookingId(payload.mockBookingId ?? null);
+      setSubmittedVisitTime(visitTime);
+
+      setSelectedAgencyId("");
+      setAgentCompany("");
+      setAgentName("");
+      setAgentEmail("");
+      setVisitTime("");
+      setGroupSize("20");
+      setNotes("");
+
       if (payload.outcome === "pending_admin_review") {
+        setState("submitted");
+        setSuggestedTimes([]);
+      } else if (payload.outcome === "approved_mock_booking") {
         setState("submitted");
         setSuggestedTimes([]);
       } else {
@@ -234,7 +251,12 @@ export default function GroupRequestPage() {
             <p className="text-sm uppercase tracking-[0.15em] text-emerald-300">Request Submitted</p>
             <h2 className="text-2xl font-semibold text-white">Request received. Our team will confirm shortly.</h2>
             <Body className="text-emerald-100">Reference ID: <span className="font-semibold">{requestId}</span></Body>
-            <Body className="text-emerald-100">Requested time: {visitTime}</Body>
+            <Body className="text-emerald-100">Requested time: {submittedVisitTime}</Body>
+            {bookingId ? (
+              <Body className="text-emerald-100">
+                Mock booking created: <span className="font-semibold">{bookingId}</span>
+              </Body>
+            ) : null}
           </section>
         ) : null}
 
@@ -310,12 +332,13 @@ export default function GroupRequestPage() {
                     key={slot.time}
                     type="button"
                     disabled={!slot.canFit}
+                    aria-pressed={selected}
                     onClick={() => setVisitTime(slot.time)}
-                    className={`rounded-lg border px-3 py-2 text-sm transition-colors ${
+                    className={`h-14 rounded-lg border px-3 py-2 text-sm transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 ${
                       selected
-                        ? "border-emerald-400 bg-emerald-500/20 text-emerald-100"
+                        ? "border-emerald-300 bg-emerald-500/25 text-emerald-50 shadow-[0_0_14px_rgba(74,222,128,0.25)]"
                         : slot.canFit
-                          ? "border-white/15 bg-black/20 text-gray-200 hover:border-emerald-400/60"
+                          ? "border-white/20 bg-black/20 text-gray-100 hover:border-emerald-400/70 hover:bg-emerald-500/10"
                           : "border-red-500/30 bg-red-950/20 text-red-300 cursor-not-allowed"
                     }`}
                   >

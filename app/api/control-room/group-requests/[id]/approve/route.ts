@@ -13,6 +13,8 @@ const bodySchema = z.object({
   reviewed_by: z.string().trim().max(255).optional(),
 });
 
+const MOCK_GROUP_TICKET_PRICE_ISK = 3800;
+
 export async function POST(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -137,13 +139,15 @@ export async function POST(
         ticket_general: requestedPax,
         ticket_youth: 0,
         ticket_family: 0,
-        total_amount: 0,
+        total_amount: requestedPax * MOCK_GROUP_TICKET_PRICE_ISK,
         status: "confirmed",
         source: "travel_agent",
         source_type: "group_request",
         source_id: requestId,
         request_type: "group",
         group_size: Number(groupRequest.group_size ?? 0),
+        admin_status: "approved",
+        admin_decision_reason: parsedBody.data.admin_comment || "Approved by admin",
       })
       .select("id")
       .single();

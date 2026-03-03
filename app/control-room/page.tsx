@@ -1,5 +1,5 @@
-import ControlRoomDashboard from "@/app/components/dashboard/ControlRoomDashboard";
+import ControlRoomDeck from "@/components/control-room/ControlRoomDeck";
 
 export default function ControlRoomOverviewPage() {
-  return <ControlRoomDashboard />;
+  return <ControlRoomDeck />;
 }

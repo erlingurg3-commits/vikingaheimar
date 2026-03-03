@@ -13,6 +13,8 @@ type GroupRequestRow = {
   pax: number;
   status: string;
   suggested_times: string[];
+  notes: string | null;
+  admin_comment: string | null;
 };
 
 function statusBadge(status: GroupRequestRow["status"]) {
@@ -50,8 +52,8 @@ export default async function GroupRequestsQueuePage() {
   const supabase = createServerClient();
   const { data, error } = await supabase
     .from("group_requests")
-    .select("id, created_at, agent_id, agent_company, agent_name, agent_email, preferred_start, pax, status, suggested_times")
-    .in("status", ["submitted", "pending_admin_review"])
+    .select("id, created_at, agent_id, agent_company, agent_name, agent_email, preferred_start, pax, status, suggested_times, notes, admin_comment")
+    .in("status", ["submitted", "pending_admin_review", "suggested_alternatives"])
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -106,13 +108,14 @@ export default async function GroupRequestsQueuePage() {
               <th className="px-3 py-3 text-left">Group Size</th>
               <th className="px-3 py-3 text-left">Admin Status</th>
               <th className="px-3 py-3 text-left">Suggested Times</th>
+              <th className="px-3 py-3 text-left">Comment</th>
               <th className="px-3 py-3 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
             {queueRows.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-3 py-10 text-center text-gray-400">No requests in queue.</td>
+                <td colSpan={11} className="px-3 py-10 text-center text-gray-400">No requests in queue.</td>
               </tr>
             ) : null}
 
@@ -131,6 +134,7 @@ export default async function GroupRequestsQueuePage() {
                     ? row.suggested_times.join(", ")
                     : "—"}
                 </td>
+                <td className="px-3 py-3 text-xs text-gray-300">{row.admin_comment ?? row.notes ?? "—"}</td>
                 <td className="px-3 py-3">
                   <Link
                     href={`/control-room/group-requests/${row.id}`}

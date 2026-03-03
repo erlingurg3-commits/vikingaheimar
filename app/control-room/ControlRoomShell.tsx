@@ -9,10 +9,11 @@ type ControlRoomShellProps = {
 };
 
 const NAV_ITEMS = [
-  { label: "Overview", href: "/control-room" },
+  { label: "Dashboard", href: "/control-room/overview-v1" },
+  { label: "Forecast", href: "/control-room" },
+  { label: "Air Arrivals", href: "/control-room/air-arrivals" },
   { label: "Capacity", href: "/control-room/capacity" },
   { label: "Orders", href: "/control-room/orders" },
-  { label: "AI Intelligence", href: "/control-room/ai-intelligence" },
   { label: "Settings", href: "/control-room/settings" },
 ] as const;
 

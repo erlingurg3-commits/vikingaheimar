@@ -26,10 +26,10 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
     console.error("[control-intelligence] OPENAI_API_KEY not set.");
-    return json({ success: false, message: "Service unavailable." }, 503);
+    return json({ success: false, message: "OPENAI_API_KEY is missing on server." }, 500);
   }
 
   const raw = await req.text();
@@ -91,9 +91,17 @@ export async function POST(req: Request) {
       console.error("[control-intelligence] Request timed out.");
       return json({ success: false, message: "Request timed out." }, 504);
     }
+
+    if (err instanceof OpenAI.APIError) {
+      const status = err.status ?? 502;
+      const message = err.message || "OpenAI request failed.";
+      console.error(`[control-intelligence] OpenAI API error (${status}): ${message}`);
+      return json({ success: false, message }, status);
+    }
+
     const msg = err instanceof Error ? err.message : "Unknown error.";
     console.error("[control-intelligence] Error:", msg);
-    return json({ success: false, message: "Internal server error." }, 500);
+    return json({ success: false, message: msg || "Internal server error." }, 500);
   } finally {
     clearTimeout(timeout);
   }

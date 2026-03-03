@@ -38,6 +38,9 @@ type LinkedOrderRow = {
   ticket_general: number | null;
   ticket_youth: number | null;
   ticket_family: number | null;
+  group_size: number | null;
+  total_amount: number | null;
+  admin_decision_reason: string | null;
 };
 
 type DetailPayload = {
@@ -119,9 +122,13 @@ export default function GroupRequestDetailPage({ params }: PageProps) {
     const base = row.selected_visit_time ?? row.preferred_visit_time;
     const merged = [base, ...(row.suggested_times ?? [])];
 
-    return Array.from(new Set(merged.filter(Boolean))).map(
-      (time) => `${row.visit_date}T${time}:00.000Z`
-    );
+    return Array.from(new Set(merged.filter(Boolean))).map((time) => {
+      if (time.includes("T")) {
+        return time;
+      }
+
+      return `${row.visit_date}T${time}:00.000Z`;
+    });
   }, [row]);
 
   const approve = async () => {
@@ -220,6 +227,13 @@ export default function GroupRequestDetailPage({ params }: PageProps) {
             </div>
           ) : null}
 
+          {row.admin_comment ? (
+            <div className="rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-gray-200">
+              <p className="text-gray-400 mb-1">Latest Admin Comment</p>
+              <p>{row.admin_comment}</p>
+            </div>
+          ) : null}
+
           <div className="space-y-2">
             <label className="text-sm text-gray-300">Approval start time (UTC)</label>
             <select
@@ -288,7 +302,8 @@ export default function GroupRequestDetailPage({ params }: PageProps) {
                 <ul className="mt-2 space-y-2">
                   {linkedOrders.map((order) => (
                     <li key={order.id} className="rounded-lg border border-white/10 px-3 py-2 text-sm text-gray-200">
-                      #{order.id.slice(0, 8)} · {order.visit_date} {order.visit_time} · status {order.status} · pax {Number(order.ticket_general ?? 0) + Number(order.ticket_youth ?? 0) + Number(order.ticket_family ?? 0)}
+                      #{order.id.slice(0, 8)} · {order.visit_date} {order.visit_time} · status {order.status} · pax {Number(order.ticket_general ?? 0) + Number(order.ticket_youth ?? 0) + Number(order.ticket_family ?? 0)} · group size {Number(order.group_size ?? 0)} · revenue {new Intl.NumberFormat("is-IS", { style: "currency", currency: "ISK", maximumFractionDigits: 0 }).format(Number(order.total_amount ?? 0))}
+                      {order.admin_decision_reason ? <span> · comment: {order.admin_decision_reason}</span> : null}
                     </li>
                   ))}
                 </ul>

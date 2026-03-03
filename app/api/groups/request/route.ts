@@ -24,6 +24,7 @@ const createGroupRequestSchema = z
     pax: z.coerce.number().int().min(1).max(500).optional(),
     group_size: z.coerce.number().int().min(1).max(500).optional(),
     notes: z.string().trim().max(2000).optional(),
+    mock_instant_booking: z.boolean().optional(),
   })
   .refine((input) => Boolean(input.agent_id || input.agent_company || input.agency_company), {
     message: "agent_id or agent_company is required",
@@ -59,6 +60,8 @@ const capacityQuerySchema = z.object({
 function formatIsoFromDateAndHour(visitDate: string, hour: string) {
   return `${visitDate}T${hour}:00.000Z`;
 }
+
+const MOCK_GROUP_TICKET_PRICE_ISK = 3800;
 
 function normalizeHour(value: string) {
   const { hour } = toUtcDateAndHour(value);
@@ -145,6 +148,7 @@ export async function POST(req: Request) {
   const agentEmail = (input.agent_email ?? input.agency_email ?? "").trim().toLowerCase();
   const requestedPax = Number(input.pax ?? input.group_size ?? 0);
   const durationMinutes = Number(input.duration_minutes ?? 60);
+  const shouldCreateMockBooking = input.mock_instant_booking === true;
 
   let preferredStart = input.preferred_start ?? "";
   if (!preferredStart && input.visit_date && input.visit_time) {
@@ -177,7 +181,11 @@ export async function POST(req: Request) {
     const fallbackCompany = agentCompany || "Unspecified agency";
     const resolvedAgentId = input.agent_id
       ? input.agent_id
-      : await resolveAgency(supabaseAdmin, fallbackCompany);
+      : await resolveAgency(supabaseAdmin, fallbackCompany, {
+          autoCreate: true,
+          contact_name: agentName,
+          email: agentEmail,
+        });
 
     const { data, error } = await supabaseAdmin
       .from("group_requests")
@@ -206,12 +214,58 @@ export async function POST(req: Request) {
       return Response.json({ message: error.message }, { status: 500 });
     }
 
+    let mockBookingId: string | null = null;
+
+    if (shouldCreateMockBooking && status === "pending_admin_review") {
+      const totalAmount = requestedPax * MOCK_GROUP_TICKET_PRICE_ISK;
+
+      const { data: insertedOrder, error: orderError } = await supabaseAdmin
+        .from("orders")
+        .insert({
+          customer_email: agentEmail,
+          agent_email: agentEmail,
+          agent_id: resolvedAgentId ?? null,
+          agent_company: fallbackCompany,
+          agent_name: agentName,
+          visit_date: preferred.visitDate,
+          visit_time: preferred.hour,
+          ticket_general: requestedPax,
+          ticket_youth: 0,
+          ticket_family: 0,
+          total_amount: totalAmount,
+          status: "confirmed",
+          source: "travel_agent",
+          source_type: "group_request",
+          source_id: data.id,
+          request_type: "group",
+          group_size: requestedPax,
+          notes: input.notes ?? null,
+          admin_status: "approved",
+          admin_decision_reason: "Auto-confirmed mock group booking",
+        })
+        .select("id")
+        .single();
+
+      if (!orderError) {
+        mockBookingId = insertedOrder?.id ?? null;
+
+        await supabaseAdmin
+          .from("group_requests")
+          .update({
+            status: "approved",
+            admin_comment: "Auto-confirmed mock group booking",
+          })
+          .eq("id", data.id);
+      }
+    }
+
     return Response.json(
       {
         requestId: data.id,
-        outcome: data.status,
+        outcome: mockBookingId ? "approved_mock_booking" : data.status,
         preferredStart: data.preferred_start,
         suggestedTimes: data.suggested_times ?? [],
+        mockBookingId,
       },
       { status: 200 }
     );
