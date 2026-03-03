@@ -61,6 +61,7 @@ const jsonHeaders = { "Content-Type": "application/json; charset=utf-8" };
 const WIDEBODY_PATTERN = /(787|777|767|330|340|350)/;
 const PAGE_LIMIT = 100;
 const DEFAULT_AIRPORT_IATA = "KEF";
+const DEFAULT_KEF_ARRIVALS_URL = "https://www.kefairport.is/flug/komur";
 
 function toDateOnly(value: string): string | null {
   const match = value.match(/^(\d{4}-\d{2}-\d{2})/);
@@ -245,12 +246,84 @@ async function fetchFlightAware(apiKey: string, baseUrl: string, airportIata: st
   };
 }
 
+function parseKefArrivalsFromHtml(html: string, referenceDateIso: string): NormalizedArrival[] {
+  const arrivals: NormalizedArrival[] = [];
+  const compact = html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ");
+
+  const rowPattern = /(\d{1,2}:\d{2})(?:\s+\d{1,2}:\d{2})?\s+([^\d][^A-Z0-9]{0,8}.*?|.*?)\s+([A-Z0-9]{2,3}\d{2,5}[A-Z]?)\s+(?:Á\s+áætlun|Áætlað|Lent|Seinkun|Boarding|Estimated|Scheduled)/gi;
+
+  for (const match of compact.matchAll(rowPattern)) {
+    const time = normalizeText(match[1]);
+    const originCandidate = normalizeText(match[2]);
+    const flightNumber = normalizeFlightNumber(match[3]);
+
+    if (!time || !flightNumber) {
+      continue;
+    }
+
+    const hhmm = time.padStart(5, "0");
+    const scheduled = `${referenceDateIso}T${hhmm}:00.000Z`;
+
+    arrivals.push({
+      scheduled,
+      flightNumber,
+      origin: originCandidate,
+      aircraftType: null,
+    });
+  }
+
+  return arrivals;
+}
+
+async function fetchKefAirportPage(url: string): Promise<ProviderResult> {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "text/html,application/xhtml+xml",
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        provider: "kefairport",
+        confidence: 45,
+        arrivals: [],
+        error: "KEF arrivals page request failed: HTTP " + String(response.status),
+      };
+    }
+
+    const html = await response.text();
+    const todayIso = new Date().toISOString().slice(0, 10);
+    const arrivals = parseKefArrivalsFromHtml(html, todayIso);
+
+    return {
+      provider: "kefairport",
+      confidence: 45,
+      arrivals,
+      error: arrivals.length === 0 ? "No parseable arrivals found in KEF page response" : undefined,
+    };
+  } catch (error) {
+    return {
+      provider: "kefairport",
+      confidence: 45,
+      arrivals: [],
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 async function fetchProviders(): Promise<{
   results: ProviderResult[];
   enabledProviders: string[];
 }> {
   const airportIata = normalizeText(Deno.env.get("AIR_ARRIVALS_AIRPORT_IATA")) ?? DEFAULT_AIRPORT_IATA;
-  const configured = (normalizeText(Deno.env.get("AIR_ARRIVALS_PROVIDERS")) ?? "flightaware,aviationstack")
+  const configured = (normalizeText(Deno.env.get("AIR_ARRIVALS_PROVIDERS")) ?? "flightaware,aviationstack,kefairport")
     .split(",")
     .map((item) => item.trim().toLowerCase())
     .filter(Boolean);
@@ -279,6 +352,13 @@ async function fetchProviders(): Promise<{
 
       enabledProviders.push(provider);
       results.push(await fetchAviationstack(apiKey, airportIata));
+      continue;
+    }
+
+    if (provider === "kefairport") {
+      const url = normalizeText(Deno.env.get("KEF_ARRIVALS_URL")) ?? DEFAULT_KEF_ARRIVALS_URL;
+      enabledProviders.push(provider);
+      results.push(await fetchKefAirportPage(url));
     }
   }
 

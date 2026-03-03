@@ -131,15 +131,22 @@ CRUISE_CRM_DIGEST_TO=ops@yourdomain.com,sales@yourdomain.com
 
 ```bash
 AIR_ARRIVALS_AIRPORT_IATA=KEF
-AIR_ARRIVALS_PROVIDERS=flightaware,aviationstack
+AIR_ARRIVALS_PROVIDERS=flightaware,aviationstack,kefairport
 
 FLIGHTAWARE_API_KEY=...
 FLIGHTAWARE_BASE_URL=https://aeroapi.flightaware.com/aeroapi
 
 AVIATIONSTACK_API_KEY=...
+
+# Optional KEF fallback (public arrivals page parser)
+KEF_ARRIVALS_URL=https://www.kefairport.is/flug/komur
 ```
 
 Provider order in `AIR_ARRIVALS_PROVIDERS` is priority order for dedupe when multiple sources return the same `date + flight_number`.
+
+`kefairport` is a low-confidence fallback for missing flight rows and does not include aircraft type metadata.
+
+For aircraft type enrichment, prefer licensed APIs (FlightAware/other contracted sources). Free Flightradar24 website scraping is not recommended for production reliability/compliance.
 
 ### Deep link format
 
