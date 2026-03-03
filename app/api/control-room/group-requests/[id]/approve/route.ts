@@ -40,7 +40,7 @@ export async function POST(
 
   const { data: groupRequest, error: fetchError } = await supabaseAdmin
     .from("group_requests")
-    .select("id, preferred_start, pax, status, agent_id, agent_company, agent_name, agent_email, customer_email")
+    .select("id, preferred_start, pax, status, agent_id, agent_company, agent_name, agent_email")
     .eq("id", requestId)
     .single();
 
@@ -134,8 +134,8 @@ export async function POST(
     const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
       .insert({
-        customer_email: groupRequest.customer_email ?? groupRequest.agent_email,
-        agent_email: groupRequest.agent_email ?? groupRequest.customer_email,
+        customer_email: groupRequest.agent_email,
+        agent_email: groupRequest.agent_email,
         agent_id: groupRequest.agent_id,
         agent_company: groupRequest.agent_company,
         agent_name: groupRequest.agent_name,

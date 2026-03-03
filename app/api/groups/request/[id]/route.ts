@@ -18,12 +18,12 @@ export async function GET(
 
   const { data, error } = await supabaseAdmin
     .from("group_requests")
-    .select("id, created_at, agent_company, agent_name, customer_email, agent_email, preferred_start, pax, notes, status, feasibility, suggested_times, admin_comment")
+    .select("id, created_at, agent_company, agent_name, agent_email, preferred_start, pax, notes, status, feasibility, suggested_times, admin_comment")
     .eq("id", parsed.data.id)
     .single();
 
   if (error || !data) {
-    return Response.json({ message: "Group request not found" }, { status: 404 });
+    return Response.json({ message: error?.message ?? "Group request not found" }, { status: 404 });
   }
 
   const [allocationsResponse, ordersResponse] = await Promise.all([
@@ -53,7 +53,7 @@ export async function GET(
     created_at: String(data.created_at),
     agent_company: String(data.agent_company ?? ""),
     agent_name: String(data.agent_name ?? ""),
-    customer_email: String(data.customer_email ?? data.agent_email ?? ""),
+    customer_email: String(data.agent_email ?? ""),
     visit_date: visitDate,
     preferred_visit_time: preferredVisitTime,
     selected_visit_time: null,
