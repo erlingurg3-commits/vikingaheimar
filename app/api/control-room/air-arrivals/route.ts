@@ -29,6 +29,8 @@ type FlightArrivalRow = {
   origin: string | null;
   aircraft_type: string | null;
   is_widebody: boolean | null;
+  provider: string | null;
+  source_confidence: number | null;
 };
 
 function toInt(value: unknown): number {
@@ -87,7 +89,7 @@ export async function GET() {
 
     const { data: flightRows, error: flightError } = await supabaseAdmin
       .from("flight_arrivals")
-      .select("date, flight_number, origin, aircraft_type, is_widebody")
+      .select("date, flight_number, origin, aircraft_type, is_widebody, provider, source_confidence")
       .gte("date", today)
       .order("date", { ascending: true })
       .limit(100);

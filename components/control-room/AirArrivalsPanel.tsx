@@ -19,6 +19,8 @@ type ArrivalRow = {
   origin: string | null;
   aircraft_type: string | null;
   is_widebody: boolean | null;
+  provider: string | null;
+  source_confidence: number | null;
 };
 
 type TopOrigin = {
@@ -169,6 +171,7 @@ export default function AirArrivalsPanel() {
                       <th className="px-3 py-2 text-left">Date</th>
                       <th className="px-3 py-2 text-left">Flight</th>
                       <th className="px-3 py-2 text-left">Origin</th>
+                      <th className="px-3 py-2 text-left">Aircraft</th>
                       <th className="px-3 py-2 text-right">Type</th>
                     </tr>
                   </thead>
@@ -178,7 +181,10 @@ export default function AirArrivalsPanel() {
                         <td className="px-3 py-2">{formatDate(row.date)}</td>
                         <td className="px-3 py-2">{row.flight_number ?? "—"}</td>
                         <td className="px-3 py-2">{row.origin ?? "—"}</td>
-                        <td className="px-3 py-2 text-right">{row.is_widebody ? "Widebody" : "Narrowbody"}</td>
+                        <td className="px-3 py-2">{row.aircraft_type ?? "Unknown"}</td>
+                        <td className="px-3 py-2 text-right">
+                          {row.aircraft_type ? (row.is_widebody ? "Widebody" : "Narrowbody") : "Unknown"}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
