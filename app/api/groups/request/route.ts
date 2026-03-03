@@ -148,7 +148,7 @@ export async function POST(req: Request) {
   const agentEmail = (input.agent_email ?? input.agency_email ?? "").trim().toLowerCase();
   const requestedPax = Number(input.pax ?? input.group_size ?? 0);
   const durationMinutes = Number(input.duration_minutes ?? 60);
-  const shouldCreateMockBooking = input.mock_instant_booking === true;
+  const shouldCreateMockBooking = input.mock_instant_booking !== false;
 
   let preferredStart = input.preferred_start ?? "";
   if (!preferredStart && input.visit_date && input.visit_time) {

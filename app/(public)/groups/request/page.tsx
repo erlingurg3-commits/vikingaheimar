@@ -159,6 +159,7 @@ export default function GroupRequestPage() {
           visit_time: visitTime,
           group_size: parsedGroupSize,
           notes,
+          mock_instant_booking: true,
         }),
       });
 
