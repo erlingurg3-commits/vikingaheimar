@@ -1,0 +1,107 @@
+/* Import design system tokens and global styles */
+@import "../styles/design-tokens.css";
+
+/* ================================================
+   SCROLL LINE CANVAS — La Linea storytelling layer
+   pointer-events: none is CRITICAL — never blocks clicks
+   z-index 5: above background, below all UI (nav z-1025)
+   ================================================ */
+#line-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* ================================================
+   TYPOGRAPHY DEFAULTS & HIERARCHY
+   ================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: var(--letter-spacing-tight);
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--font-size-6xl);
+  font-weight: 300;
+}
+
+h2 {
+  font-size: var(--font-size-5xl);
+  font-weight: 300;
+}
+
+h3 {
+  font-size: var(--font-size-4xl);
+  font-weight: 400;
+}
+
+h4 {
+  font-size: var(--font-size-3xl);
+  font-weight: 400;
+}
+
+h5 {
+  font-size: var(--font-size-2xl);
+  font-weight: 500;
+}
+
+h6 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+}
+
+p {
+  font-family: var(--font-family-text);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+small {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+}
+
+/* ================================================
+   DEFAULT PARAGRAPH SPACING
+   ================================================ */
+
+p + p {
+  margin-top: var(--spacing-md);
+}
+
+/* ================================================
+   LINK ENHANCEMENTS
+   ================================================ */
+
+a {
+  color: var(--color-accent-frost-blue);
+  transition: color var(--transition-duration-fast) var(--transition-easing-ease-out);
+}
+
+a:hover {
+  color: #7fc3f0;
+}
+
+a:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
+  border-radius: var(--radius-sm);
+}
+
+/* ================================================
+   SELECTION COLOR
+   ================================================ */
+
+::selection {
+  background-color: var(--color-accent-frost-blue);
+  color: var(--color-base-charcoal);
+}
