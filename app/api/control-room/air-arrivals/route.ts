@@ -1,5 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type DemandRowRich = {
   date: string;
   score: number | null;
