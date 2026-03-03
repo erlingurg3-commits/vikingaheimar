@@ -380,16 +380,50 @@ Deno.serve(async () => {
       auth: { persistSession: false },
     });
 
-    const { data: upserted, error: upsertError } = await supabase
+    let upserted: Array<{ id: string; is_widebody: boolean }> | null = null;
+
+    const enrichedUpsert = await supabase
       .from("flight_arrivals")
       .upsert(upsertPayload, { onConflict: "date,flight_number" })
       .select("id, is_widebody");
 
-    if (upsertError) {
-      return new Response(
-        JSON.stringify({ error: "flight_arrivals upsert failed: " + upsertError.message }),
-        { status: 500, headers: jsonHeaders }
-      );
+    if (!enrichedUpsert.error) {
+      upserted = (enrichedUpsert.data ?? []) as Array<{ id: string; is_widebody: boolean }>;
+    } else {
+      const errorMessage = String(enrichedUpsert.error.message ?? "").toLowerCase();
+      const missingProvenanceColumns =
+        errorMessage.includes("provider") ||
+        errorMessage.includes("fetched_at") ||
+        errorMessage.includes("source_confidence");
+
+      if (!missingProvenanceColumns) {
+        return new Response(
+          JSON.stringify({ error: "flight_arrivals upsert failed: " + enrichedUpsert.error.message }),
+          { status: 500, headers: jsonHeaders }
+        );
+      }
+
+      const legacyPayload = upsertPayload.map((row) => ({
+        date: row.date,
+        flight_number: row.flight_number,
+        origin: row.origin,
+        aircraft_type: row.aircraft_type,
+        is_widebody: row.is_widebody,
+      }));
+
+      const legacyUpsert = await supabase
+        .from("flight_arrivals")
+        .upsert(legacyPayload, { onConflict: "date,flight_number" })
+        .select("id, is_widebody");
+
+      if (legacyUpsert.error) {
+        return new Response(
+          JSON.stringify({ error: "flight_arrivals legacy upsert failed: " + legacyUpsert.error.message }),
+          { status: 500, headers: jsonHeaders }
+        );
+      }
+
+      upserted = (legacyUpsert.data ?? []) as Array<{ id: string; is_widebody: boolean }>;
     }
 
     const inserted = (upserted ?? []).length;
