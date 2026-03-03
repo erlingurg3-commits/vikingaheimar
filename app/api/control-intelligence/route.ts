@@ -32,14 +32,6 @@ export async function POST(req: Request) {
     return json({ success: false, message: "Service unavailable." }, 503);
   }
 
-  const secret = process.env.INTERNAL_SECRET;
-  if (secret) {
-    const provided = req.headers.get("x-internal-secret");
-    if (provided !== secret) {
-      return json({ success: false, message: "Unauthorized." }, 401);
-    }
-  }
-
   const raw = await req.text();
   if (raw.length > 20_000) {
     return json({ success: false, message: "Request body exceeds 20,000 character limit." }, 413);
