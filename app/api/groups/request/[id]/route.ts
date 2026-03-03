@@ -18,7 +18,7 @@ export async function GET(
 
   const { data, error } = await supabaseAdmin
     .from("group_requests")
-    .select("id, created_at, agent_company, agent_name, customer_email, visit_date, preferred_visit_time, selected_visit_time, group_size, notes, status, feasibility, suggested_times, admin_comment")
+    .select("id, created_at, agent_company, agent_name, customer_email, agent_email, preferred_start, pax, notes, status, feasibility, suggested_times, admin_comment")
     .eq("id", parsed.data.id)
     .single();
 
@@ -40,9 +40,34 @@ export async function GET(
       .order("created_at", { ascending: false }),
   ]);
 
+  const preferred = new Date(String(data.preferred_start ?? ""));
+  const visitDate = Number.isNaN(preferred.getTime())
+    ? ""
+    : `${preferred.getUTCFullYear()}-${String(preferred.getUTCMonth() + 1).padStart(2, "0")}-${String(preferred.getUTCDate()).padStart(2, "0")}`;
+  const preferredVisitTime = Number.isNaN(preferred.getTime())
+    ? ""
+    : `${String(preferred.getUTCHours()).padStart(2, "0")}:${String(preferred.getUTCMinutes()).padStart(2, "0")}`;
+
+  const request = {
+    id: String(data.id),
+    created_at: String(data.created_at),
+    agent_company: String(data.agent_company ?? ""),
+    agent_name: String(data.agent_name ?? ""),
+    customer_email: String(data.customer_email ?? data.agent_email ?? ""),
+    visit_date: visitDate,
+    preferred_visit_time: preferredVisitTime,
+    selected_visit_time: null,
+    group_size: Number(data.pax ?? 0),
+    notes: data.notes ?? null,
+    status: String(data.status) as "pending_admin_review" | "approved" | "declined" | "suggested_alternatives",
+    feasibility: String(data.feasibility) as "feasible" | "not_feasible",
+    suggested_times: Array.isArray(data.suggested_times) ? data.suggested_times : [],
+    admin_comment: data.admin_comment ?? null,
+  };
+
   return Response.json(
     {
-      request: data,
+      request,
       allocations: allocationsResponse.data ?? [],
       linkedOrders: ordersResponse.data ?? [],
     },

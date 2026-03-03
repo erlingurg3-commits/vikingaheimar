@@ -40,7 +40,7 @@ export async function POST(
 
   const { data: groupRequest, error: fetchError } = await supabaseAdmin
     .from("group_requests")
-    .select("id, visit_date, preferred_visit_time, selected_visit_time, group_size, status, agent_id, agent_company, agent_name, agent_email, customer_email")
+    .select("id, preferred_start, pax, status, agent_id, agent_company, agent_name, agent_email, customer_email")
     .eq("id", requestId)
     .single();
 
@@ -54,14 +54,19 @@ export async function POST(
 
   const derivedStart = toUtcDateAndHour(
     parsedBody.data.start_time ||
-      `${groupRequest.visit_date}T${groupRequest.selected_visit_time ?? groupRequest.preferred_visit_time}:00.000Z`
+      String(groupRequest.preferred_start)
   );
 
-  const targetDate = derivedStart.visitDate || groupRequest.visit_date;
-  const targetTime = derivedStart.hour || groupRequest.selected_visit_time || groupRequest.preferred_visit_time;
+  const fallbackStart = toUtcDateAndHour(String(groupRequest.preferred_start));
+  const targetDate = derivedStart.visitDate || fallbackStart.visitDate;
+  const targetTime = derivedStart.hour || fallbackStart.hour;
+
+  if (!targetDate || !targetTime) {
+    return Response.json({ message: "Unable to resolve selected start time" }, { status: 400 });
+  }
 
   try {
-    const requestedPax = Number(groupRequest.group_size ?? 0);
+    const requestedPax = Number(groupRequest.pax ?? 0);
 
     const feasibility = await checkGroupFeasibility(supabaseAdmin, {
       visitDate: targetDate,
@@ -145,7 +150,7 @@ export async function POST(
         source_type: "group_request",
         source_id: requestId,
         request_type: "group",
-        group_size: Number(groupRequest.group_size ?? 0),
+        group_size: Number(groupRequest.pax ?? 0),
         admin_status: "approved",
         admin_decision_reason: parsedBody.data.admin_comment || "Approved by admin",
       })
@@ -167,9 +172,7 @@ export async function POST(
       .update({
         status: "approved",
         feasibility: "feasible",
-        visit_date: targetDate,
-        selected_visit_time: targetTime,
-        approved_order_id: order.id,
+        preferred_start: `${targetDate}T${targetTime}:00.000Z`,
         admin_comment: parsedBody.data.admin_comment || "Approved by admin",
         reviewed_by: parsedBody.data.reviewed_by ?? "control-room",
         reviewed_at: new Date().toISOString(),
