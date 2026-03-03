@@ -26,7 +26,7 @@ export default function ControlRoomAiIntelligencePage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/ai/agent", {
+      const res = await fetch("/api/control-intelligence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next }),
