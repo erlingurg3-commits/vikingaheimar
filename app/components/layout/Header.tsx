@@ -87,9 +87,8 @@ export default function Header() {
     };
   }, [mobileMenuOpen]);
 
-  const isHome = pathname === "/";
   const isTicketsPage = pathname === "/tickets" || pathname.startsWith("/tickets/");
-  const useTransparentHeader = isHome && !scrolled && !mobileMenuOpen;
+  const useTransparentHeader = false;
 
   const isActive = (href: string) => {
     if (href === "/") {
@@ -103,7 +102,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-fixed transition-all duration-500 motion-reduce:transition-none ${
+        className={`fixed top-0 left-0 right-0 z-[1030] transition-all duration-500 motion-reduce:transition-none ${
           useTransparentHeader
             ? "bg-transparent"
             : "bg-neutral-950/88 backdrop-blur-xl border-b border-accent-frost-blue/15 shadow-xl shadow-black/25"
@@ -143,6 +142,12 @@ export default function Header() {
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/control-room"
+              className="inline-flex items-center rounded-md border border-accent-frost-blue/30 px-3 py-2 text-[11px] tracking-[0.16em] uppercase text-off-white/90 hover:text-off-white hover:border-accent-frost-blue/60 transition-colors"
+            >
+              Control Room
+            </Link>
             <Link href={DESKTOP_CTAS[1].href}>
               <Button variant="secondary" size="sm">
                 {DESKTOP_CTAS[1].label}

@@ -1,9 +1,8 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+export const dynamic = "force-dynamic";
 
 const SYSTEM_PROMPT = `You are Vikingaheimar Control Intelligence.
 
@@ -200,31 +199,23 @@ export async function POST(req: Request) {
 
     const context = await buildContext();
 
-    // Prepend context as a user turn that the model has already seen
-    const contextMessage: Anthropic.MessageParam = {
-      role: "user",
-      content: `OPERATIONAL CONTEXT FOR THIS SESSION:\n\n${context}`,
-    };
-    const contextAck: Anthropic.MessageParam = {
-      role: "assistant",
-      content: "Operational context received. Ready for queries.",
-    };
-
-    const allMessages: Anthropic.MessageParam[] = [
-      contextMessage,
-      contextAck,
-      ...messages.map((m) => ({ role: m.role, content: m.content } as Anthropic.MessageParam)),
+    const allMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: `OPERATIONAL CONTEXT FOR THIS SESSION:\n\n${context}` },
+      { role: "assistant", content: "Operational context received. Ready for queries." },
+      ...messages.map((m) => ({ role: m.role, content: m.content } as OpenAI.Chat.ChatCompletionMessageParam)),
     ];
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-5",
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      temperature: 0,
       messages: allMessages,
     });
 
-    const text =
-      response.content[0]?.type === "text" ? response.content[0].text : "No response.";
+    const text = response.choices[0]?.message?.content ?? "No response.";
 
     return new Response(JSON.stringify({ response: text }), {
       status: 200,

@@ -64,7 +64,7 @@ export default function ControlRoomAiIntelligencePage() {
             Control Intelligence
           </span>
           <span className="text-xs text-zinc-500">
-            Read-only operational analysis — claude-sonnet-4-5
+            Read-only operational analysis — gpt-4o-mini
           </span>
         </div>
         <div className="ml-auto flex items-center gap-2">
