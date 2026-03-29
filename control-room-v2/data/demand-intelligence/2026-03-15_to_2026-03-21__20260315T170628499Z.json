@@ -1,0 +1,374 @@
+{
+  "generated_at": "2026-03-15T17:06:28.499Z",
+  "date_range": {
+    "start": "2026-03-15",
+    "end": "2026-03-21"
+  },
+  "signals": [
+    {
+      "date": "2026-03-15",
+      "signal_type": "flights",
+      "title": "KEF arrivals show 62 inbound flights with some disruption signals",
+      "summary": "Keflavik arrivals list 62 inbound flights for 2026-03-15, including 7 flights with estimated or delay-style status markers and 17 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-15T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-15"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "weather",
+      "title": "SafeTravel conditions indicate elevated travel disruption risk",
+      "summary": "el plan Travel plan organized tours Travel conditions Black Beach Safety See map 2 Alerts March 15-17, 2026: Risk of avalanche Considerable avalanche danger (score 4 of 5) in mountains in Tröllaskagi and Westfjords (score 3 of 5) in mountains in Eyjafjörður. Outdoor enthusiasts are asked to be careful and not to travel where the snow cond",
+      "estimated_impact_score": 64,
+      "confidence_score": 76,
+      "source_name": "SafeTravel (ICE-SAR)",
+      "source_url": "https://safetravel.is/",
+      "source_reliability": "official-partner",
+      "region": "Iceland",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-15"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 7 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 7 scheduled public events or repeating programs on 2026-03-15.",
+      "estimated_impact_score": 29,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-15"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "cruise",
+      "title": "No strong cruise surge signal in the near-term port window",
+      "summary": "Official port pages show regular vessel traffic without a clear high-intensity cruise spike in the immediate horizon.",
+      "estimated_impact_score": 12,
+      "confidence_score": 62,
+      "source_name": "Faxafloahafnir (Port of Reykjavik)",
+      "source_url": "https://www.faxafloahafnir.is/en/",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-16"
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 54 inbound flights",
+      "summary": "Keflavik arrivals list 54 inbound flights for 2026-03-16, including 11 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-16T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-16",
+        "end": "2026-03-16"
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 9 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 9 scheduled public events or repeating programs on 2026-03-16.",
+      "estimated_impact_score": 32,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-16",
+        "end": "2026-03-16"
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 53 inbound flights",
+      "summary": "Keflavik arrivals list 53 inbound flights for 2026-03-17, including 12 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-17T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-17",
+        "end": "2026-03-17"
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 11 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 11 scheduled public events or repeating programs on 2026-03-17.",
+      "estimated_impact_score": 36,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-17",
+        "end": "2026-03-17"
+      }
+    },
+    {
+      "date": "2026-03-18",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 51 inbound flights",
+      "summary": "Keflavik arrivals list 51 inbound flights for 2026-03-18, including 14 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-18T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-18",
+        "end": "2026-03-18"
+      }
+    },
+    {
+      "date": "2026-03-18",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 10 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 10 scheduled public events or repeating programs on 2026-03-18.",
+      "estimated_impact_score": 34,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-18",
+        "end": "2026-03-18"
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 57 inbound flights",
+      "summary": "Keflavik arrivals list 57 inbound flights for 2026-03-19, including 11 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-19T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-19",
+        "end": "2026-03-19"
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 17 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 17 scheduled public events or repeating programs on 2026-03-19.",
+      "estimated_impact_score": 47,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-19",
+        "end": "2026-03-19"
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 50 inbound flights",
+      "summary": "Keflavik arrivals list 50 inbound flights for 2026-03-20, including 11 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-20T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-20",
+        "end": "2026-03-20"
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 7 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 7 scheduled public events or repeating programs on 2026-03-20.",
+      "estimated_impact_score": 29,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-20",
+        "end": "2026-03-20"
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "signal_type": "flights",
+      "title": "KEF arrivals schedule shows 56 inbound flights",
+      "summary": "Keflavik arrivals list 56 inbound flights for 2026-03-21, including 15 long-haul arrivals.",
+      "estimated_impact_score": 92,
+      "confidence_score": 86,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.is/api/flightData?date=2026-03-21T00%3A00%3A00.000Z&cargo=false&type=arrivals&search=",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-21",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "signal_type": "events",
+      "title": "Visit Reykjavik calendar lists 7 scheduled events",
+      "summary": "Official Visit Reykjavik listings show approximately 7 scheduled public events or repeating programs on 2026-03-21.",
+      "estimated_impact_score": 29,
+      "confidence_score": 81,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/events",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-21",
+        "end": "2026-03-21"
+      }
+    }
+  ],
+  "daily_summary": [
+    {
+      "date": "2026-03-15",
+      "flight_pressure": 92,
+      "cruise_pressure": 12,
+      "weather_risk": 64,
+      "event_pressure": 29,
+      "alert_level": "high-alert",
+      "net_demand_signal": "negative",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals show 62 inbound flights with some disruption signals",
+        "SafeTravel conditions indicate elevated travel disruption risk",
+        "Visit Reykjavik calendar lists 7 scheduled events"
+      ]
+    },
+    {
+      "date": "2026-03-16",
+      "flight_pressure": 92,
+      "cruise_pressure": 12,
+      "weather_risk": 0,
+      "event_pressure": 32,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 54 inbound flights",
+        "Visit Reykjavik calendar lists 9 scheduled events",
+        "No strong cruise surge signal in the near-term port window"
+      ]
+    },
+    {
+      "date": "2026-03-17",
+      "flight_pressure": 92,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 36,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 53 inbound flights",
+        "Visit Reykjavik calendar lists 11 scheduled events"
+      ]
+    },
+    {
+      "date": "2026-03-18",
+      "flight_pressure": 92,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 34,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 51 inbound flights",
+        "Visit Reykjavik calendar lists 10 scheduled events"
+      ]
+    },
+    {
+      "date": "2026-03-19",
+      "flight_pressure": 92,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 47,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 57 inbound flights",
+        "Visit Reykjavik calendar lists 17 scheduled events"
+      ]
+    },
+    {
+      "date": "2026-03-20",
+      "flight_pressure": 92,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 29,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 50 inbound flights",
+        "Visit Reykjavik calendar lists 7 scheduled events"
+      ]
+    },
+    {
+      "date": "2026-03-21",
+      "flight_pressure": 92,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 29,
+      "alert_level": "high-alert",
+      "net_demand_signal": "neutral",
+      "high_alert_day": true,
+      "confidence": 84,
+      "reasons": [
+        "KEF arrivals schedule shows 56 inbound flights",
+        "Visit Reykjavik calendar lists 7 scheduled events"
+      ]
+    }
+  ]
+}

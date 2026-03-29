@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import Button from "@/app/components/primitives/Button";
 import Container from "@/app/components/primitives/Container";
 import {
-  DESKTOP_CTAS,
   MOBILE_QUICK_CTAS,
   NAV_LINKS,
 } from "./routes";
@@ -24,7 +22,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 18);
+      setScrolled(window.scrollY > 40);
     };
 
     handleScroll();
@@ -88,7 +86,8 @@ export default function Header() {
   }, [mobileMenuOpen]);
 
   const isTicketsPage = pathname === "/tickets" || pathname.startsWith("/tickets/");
-  const useTransparentHeader = false;
+  const isHomepage = pathname === "/";
+  const isTransparent = isHomepage && !scrolled;
 
   const isActive = (href: string) => {
     if (href === "/") {
@@ -102,89 +101,143 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[1030] transition-all duration-500 motion-reduce:transition-none ${
-          useTransparentHeader
-            ? "bg-transparent"
-            : "bg-neutral-950/88 backdrop-blur-xl border-b border-accent-frost-blue/15 shadow-xl shadow-black/25"
-        }`}
+        className="fixed top-0 left-0 right-0 z-[1030]"
+        style={{
+          background: isTransparent ? "transparent" : "#f5f3ee",
+          borderBottom: isTransparent ? "none" : "1px solid #e2ddd7",
+          boxShadow: isTransparent ? "none" : "0 1px 24px rgba(0,0,0,0.06)",
+          transition:
+            "background 600ms ease, border-color 600ms ease, box-shadow 600ms ease",
+        }}
       >
-        <Container size="xl" className="h-20 flex items-center justify-between">
+        <Container size="xl" className="h-16 flex items-center justify-between">
+          {/* Logo */}
           <Link
             href="/"
-            className="font-display text-base md:text-lg font-bold tracking-[0.2em] text-off-white hover:text-accent-frost-blue transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-frost-blue rounded-sm"
+            className="font-display focus-visible:outline-2 focus-visible:outline-offset-4 rounded-sm"
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              color: isTransparent ? "#ffffff" : "#1a1a1a",
+              transition: "color 600ms ease",
+            }}
           >
             VÍKINGAHEIMAR
           </Link>
 
-          <nav aria-label="Primary" className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav */}
+          <nav aria-label="Primary" className="hidden lg:flex items-center gap-7">
             {NAV_LINKS.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative text-xs tracking-[0.22em] uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-frost-blue rounded-sm ${
-                    active
-                      ? "text-accent-frost-blue"
-                      : "text-off-white/90 hover:text-off-white"
-                  }`}
+                  className="font-text relative focus-visible:outline-2 focus-visible:outline-offset-4 rounded-sm"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    textDecoration: "none",
+                    color: isTransparent
+                      ? active
+                        ? "#ffffff"
+                        : "rgba(255,255,255,0.75)"
+                      : active
+                        ? "#1a1a1a"
+                        : "#7a7672",
+                    transition: "color 600ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = isTransparent
+                      ? "#ffffff"
+                      : "#1a1a1a";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (active) return;
+                    e.currentTarget.style.color = isTransparent
+                      ? "rgba(255,255,255,0.75)"
+                      : "#7a7672";
+                  }}
                   aria-current={active ? "page" : undefined}
                 >
                   {item.label}
                   <span
-                    className={`absolute -bottom-2 left-0 h-px bg-accent-frost-blue transition-all duration-300 motion-reduce:transition-none ${
-                      active ? "w-full" : "w-0"
-                    }`}
+                    style={{
+                      position: "absolute",
+                      bottom: -8,
+                      left: 0,
+                      height: 1,
+                      width: active ? "100%" : "0%",
+                      background: isTransparent ? "#ffffff" : "#1a1a1a",
+                      transition: "width 300ms ease, background 600ms ease",
+                    }}
                   />
                 </Link>
               );
             })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          {/* Control Room buttons */}
+          <div className="hidden md:flex items-center gap-2">
             <Link
               href="/control-room"
-              className="inline-flex items-center rounded-md border border-accent-frost-blue/30 px-3 py-2 text-[11px] tracking-[0.16em] uppercase text-off-white/90 hover:text-off-white hover:border-accent-frost-blue/60 transition-colors"
+              className="font-text"
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "8px 16px",
+                borderRadius: 2,
+                background: isTransparent
+                  ? "rgba(255,255,255,0.10)"
+                  : "transparent",
+                border: isTransparent
+                  ? "1px solid rgba(255,255,255,0.20)"
+                  : "1px solid #e2ddd7",
+                color: isTransparent ? "rgba(255,255,255,0.80)" : "#7a7672",
+                transition: "all 400ms ease",
+              }}
+              onMouseEnter={(e) => {
+                if (isTransparent) {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.18)";
+                } else {
+                  e.currentTarget.style.borderColor = "#c8874a";
+                  e.currentTarget.style.color = "#c8874a";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (isTransparent) {
+                  e.currentTarget.style.background = "rgba(255,255,255,0.10)";
+                } else {
+                  e.currentTarget.style.borderColor = "#e2ddd7";
+                  e.currentTarget.style.color = "#7a7672";
+                }
+              }}
             >
               Control Room
             </Link>
-            <Link href={DESKTOP_CTAS[1].href}>
-              <Button variant="secondary" size="sm">
-                {DESKTOP_CTAS[1].label}
-              </Button>
-            </Link>
-            {!isTicketsPage &&
-              (bookingLink.isExternal ? (
-                <a
-                  href={bookingLink.href}
-                  target={bookingLink.target}
-                  rel={bookingLink.rel}
-                  onClick={() =>
-                    trackBookTicketsClick({ source: "header_desktop", destination: "external" })
-                  }
-                >
-                  <Button variant="primary" size="sm">
-                    {DESKTOP_CTAS[0].label}
-                  </Button>
-                </a>
-              ) : (
-                <Link
-                  href={bookingLink.href}
-                  onClick={() =>
-                    trackBookTicketsClick({ source: "header_desktop", destination: "internal" })
-                  }
-                >
-                  <Button variant="primary" size="sm">
-                    {DESKTOP_CTAS[0].label}
-                  </Button>
-                </Link>
-              ))}
           </div>
 
+          {/* Mobile hamburger */}
           <button
             ref={menuButtonRef}
             onClick={() => setMobileMenuOpen((prev) => !prev)}
-            className="md:hidden p-2 rounded-md text-off-white hover:bg-neutral-800/40 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-frost-blue"
+            className="md:hidden p-2 rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-4"
+            style={{
+              color: isTransparent ? "#ffffff" : "#1a1a1a",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+            }}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-overlay"
@@ -194,14 +247,15 @@ export default function Header() {
         </Container>
       </header>
 
+      {/* Mobile overlay — always light background */}
       <div
         ref={mobileOverlayRef}
         id="mobile-navigation-overlay"
-        className={`md:hidden fixed inset-0 z-[1025] bg-base-near-black/95 backdrop-blur-xl transition-all duration-500 motion-reduce:transition-none ${
+        className={`md:hidden fixed inset-0 z-[1025] bg-[#f5f3ee] backdrop-blur-md transition-all duration-500 motion-reduce:transition-none ${
           mobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
-        }`}
+        } [&_a]:!text-[#1a1a1a] [&_a:hover]:!text-[#1a1a1a] [&_a:visited]:!text-[#1a1a1a]`}
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
@@ -211,14 +265,23 @@ export default function Header() {
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="font-display text-base font-bold tracking-[0.2em] text-off-white"
+              className="font-display"
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: "0.22em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                color: "#1a1a1a",
+              }}
               onClick={closeMenu}
             >
               VÍKINGAHEIMAR
             </Link>
             <button
               onClick={closeMenu}
-              className="p-2 rounded-md text-off-white hover:bg-neutral-800/40 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-frost-blue"
+              className="p-2 rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1a1a1a]"
+              style={{ color: "#1a1a1a", background: "transparent", border: "none", cursor: "pointer" }}
               aria-label="Close menu"
             >
               <X size={24} />
@@ -236,10 +299,9 @@ export default function Header() {
                     trackBookTicketsClick({ source: "header_mobile", destination: "external" });
                     closeMenu();
                   }}
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-[#ece8df] px-3 text-sm font-semibold text-[#1a1a1a] transition hover:bg-[#e2ddd7]"
                 >
-                  <Button variant="primary" size="sm" fullWidth>
-                    {MOBILE_QUICK_CTAS[0].label}
-                  </Button>
+                  {MOBILE_QUICK_CTAS[0].label}
                 </a>
               ) : (
                 <Link
@@ -248,21 +310,24 @@ export default function Header() {
                     trackBookTicketsClick({ source: "header_mobile", destination: "internal" });
                     closeMenu();
                   }}
+                  className="inline-flex min-h-12 items-center justify-center rounded-md bg-[#ece8df] px-3 text-sm font-semibold text-[#1a1a1a] transition hover:bg-[#e2ddd7]"
                 >
-                  <Button variant="primary" size="sm" fullWidth>
-                    {MOBILE_QUICK_CTAS[0].label}
-                  </Button>
+                  {MOBILE_QUICK_CTAS[0].label}
                 </Link>
               ))}
-            <Link href={MOBILE_QUICK_CTAS[1].href} onClick={closeMenu}>
-              <Button variant="secondary" size="sm" fullWidth>
-                {MOBILE_QUICK_CTAS[1].label}
-              </Button>
+            <Link
+              href={MOBILE_QUICK_CTAS[1].href}
+              onClick={closeMenu}
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-[#ece8df] px-3 text-sm font-semibold text-[#1a1a1a] transition hover:bg-[#e2ddd7]"
+            >
+              {MOBILE_QUICK_CTAS[1].label}
             </Link>
-            <Link href={MOBILE_QUICK_CTAS[2].href} onClick={closeMenu}>
-              <Button variant="ghost" size="sm" fullWidth>
-                {MOBILE_QUICK_CTAS[2].label}
-              </Button>
+            <Link
+              href={MOBILE_QUICK_CTAS[2].href}
+              onClick={closeMenu}
+              className="inline-flex min-h-12 items-center justify-center rounded-md bg-[#ece8df] px-3 text-sm font-semibold text-[#1a1a1a] transition hover:bg-[#e2ddd7]"
+            >
+              {MOBILE_QUICK_CTAS[2].label}
             </Link>
           </div>
 
@@ -275,16 +340,14 @@ export default function Header() {
                   href={item.href}
                   onClick={closeMenu}
                   aria-current={active ? "page" : undefined}
-                  className={`font-display text-4xl leading-tight transition-all duration-500 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-frost-blue rounded-sm ${
-                    active
-                      ? "text-accent-frost-blue"
-                      : "text-off-white hover:text-accent-ice-white"
+                  className={`font-display text-4xl leading-tight transition-all duration-500 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1a1a1a] rounded-sm ${
+                    active ? "text-[#1a1a1a]" : "text-[#7a7672] hover:text-[#1a1a1a]"
                   } ${
                     mobileMenuOpen
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-4"
                   }`}
-                  style={{ transitionDelay: `${index * 35}ms` }}
+                  style={{ transitionDelay: `${index * 35}ms`, textDecoration: "none" }}
                 >
                   {item.label}
                 </Link>

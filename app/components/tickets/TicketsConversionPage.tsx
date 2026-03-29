@@ -3,11 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Timer, CircleCheckBig } from "lucide-react";
 import Container from "@/app/components/primitives/Container";
-import Card from "@/app/components/primitives/Card";
-import { SectionTitle } from "@/app/components/primitives/Typography";
-import Reveal from "@/app/components/primitives/Reveal";
 import { ROUTES } from "@/lib/site-routes";
 import { trackBookTicketsClick, trackGroupsInquiryClick } from "@/lib/analytics";
 import type { CheckoutDraft } from "@/lib/orders";
@@ -43,42 +39,21 @@ const ticketOptions: TicketOption[] = [
   },
 ];
 
-const weekdayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
-
 const arrivalTimeSlots = ["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"] as const;
-
-type DateAvailability = "available" | "limited" | "unavailable";
+const weekdayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 
 function startOfDay(date: Date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function toDateKey(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-    date.getDate()
-  ).padStart(2, "0")}`;
 }
 
 function isSameDay(a: Date | null, b: Date) {
   return !!a && toDateKey(a) === toDateKey(b);
 }
 
-function getDateAvailability(date: Date, today: Date): DateAvailability {
-  const normalizedDate = startOfDay(date);
-  const normalizedToday = startOfDay(today);
-
-  if (normalizedDate < normalizedToday) {
-    return "unavailable";
-  }
-
-  const day = date.getDay();
-  const dayOfMonth = date.getDate();
-
-  if (day === 0 || dayOfMonth % 5 === 0) {
-    return "limited";
-  }
-
-  return "available";
+function toDateKey(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")}`;
 }
 
 function getTimeSlotsForDate(date: Date) {
@@ -140,7 +115,6 @@ export default function TicketsConversionPage() {
       return {
         time: slot.time,
         full: remaining <= 0,
-        remaining,
       };
     });
   }, [selectedDate, remainingByTime]);
@@ -176,9 +150,9 @@ export default function TicketsConversionPage() {
     (quantities["Family Admission"] ?? 0) === 0;
 
   const continueButtonClass =
-    "inline-flex items-center justify-center px-10 py-5 text-base font-semibold tracking-[0.06em] uppercase bg-[#f7f6f2] text-[#111111] visited:text-[#111111] hover:text-[#111111] focus:text-[#111111] active:text-[#111111] rounded-[4px] hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7f6f2]";
+    "inline-flex min-h-12 items-center justify-center rounded-md border-2 border-[#111111] bg-transparent px-8 py-3 text-base font-semibold uppercase tracking-[0.06em] text-[#111111] transition hover:bg-[#ece8df] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] active:bg-[#e2ddd4] disabled:cursor-not-allowed disabled:opacity-50";
   const continueButtonCompactClass =
-    "inline-flex items-center justify-center px-5 py-3 text-sm font-semibold tracking-[0.06em] uppercase bg-[#f7f6f2] text-[#111111] rounded-[4px] hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7f6f2]";
+    "inline-flex min-h-12 items-center justify-center rounded-md border-2 border-[#111111] bg-transparent px-5 py-3 text-sm font-semibold uppercase tracking-[0.06em] text-[#111111] transition hover:bg-[#ece8df] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] active:bg-[#e2ddd4] disabled:cursor-not-allowed disabled:opacity-50";
 
   const checkoutDraft: CheckoutDraft | null = useMemo(() => {
     if (!selectedDate || !selectedTimeSlot || totalTickets <= 0) {
@@ -251,19 +225,6 @@ export default function TicketsConversionPage() {
     loadCapacity();
   }, [selectedDate]);
 
-  useEffect(() => {
-    if (!selectedDate || slotsForSelectedDate.length === 0) {
-      setSelectedTimeSlot("");
-      return;
-    }
-
-    if (selectedTimeSlot && slotsForSelectedDate.some((slot) => slot.time === selectedTimeSlot && !slot.full)) {
-      return;
-    }
-
-    const firstAvailable = slotsForSelectedDate.find((slot) => !slot.full);
-    setSelectedTimeSlot(firstAvailable?.time ?? "");
-  }, [selectedDate, slotsForSelectedDate, selectedTimeSlot]);
 
   const updateQuantity = (name: string, delta: number) => {
     setQuantities((prev) => ({
@@ -272,413 +233,288 @@ export default function TicketsConversionPage() {
     }));
   };
 
-  return (
-    <main className="w-full" style={{ backgroundColor: "#f7f6f2", color: "#111111" }}>
-      <section className="pt-28 pb-20 md:pt-36 md:pb-24 border-b" style={{ borderColor: "#d4d0c8" }}>
-        <Container size="xl" className="space-y-8 text-center">
-          <h1 className="font-display font-extrabold tracking-[-0.01em] text-[40px] md:text-[clamp(64px,5.5vw,72px)]" style={{ lineHeight: 1.03, color: "#111111" }}>
-            Tickets &amp; Admission
-          </h1>
+  const chooseReady = Boolean(selectedDate && selectedTimeSlot && totalTickets > 0 && checkoutDraft);
+  const chooseStage: "date" | "time" | "tickets" = !selectedDate
+    ? "date"
+    : !selectedTimeSlot
+    ? "time"
+    : "tickets";
+  const chooseStageIndex = chooseStage === "date" ? 0 : chooseStage === "time" ? 1 : 2;
 
-          <div className="flex flex-wrap items-center justify-center gap-6">
+  const handleSelectDate = (date: Date) => {
+    setSelectedDate(date);
+    setSelectedTimeSlot("");
+  };
+
+  return (
+    <main className="w-full overflow-x-hidden bg-[#f7f6f2] pb-28 text-[#111111] md:pb-0">
+      <section className="border-b border-[#d4d0c8] pt-16 pb-4 md:pt-24">
+        <Container size="xl" className="max-w-[780px] space-y-3">
+          <div className="space-y-1.5 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#6b6b6b]">Book Direct = Best Price</p>
+            <h1 className="font-display text-[28px] font-semibold leading-tight md:text-[48px]">Tickets &amp; Admission</h1>
+            <p className="text-sm text-[#6b6b6b]">Choose date, time, and tickets quickly.</p>
+          </div>
+          <div className="flex items-center gap-2" aria-label="Booking progress">
+            {[0, 1, 2].map((index) => (
+              <span
+                key={`progress-${index}`}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${
+                  index <= chooseStageIndex ? "bg-[#111111]" : "bg-[#d4d0c8]"
+                }`}
+                aria-hidden="true"
+              />
+            ))}
+          </div>
+          <div className="hidden text-center pb-1 md:block">
             <Link
               href={ROUTES.groups}
               onClick={() => trackGroupsInquiryClick({ source: "tickets_hero_secondary" })}
-              className="text-sm font-medium tracking-[0.08em] uppercase underline underline-offset-4 hover:no-underline transition-all focus-visible:outline-2 focus-visible:outline-offset-2"
-              style={{ color: "#6b6b6b" }}
+              className="text-sm font-medium uppercase tracking-[0.08em] text-[#6b6b6b] underline underline-offset-4 transition hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]"
             >
-              GROUPS &amp; SCHOOLS
+              Groups &amp; Schools
             </Link>
           </div>
         </Container>
       </section>
 
-      <section className="py-14 md:py-20">
-        <Container size="xl" className="space-y-8">
-          <SectionTitle
-            overline="Choose Your Ticket"
-            title="Admission"
-            className="[&_h2]:text-[#111111] [&_p]:text-[#6b6b6b] [&_.text-accent-frost-blue]:text-[#6b6b6b]"
-          />
-
-          <div className="my-4 h-px w-full" style={{ backgroundColor: "#d4d0c8" }} aria-hidden="true" />
-
-          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
-            <div className="space-y-8">
-              <section
-                aria-labelledby="visit-schedule-heading"
-                className="rounded-xl border p-6 md:p-8"
-                style={{
-                  backgroundColor: "#f8f7f3",
-                  borderColor: "#d4d0c8",
-                }}
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h2
-                    id="visit-schedule-heading"
-                    className="font-display text-[28px] md:text-[34px] font-light"
-                    style={{ color: "#111111" }}
-                  >
-                    Choose Your Day of Arrival
+      <section className="py-4 md:py-8">
+        <Container size="xl" className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="space-y-3">
+            <section aria-labelledby="visit-schedule-heading" className="rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-4 md:p-5">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <h2 id="visit-schedule-heading" className="font-display text-xl font-light md:text-2xl">
+                    {chooseStage === "date" && "Choose date"}
+                    {chooseStage === "time" && "Choose arrival time"}
+                    {chooseStage === "tickets" && "Choose tickets"}
                   </h2>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCurrentMonth(
-                          new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1)
-                        )
-                      }
-                      className="h-9 w-9 rounded-md border transition-colors duration-200"
-                      style={{ borderColor: "#d4d0c8", color: "#6b6b6b", backgroundColor: "#f7f6f2" }}
-                      aria-label="Previous month"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCurrentMonth(
-                          new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
-                        )
-                      }
-                      className="h-9 w-9 rounded-md border transition-colors duration-200"
-                      style={{ borderColor: "#d4d0c8", color: "#6b6b6b", backgroundColor: "#f7f6f2" }}
-                      aria-label="Next month"
-                    >
-                      ›
-                    </button>
-                  </div>
+                  <p className="mt-0.5 text-sm text-[#6b6b6b]">
+                    {chooseStage === "date" && "Select your visit date."}
+                    {chooseStage === "time" && "Pick one available time."}
+                    {chooseStage === "tickets" && "Select your tickets."}
+                  </p>
                 </div>
+              </div>
 
-                <p className="text-sm mb-5" style={{ color: "#6b6b6b" }}>
-                  {currentMonth.toLocaleDateString("en-GB", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-
-                <div className="grid grid-cols-7 gap-2">
-                  {weekdayLabels.map((day) => (
-                    <span
-                      key={day}
-                      className="text-[11px] uppercase tracking-[0.12em] text-center"
-                      style={{ color: "#8a857c" }}
-                    >
-                      {day}
-                    </span>
-                  ))}
-
-                  {calendarCells.map((date, index) => {
-                    if (!date) {
-                      return <span key={`empty-${index}`} className="h-12" aria-hidden="true" />;
-                    }
-
-                    const availability = getDateAvailability(date, today);
-                    const isDisabled = availability === "unavailable";
-                    const isToday = isSameDay(startOfDay(today), date);
-                    const selected = isSameDay(selectedDate, date);
-
-                    return (
+              {chooseStage === "date" && (
+                <div className="rounded-lg border border-[#dcd7cf] bg-[#faf9f6] p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="text-sm font-medium text-[#6b6b6b]">
+                      {currentMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" })}
+                    </p>
+                    <div className="flex items-center gap-2">
                       <button
-                        key={toDateKey(date)}
                         type="button"
-                        disabled={isDisabled}
-                        onClick={() => setSelectedDate(date)}
-                        className={`relative h-12 rounded-md border text-sm transition-all duration-300 ${
-                          isDisabled
-                            ? "opacity-45 cursor-not-allowed"
-                            : "hover:bg-[#f0ede6]"
-                        }`}
-                        style={{
-                          borderColor: selected
-                            ? "#bcb6aa"
-                            : isToday
-                            ? "#c9c3b7"
-                            : "#dcd7cf",
-                          backgroundColor: selected ? "#ece8df" : "#faf9f6",
-                          color: "#111111",
-                        }}
-                        aria-label={`${date.toLocaleDateString("en-GB")} ${availability}`}
+                        onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#d4d0c8] bg-[#f7f6f2] text-lg text-[#111111] hover:bg-[#ece8df]"
+                        aria-label="Previous month"
                       >
-                        <span>{date.getDate()}</span>
-                        <span
-                          className="absolute bottom-1 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full"
-                          style={{
-                            backgroundColor:
-                              availability === "available"
-                                ? "#93a38c"
-                                : availability === "limited"
-                                ? "#b4a68c"
-                                : "#cfc9be",
-                          }}
-                          aria-hidden="true"
-                        />
+                        ‹
                       </button>
-                    );
-                  })}
-                </div>
+                      <button
+                        type="button"
+                        onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#d4d0c8] bg-[#f7f6f2] text-lg text-[#111111] hover:bg-[#ece8df]"
+                        aria-label="Next month"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-7 gap-2">
+                    {weekdayLabels.map((day) => (
+                      <span key={day} className="text-center text-[11px] uppercase tracking-[0.12em] text-[#8a857c]">{day}</span>
+                    ))}
+                    {calendarCells.map((date, index) => {
+                      if (!date) {
+                        return <span key={`empty-${index}`} className="h-10" aria-hidden="true" />;
+                      }
 
-                <div
-                  className={`mt-8 transition-all duration-500 origin-top ${
-                    selectedDate
-                      ? "opacity-100 max-h-[420px] translate-y-0"
-                      : "opacity-0 max-h-0 -translate-y-2 pointer-events-none"
-                  }`}
-                >
-                  <h3
-                    className="font-display text-2xl md:text-[28px] font-light"
-                    style={{ color: "#111111" }}
-                  >
-                    Choose When Your Journey Begins
-                  </h3>
+                      const isPast = startOfDay(date) < today;
+                      const selected = isSameDay(selectedDate, date);
 
-                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {slotsForSelectedDate.map((slot) => {
-                      const selected = selectedTimeSlot === slot.time;
                       return (
                         <button
-                          key={slot.time}
+                          key={toDateKey(date)}
                           type="button"
-                          disabled={slot.full}
-                          onClick={() => setSelectedTimeSlot(slot.time)}
-                          className={`h-11 rounded-[4px] border px-3 text-sm transition-colors duration-200 ${
-                            slot.full ? "opacity-45 cursor-not-allowed" : "hover:bg-[#f0ede6]"
-                          }`}
-                          style={{
-                            borderColor: selected
-                              ? "#bcb6aa"
-                              : "#d4d0c8",
-                            backgroundColor: selected ? "#ece8df" : "#faf9f6",
-                            color: "#111111",
-                          }}
-                          aria-pressed={selected}
+                          disabled={isPast}
+                          onClick={() => handleSelectDate(date)}
+                          className={`h-10 rounded-md border text-sm transition ${
+                            isPast
+                              ? "cursor-not-allowed opacity-40"
+                              : "hover:bg-[#f0ede6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111]"
+                          } ${selected ? "border-[#111111] bg-[#ece8df] font-semibold" : "border-[#d4d0c8] bg-[#f7f6f2]"}`}
+                          aria-label={date.toLocaleDateString("en-GB")}
                         >
-                          {slot.time} {slot.full ? "• Full" : ""}
+                          {date.getDate()}
                         </button>
                       );
                     })}
                   </div>
-                  {capacityLoading && (
-                    <p className="mt-3 text-xs" style={{ color: "#6b6b6b" }}>
-                      Checking live availability…
-                    </p>
-                  )}
                 </div>
-              </section>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
-            {ticketOptions.map((option, index) => (
-              <Reveal key={option.name} delayMs={index * 60}>
-                <Card
-                  variant="default"
-                  hoverable={false}
-                  className="p-10 h-full min-h-[360px] w-full min-w-0 overflow-hidden flex flex-col gap-8 bg-[#f8f7f3] border-[#e2ddd4] shadow-none backdrop-blur-0"
-                >
-                  <div className="space-y-2 min-h-[140px]">
-                    <h2 className="font-display text-3xl" style={{ color: "#111111" }}>
-                      {option.name}
-                    </h2>
-                    <p className="text-2xl font-semibold" style={{ color: "#111111" }}>
-                      {option.price}
-                    </p>
-                    <div className="space-y-1.5">
-                      <p className="text-sm font-normal" style={{ color: "#6b6b6b" }}>
-                        {option.audience ?? "\u00A0"}
-                      </p>
-                      <p className="text-sm font-normal" style={{ color: "#6b6b6b" }}>
-                        {option.complimentaryNote ?? "\u00A0"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-auto pt-12 w-full min-w-0 flex flex-col items-center gap-4">
-                    <p className="text-xs uppercase tracking-[0.08em] text-center" style={{ color: "#6b6b6b" }}>
-                      Quantity
-                    </p>
-                    <div
-                      className="inline-flex w-[132px] max-w-full flex-shrink-0 items-center justify-center gap-4"
-                      aria-label={`${option.name} quantity selector`}
-                    >
-                      <button
-                        type="button"
-                        className="w-9 h-9 text-lg leading-none rounded-[4px] border"
-                        style={{ color: "#111111", borderColor: "#ddd8cf", backgroundColor: "#f8f7f3" }}
-                        onClick={() => updateQuantity(option.name, -1)}
-                        aria-label={`Decrease ${option.name} quantity`}
-                      >
-                        –
-                      </button>
-                      <span
-                        className="min-w-[32px] text-center text-xl font-medium"
-                        style={{ color: "#111111" }}
-                        aria-live="polite"
-                      >
-                        {quantities[option.name] ?? 0}
-                      </span>
-                      <button
-                        type="button"
-                        className="w-9 h-9 text-lg leading-none rounded-[4px] border"
-                        style={{ color: "#111111", borderColor: "#ddd8cf", backgroundColor: "#f8f7f3" }}
-                        onClick={() => updateQuantity(option.name, 1)}
-                        aria-label={`Increase ${option.name} quantity`}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </Card>
-              </Reveal>
-            ))}
-              </div>
-
-              {shouldSuggestFamilyAdmission && (
-                <p className="text-sm text-center" style={{ color: "#7a746a" }}>
-                  Consider a Family Admission for better value.
-                </p>
               )}
 
-              <div className="pt-6 flex flex-col items-center gap-4">
+              {chooseStage === "time" && (
+                <div
+                  className="origin-top transition-all duration-500 mt-3 max-h-[420px] opacity-100"
+                >
+                  <h3 className="font-display text-xl font-light">Choose arrival time</h3>
+                  <p className="mt-1 text-sm text-[#6b6b6b]">Pick one available time slot below.</p>
+                  {capacityLoading ? (
+                    <div className="mt-3 grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5" aria-label="Loading available times">
+                      {Array.from({ length: 8 }).map((_, index) => (
+                        <div key={`slot-skeleton-${index}`} className="h-12 animate-pulse rounded-md border border-[#d4d0c8] bg-[#ece8df]" />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-3 grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5">
+                      {slotsForSelectedDate.map((slot) => {
+                        const selected = selectedTimeSlot === slot.time;
+                        return (
+                          <button
+                            key={slot.time}
+                            type="button"
+                            disabled={slot.full}
+                            onClick={() => setSelectedTimeSlot(slot.time)}
+                            className={`min-h-12 rounded-md border px-3 text-sm transition ${
+                              slot.full
+                                ? "cursor-not-allowed opacity-45"
+                                : "hover:bg-[#f0ede6] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] active:bg-[#e2ddd4]"
+                            } ${selected ? "border-[3px] border-[#111111] bg-[#ece8df] font-semibold ring-2 ring-[#111111]/25" : "border-[#d4d0c8] bg-[#faf9f6]"}`}
+                            aria-pressed={selected}
+                          >
+                            {slot.time} {slot.full ? "• Full" : "• Open"}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                  <p className="mt-2 text-sm text-[#6b6b6b]" aria-live="polite">
+                    {selectedTimeSlot ? `Selected time: ${selectedTimeSlot}` : "Select a time to continue."}
+                  </p>
+                  {selectedTimeSlot && (
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTimeSlot("")}
+                        className="inline-flex min-h-10 items-center rounded-md border border-[#d4d0c8] bg-[#f7f6f2] px-4 text-sm font-medium text-[#111111] hover:bg-[#ece8df]"
+                      >
+                        Change time
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+
+            {chooseStage === "tickets" && (
+              <>
+                <section
+                  aria-labelledby="ticket-options-heading"
+                  className="space-y-3 transition-all duration-300"
+                >
+                  <h2 id="ticket-options-heading" className="font-display text-xl font-light md:text-2xl">Choose tickets</h2>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTimeSlot("")}
+                    className="inline-flex min-h-10 items-center rounded-md border border-[#d4d0c8] bg-[#f7f6f2] px-4 text-sm font-medium text-[#111111] hover:bg-[#ece8df]"
+                  >
+                    ← Back to time
+                  </button>
+                  <div className="rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] divide-y divide-[#d4d0c8]">
+                    {ticketOptions.map((option) => (
+                      <article key={option.name} className="p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <h3 className="font-display text-lg font-light">{option.name}</h3>
+                            <p className="text-sm font-semibold">{option.price}</p>
+                            <p className="text-xs text-[#6b6b6b]">{option.audience ?? " "}</p>
+                            {option.complimentaryNote && <p className="text-xs text-[#6b6b6b]">{option.complimentaryNote}</p>}
+                          </div>
+                          <div className="inline-flex items-center gap-2" aria-label={`${option.name} quantity selector`}>
+                            <button
+                              type="button"
+                              className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-[#ddd8cf] bg-[#f7f6f2] text-2xl leading-none transition hover:bg-[#ece8df] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] active:bg-[#e2ddd4]"
+                              onClick={() => updateQuantity(option.name, -1)}
+                              aria-label={`Decrease ${option.name} quantity`}
+                            >
+                              –
+                            </button>
+                            <span className="min-w-7 text-center text-xl font-medium" aria-live="polite">{quantities[option.name] ?? 0}</span>
+                            <button
+                              type="button"
+                              className="inline-flex h-12 w-12 items-center justify-center rounded-md border border-[#ddd8cf] bg-[#f7f6f2] text-2xl leading-none transition hover:bg-[#ece8df] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#111111] active:bg-[#e2ddd4]"
+                              onClick={() => updateQuantity(option.name, 1)}
+                              aria-label={`Increase ${option.name} quantity`}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                  {shouldSuggestFamilyAdmission && <p className="text-sm text-[#7a746a]">Family Admission may be the best value for 2 adults + 2 youth.</p>}
+                </section>
+              </>
+            )}
+          </div>
+
+          <aside className="hidden lg:block sticky top-20 h-fit rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-display text-lg font-light">Booking summary</h3>
+              <p className="text-sm font-semibold">ISK {totalSelectedPrice.toLocaleString()}</p>
+            </div>
+            <div className="mt-3 space-y-3 text-sm text-[#6b6b6b]">
+              <p><span className="mb-1 block text-[11px] uppercase tracking-[0.12em]">Date</span>{selectedDate ? selectedDate.toLocaleDateString("en-GB") : "Not selected"}</p>
+              <p><span className="mb-1 block text-[11px] uppercase tracking-[0.12em]">Time</span>{selectedTimeSlot || "Not selected"}</p>
+              <p><span className="mb-1 block text-[11px] uppercase tracking-[0.12em]">Tickets</span>{totalTickets}</p>
+            </div>
+
+            {selectedLineItems.length > 0 && (
+              <div className="mt-3 border-t border-[#d4d0c8] pt-3 text-sm text-[#6b6b6b]">
+                {selectedLineItems.map((line) => (
+                  <div key={line.name} className="flex items-center justify-between">
+                    <span>{line.quantity} × {line.name}</span>
+                    <span>ISK {line.lineTotal.toLocaleString()}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {chooseStage !== "date" && (
+              <div className="mt-4 space-y-2 border-t border-[#d4d0c8] pt-4">
                 <button
                   type="button"
                   onClick={handleContinueToCheckout}
-                  className={continueButtonClass}
+                  className={`${continueButtonClass} w-full`}
+                  disabled={!chooseReady}
                 >
-                  Continue to Checkout
+                  Continue to details →
                 </button>
-                <Link
-                  href={ROUTES.groups}
-                  onClick={() => trackGroupsInquiryClick({ source: "tickets_grid_group_link" })}
-                  className="text-sm font-medium tracking-[0.02em] underline underline-offset-4 hover:no-underline transition-all focus-visible:outline-2 focus-visible:outline-offset-2"
-                  style={{ color: "#6b6b6b" }}
-                >
-                  Planning a group visit? Visit our Groups page.
-                </Link>
-                {checkoutError && (
-                  <p className="text-sm" style={{ color: "#9d3c32" }}>
-                    {checkoutError}
-                  </p>
+                {!chooseReady && chooseStage === "time" && (
+                  <p className="text-xs text-[#6b6b6b]">Choose at least one ticket to continue.</p>
                 )}
+                {checkoutError && <p className="text-sm text-[#9d3c32]">{checkoutError}</p>}
               </div>
-
-              <section className="pt-8 pb-2" aria-labelledby="your-visit-heading">
-                <div className="max-w-[720px] mx-auto text-center space-y-5">
-                  <h2
-                    id="your-visit-heading"
-                    className="font-display text-[32px] md:text-[40px] font-light leading-tight"
-                    style={{ color: "#111111" }}
-                  >
-                    Your Visit
-                  </h2>
-                  <ul className="space-y-3 text-base" style={{ color: "#6b6b6b" }}>
-                    <li>Allow 60–90 minutes.</li>
-                    <li>Open daily 10:00–18:00.</li>
-                    <li>Fully accessible.</li>
-                    <li>Instant confirmation after booking.</li>
-                  </ul>
-                </div>
-              </section>
-            </div>
-
-            <aside className="hidden xl:block sticky top-28">
-              <div
-                className="rounded-xl border p-6 space-y-5"
-                style={{
-                  backgroundColor: "#f8f7f3",
-                  borderColor: "#d4d0c8",
-                  color: "#111111",
-                }}
-              >
-                <h3 className="font-display text-2xl font-light">Booking Summary</h3>
-
-                <div className="text-sm border-y" style={{ borderColor: "#dcd7cf" }}>
-                  <p className="py-3" style={{ color: "#6b6b6b" }}>
-                    <span className="block text-[11px] uppercase tracking-[0.12em] mb-1">Date</span>
-                    {selectedDate
-                      ? selectedDate.toLocaleDateString("en-GB", {
-                          weekday: "long",
-                          day: "numeric",
-                          month: "long",
-                        })
-                      : "Select your date"}
-                  </p>
-                  <p className="py-3 border-t" style={{ color: "#6b6b6b", borderColor: "#dcd7cf" }}>
-                    <span className="block text-[11px] uppercase tracking-[0.12em] mb-1">Time</span>
-                    {selectedTimeSlot || "Select your arrival time"}
-                  </p>
-                  <p className="py-3 border-t" style={{ color: "#6b6b6b", borderColor: "#dcd7cf" }}>
-                    <span className="block text-[11px] uppercase tracking-[0.12em] mb-1">Tickets</span>
-                    {totalTickets}
-                  </p>
-                </div>
-
-                <div className="space-y-2 text-sm border-b pb-4" style={{ borderColor: "#dcd7cf" }}>
-                  <p className="text-[11px] uppercase tracking-[0.12em]" style={{ color: "#6b6b6b" }}>
-                    Pricing Summary
-                  </p>
-
-                  {selectedLineItems.length === 0 ? (
-                    <p style={{ color: "#6b6b6b" }}>No tickets selected yet.</p>
-                  ) : (
-                    <>
-                      {selectedLineItems.map((line) => (
-                        <div key={line.name} className="flex items-center justify-between" style={{ color: "#6b6b6b" }}>
-                          <span>{line.quantity} × {line.name}</span>
-                          <span>ISK {line.lineTotal.toLocaleString()}</span>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium" style={{ color: "#6b6b6b" }}>Total</span>
-                  <span className="text-base font-semibold" style={{ color: "#111111" }}>
-                    ISK {totalSelectedPrice.toLocaleString()}
-                  </span>
-                </div>
-
-                <div
-                  className="rounded-[4px] border px-4 py-3 space-y-2 text-sm"
-                  style={{ borderColor: "#d4d0c8", backgroundColor: "#f1efe8" }}
-                >
-                  <span className="inline-flex items-center gap-2 w-full">
-                    <ShieldCheck size={16} style={{ color: "#6b6b6b" }} />
-                    Secure checkout
-                  </span>
-                  <span className="inline-flex items-center gap-2 w-full">
-                    <Timer size={16} style={{ color: "#6b6b6b" }} />
-                    Instant confirmation
-                  </span>
-                  <span className="inline-flex items-center gap-2 w-full">
-                    <CircleCheckBig size={16} style={{ color: "#6b6b6b" }} />
-                    Flexible booking windows
-                  </span>
-                </div>
-              </div>
-            </aside>
-          </div>
+            )}
+          </aside>
         </Container>
       </section>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-[1035] border-t border-accent-frost-blue/20 bg-base-near-black/95 backdrop-blur-xl p-3">
-        <div className="mx-auto w-full max-w-xl flex items-center justify-between gap-3">
+      <div className={`fixed bottom-0 left-0 right-0 z-[1035] border-t border-[#d4d0c8] bg-[#f7f6f2]/95 p-3 backdrop-blur-xl md:hidden ${chooseStage === "date" ? "hidden" : ""}`}>
+        <div className="mx-auto flex w-full max-w-xl items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-widest text-neutral-400">
-              Ready to continue?
-            </p>
-            <p className="text-sm text-off-white">
-              Review details and proceed
-            </p>
+            <p className="text-xs uppercase tracking-[0.08em] text-[#6b6b6b]">Total</p>
+            <p className="text-base font-semibold">ISK {totalSelectedPrice.toLocaleString()}</p>
           </div>
-          <button
-            type="button"
-            onClick={handleContinueToCheckout}
-            className={continueButtonCompactClass}
-          >
-            Continue
-          </button>
+          <button type="button" onClick={handleContinueToCheckout} className={continueButtonCompactClass} disabled={!chooseReady}>Continue to details →</button>
         </div>
+        {!chooseReady && chooseStage === "time" && (
+          <p className="mt-2 text-xs text-[#6b6b6b]">Choose at least one ticket to continue.</p>
+        )}
+        {checkoutError && <p className="mt-2 text-sm text-[#9d3c32]">{checkoutError}</p>}
       </div>
     </main>
   );

@@ -51,7 +51,13 @@ export default function ExperiencePage() {
 
         <div className="flex flex-wrap gap-3">
           <Link href={ROUTES.tickets}>
-            <Button variant="primary" size="lg">Book Tickets</Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="!bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
+            >
+              Book Tickets
+            </Button>
           </Link>
           <Link href={ROUTES.visit}>
             <Button variant="secondary" size="lg">Plan Visit</Button>

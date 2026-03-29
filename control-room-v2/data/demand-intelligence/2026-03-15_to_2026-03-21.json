@@ -1,0 +1,298 @@
+{
+  "generated_at": "2026-03-15T16:20:00Z",
+  "date_range": {
+    "start": "2026-03-15",
+    "end": "2026-03-21"
+  },
+  "signals": [
+    {
+      "date": "2026-03-15",
+      "signal_type": "flights",
+      "title": "KEF arrivals board shows active inbound volume with same-day delays",
+      "summary": "The official KEF arrivals board listed 26 arrivals on 15 March, with several inbound flights running late or still estimated while later evening arrivals remained on time.",
+      "estimated_impact_score": 48,
+      "confidence_score": 90,
+      "source_name": "Keflavik Airport (Isavia)",
+      "source_url": "https://www.kefairport.com/flights/arrivals",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-15"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "weather",
+      "title": "IMO yellow blizzard warnings raise transport disruption risk",
+      "summary": "The Icelandic Met Office published yellow warnings for Breidafjordur, Westfjords, and North West on 15 March, citing northeast winds of 15-23 m/s, snow or blowing snow, poor visibility, deteriorating road conditions, and likely transport disturbances.",
+      "estimated_impact_score": 84,
+      "confidence_score": 94,
+      "source_name": "Icelandic Meteorological Office",
+      "source_url": "https://en.vedur.is/alerts",
+      "source_reliability": "official",
+      "region": "Iceland",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-15"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "weather",
+      "title": "Avalanche-risk phases and road closures extend through Sunday and Monday",
+      "summary": "Official warning pages state uncertainty phase or evacuation measures for avalanche risk in northern Iceland and the northern Westfjords, with road closures or danger phases on Siglufjardarvegur, Sudavikurhlid, and Flateyrarvegur, and further northeasterly wind and precipitation forecast through Sunday and Monday.",
+      "estimated_impact_score": 76,
+      "confidence_score": 90,
+      "source_name": "Icelandic Meteorological Office / Gott vedur",
+      "source_url": "https://gottvedur.is/vaktin/ovissustig-vegna-snjoflodahaettu-a-nordurlandi/",
+      "source_reliability": "official",
+      "region": "Iceland",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-16"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "cruise",
+      "title": "Reykjavik port sources show low visible cruise activity for the week",
+      "summary": "The accessible Faxafloahafnir cruise calendar did not surface dated cruise calls for 15-21 March, while the live port traffic feed around 15-16 March showed cargo and fishing vessel movements rather than explicit cruise arrivals, indicating low cruise passenger pressure.",
+      "estimated_impact_score": 8,
+      "confidence_score": 56,
+      "source_name": "Faxafloahafnir (Port of Reykjavik)",
+      "source_url": "https://portal.dokk.is/embed/calendar/5",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "signal_type": "events",
+      "title": "Harpa hosts Jon Nordal 100th Anniversary concert",
+      "summary": "Harpa lists the Jon Nordal 100th Anniversary concert in Nordurljos on Monday 16 March at 20:00, adding a notable evening cultural event in central Reykjavik.",
+      "estimated_impact_score": 34,
+      "confidence_score": 91,
+      "source_name": "Harpa",
+      "source_url": "https://www.harpa.is/en/events/21061",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-16",
+        "end": "2026-03-16"
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "signal_type": "events",
+      "title": "Krishna Das concert adds a higher-profile Harpa draw",
+      "summary": "Harpa schedules Krishna Das - Home in the Heart for Tuesday 17 March at 20:00 in Nordurljos, a rare Reykjavik stop on the European tour and a stronger-than-baseline cultural demand signal.",
+      "estimated_impact_score": 49,
+      "confidence_score": 92,
+      "source_name": "Harpa",
+      "source_url": "https://www.harpa.is/en/events/20775",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-17",
+        "end": "2026-03-17"
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "signal_type": "events",
+      "title": "Reykjavik Folk Festival opens a three-day city program",
+      "summary": "Visit Reykjavik lists Reykjavik Folk Festival 2026 running 19-21 March with opening events on 19 March and main programs at Idno on 20 and 21 March, creating a multi-day cultural demand signal in central Reykjavik.",
+      "estimated_impact_score": 66,
+      "confidence_score": 88,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/event/reykjavik-folk-festival-2026",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-19",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "signal_type": "events",
+      "title": "Stockfish Film and Industry Festival begins in Reykjavik",
+      "summary": "Visit Reykjavik lists Stockfish Film and Industry Festival 2026 from 19-29 March across Bio Paradis, Hafnar.Haus, and other Reykjavik venues, bringing an extended film and industry audience into the city.",
+      "estimated_impact_score": 61,
+      "confidence_score": 87,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/event/stockfish-film-industry-festival-2026",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-19",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "signal_type": "events",
+      "title": "Musiktilraunir 2026 starts at Harpa",
+      "summary": "Harpa lists Musiktilraunir 2026 from 20-28 March in Nordurljos, with qualifying nights beginning on Friday 20 March and continuing on Saturday 21 March, adding a youth-music festival draw to the city.",
+      "estimated_impact_score": 68,
+      "confidence_score": 93,
+      "source_name": "Harpa",
+      "source_url": "https://www.harpa.is/en/events/20907",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-20",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "signal_type": "events",
+      "title": "UN World Day for Glaciers symposium adds a themed public program",
+      "summary": "Visit Reykjavik lists the Symposium - UN World Day for Glaciers on Saturday 21 March at the Reykjavik Museum of Photography, with University of Iceland, Icelandic Meteorological Office, ICE-SAR, and Icelandic Tourist Board participation.",
+      "estimated_impact_score": 36,
+      "confidence_score": 86,
+      "source_name": "Visit Reykjavik",
+      "source_url": "https://visitreykjavik.is/event/symposium-un-world-day-glaciers",
+      "source_reliability": "official-partner",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-21",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-15",
+      "signal_type": "travel_tourism_news",
+      "title": "Visit Iceland directs travelers to live hazard monitoring tools",
+      "summary": "Visit Iceland's official Safe Travel guidance tells visitors to rely on SafeTravel's constantly updated weather and travel conditions map and SMS service, explicitly highlighting snowstorms, avalanches, earthquakes, and volcanic eruptions as active travel-planning risks in Iceland.",
+      "estimated_impact_score": 40,
+      "confidence_score": 80,
+      "source_name": "Visit Iceland",
+      "source_url": "https://www.visiticeland.com/article/safe-travel-in-iceland",
+      "source_reliability": "official-partner",
+      "region": "Iceland",
+      "affected_date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      }
+    }
+  ],
+  "daily_summary": [
+    {
+      "date": "2026-03-15",
+      "flight_pressure": 48,
+      "cruise_pressure": 8,
+      "weather_risk": 84,
+      "event_pressure": 22,
+      "alert_level": "high-alert",
+      "net_demand_signal": "negative",
+      "high_alert_day": true,
+      "confidence": 89,
+      "reasons": [
+        "Official yellow blizzard warnings call out transport disturbances",
+        "Avalanche-risk measures and road closure notices extend into the north and Westfjords",
+        "KEF arrivals remain active but same-day delays show operational friction"
+      ]
+    },
+    {
+      "date": "2026-03-16",
+      "flight_pressure": 28,
+      "cruise_pressure": 8,
+      "weather_risk": 68,
+      "event_pressure": 34,
+      "alert_level": "watch",
+      "net_demand_signal": "negative",
+      "high_alert_day": false,
+      "confidence": 81,
+      "reasons": [
+        "Avalanche-risk messaging still covers Sunday and Monday",
+        "Road danger and closure notices keep weather-related disruption elevated",
+        "Harpa adds a notable evening cultural event but not enough to outweigh weather risk"
+      ]
+    },
+    {
+      "date": "2026-03-17",
+      "flight_pressure": 27,
+      "cruise_pressure": 8,
+      "weather_risk": 26,
+      "event_pressure": 49,
+      "alert_level": "normal",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 76,
+      "reasons": [
+        "No official severe-weather warning was captured for the date",
+        "Krishna Das at Harpa is a stronger-than-baseline cultural draw",
+        "Cruise pressure remains low in available port sources"
+      ]
+    },
+    {
+      "date": "2026-03-18",
+      "flight_pressure": 26,
+      "cruise_pressure": 8,
+      "weather_risk": 22,
+      "event_pressure": 26,
+      "alert_level": "normal",
+      "net_demand_signal": "neutral",
+      "high_alert_day": false,
+      "confidence": 63,
+      "reasons": [
+        "No corroborated official disruption signal was found for the date",
+        "City demand indicators look steady rather than concentrated"
+      ]
+    },
+    {
+      "date": "2026-03-19",
+      "flight_pressure": 28,
+      "cruise_pressure": 8,
+      "weather_risk": 22,
+      "event_pressure": 68,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 84,
+      "reasons": [
+        "Reykjavik Folk Festival opens its multi-day program",
+        "Stockfish Film and Industry Festival starts across multiple city venues",
+        "Event concentration is material but not corroborated by a second high-intensity category"
+      ]
+    },
+    {
+      "date": "2026-03-20",
+      "flight_pressure": 29,
+      "cruise_pressure": 8,
+      "weather_risk": 22,
+      "event_pressure": 74,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 85,
+      "reasons": [
+        "Musiktilraunir starts at Harpa",
+        "Reykjavik Folk Festival main program continues",
+        "Stockfish remains active, lifting city demand without cross-category disruption"
+      ]
+    },
+    {
+      "date": "2026-03-21",
+      "flight_pressure": 29,
+      "cruise_pressure": 8,
+      "weather_risk": 22,
+      "event_pressure": 72,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 84,
+      "reasons": [
+        "Reykjavik Folk Festival and Musiktilraunir both continue",
+        "UN World Day for Glaciers symposium adds another official public program",
+        "Signals are concentrated in events rather than across multiple categories"
+      ]
+    }
+  ]
+}

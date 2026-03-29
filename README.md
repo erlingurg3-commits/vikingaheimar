@@ -240,3 +240,78 @@ curl -X POST https://your-app-domain.com/api/admin/cruise-crm/send-test-followup
 	-H "x-admin-secret: YOUR_SECRET" `
 	-d '{"to":["you@company.com"],"ownerId":"unassigned"}'
 ```
+
+## Control Room Forecast Layer (2026)
+
+### What was added
+
+- Forecast schema migration: `supabase/migrations/202603120101_forecast_planning_layer.sql`
+- Forecast API endpoint: `GET /api/forecast`
+- Forecast computation engine + shared types:
+	- `lib/forecast/engine.ts`
+	- `lib/forecast/types.ts`
+- Seed/import script for 2026 workbook baseline:
+	- `scripts/seed-forecast-2026.ts`
+- Forecast page UI (Control Room):
+	- `app/control-room/forecasts/page.tsx`
+	- `app/components/forecast/*`
+
+### Schema (phase 1 + phase 2-ready)
+
+Primary phase-1 tables:
+
+- `forecast_versions`
+	- one row per scenario/version (e.g. `2026_budget_v1`)
+	- `is_active` controls which baseline appears in UI
+- `forecast_monthly_kpis`
+	- normalized KPI values by month (`month=1..12`) and annual totals (`month=null`)
+	- workbook traceability with `source_row` and `source_sheet`
+
+Phase-2 integration tables (created now, populated later):
+
+- `actual_sales_daily`
+- `actual_sales_monthly`
+- `booking_source_breakdown`
+
+### Workbook row mapping logic
+
+Canonical row-to-KPI mapping is implemented in `scripts/seed-forecast-2026.ts`.
+
+Core keys include:
+
+- Demand inputs: `ticket_price`, `visitors_per_day_forecast`, `visitors_per_month_forecast`
+- Booked baseline: `breakfast_booked`, `entrance_booked`, `guests_booked_total`, `booked_guests_per_day`, `booked_revenue_total`
+- Revenue: `ticket_revenue_forecast`, `shop_revenue_forecast`, `total_operating_revenue`
+- Cost/profitability: `cogs_total`, `net_revenue`, `payroll_total`, `contribution_margin`, `opex_total`, `profit_loss`, `cumulative_profit_loss`
+
+If workbook structure changes, edit mapping definitions in the seed script and rerun.
+
+### Seed / import runbook
+
+1. Apply migrations
+2. Run:
+
+```bash
+npx tsx scripts/seed-forecast-2026.ts
+```
+
+This upserts:
+
+- active version `2026_budget_v1` into `forecast_versions`
+- monthly + annual KPI rows into `forecast_monthly_kpis`
+
+### Future booking engine plug-in point
+
+`app/api/forecast/route.ts` is already structured for separation of:
+
+1. forecast baseline (`forecast_monthly_kpis`)
+2. live actual feed (`actual_sales_monthly`)
+3. computed comparison layer (`buildForecastComparisons`)
+
+When live data is available:
+
+- populate `actual_sales_daily` and aggregate into `actual_sales_monthly`
+- enable the existing stubbed query in `/api/forecast`
+- pass live rows into `buildForecastComparisons(rows, liveActuals)`
+
+No frontend redesign is required when live data is connected.

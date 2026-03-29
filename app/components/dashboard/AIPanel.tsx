@@ -7,7 +7,7 @@ type AIPanelProps = {
   onSubmit: (prompt: string) => void;
   response: string;
   loading: boolean;
-  stats: {
+  stats?: {
     totalRevenue: number;
     totalBookings: number;
     pending: number;
@@ -51,32 +51,34 @@ export default function AIPanel({
       </div>
 
       {/* Quick Stats Summary */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-emerald-900/20 border border-emerald-500/20 rounded-lg p-3 backdrop-blur-sm">
-          <p className="text-xs text-gray-400">Revenue</p>
-          <p className="text-lg font-semibold text-emerald-300">
-            {(stats.totalRevenue / 1000).toFixed(0)}K
-          </p>
+      {stats && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-emerald-900/20 border border-emerald-500/20 rounded-lg p-3 backdrop-blur-sm">
+            <p className="text-xs text-gray-400">Revenue</p>
+            <p className="text-lg font-semibold text-emerald-300">
+              {(stats.totalRevenue / 1000).toFixed(0)}K
+            </p>
+          </div>
+          <div className="bg-cyan-900/20 border border-cyan-500/20 rounded-lg p-3 backdrop-blur-sm">
+            <p className="text-xs text-gray-400">Bookings</p>
+            <p className="text-lg font-semibold text-cyan-300">
+              {stats.totalBookings}
+            </p>
+          </div>
+          <div className="bg-amber-900/20 border border-amber-500/20 rounded-lg p-3 backdrop-blur-sm">
+            <p className="text-xs text-gray-400">Pending</p>
+            <p className="text-lg font-semibold text-amber-300">
+              {stats.pending}
+            </p>
+          </div>
+          <div className="bg-green-900/20 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm">
+            <p className="text-xs text-gray-400">Confirmed</p>
+            <p className="text-lg font-semibold text-green-300">
+              {stats.confirmed}
+            </p>
+          </div>
         </div>
-        <div className="bg-cyan-900/20 border border-cyan-500/20 rounded-lg p-3 backdrop-blur-sm">
-          <p className="text-xs text-gray-400">Bookings</p>
-          <p className="text-lg font-semibold text-cyan-300">
-            {stats.totalBookings}
-          </p>
-        </div>
-        <div className="bg-amber-900/20 border border-amber-500/20 rounded-lg p-3 backdrop-blur-sm">
-          <p className="text-xs text-gray-400">Pending</p>
-          <p className="text-lg font-semibold text-amber-300">
-            {stats.pending}
-          </p>
-        </div>
-        <div className="bg-green-900/20 border border-green-500/20 rounded-lg p-3 backdrop-blur-sm">
-          <p className="text-xs text-gray-400">Confirmed</p>
-          <p className="text-lg font-semibold text-green-300">
-            {stats.confirmed}
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* Input Area */}
       <div className="space-y-3">

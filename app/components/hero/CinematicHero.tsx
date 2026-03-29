@@ -142,14 +142,14 @@ export default function CinematicHero({
                   <Button
                     variant="primary"
                     size="lg"
-                    className="rounded-lg hover:shadow-lg hover:shadow-accent-frost-blue/30 transition-all hover:-translate-y-1"
+                    className="rounded-lg !bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
                   >
                     {primaryCtaText}
                   </Button>
                 </a>
               ) : (
                 <Link
-                  href={bookingLink.href}
+                  href="/booking"
                   onClick={() =>
                     trackBookTicketsClick({ source: "hero_primary", destination: "internal" })
                   }
@@ -157,7 +157,7 @@ export default function CinematicHero({
                   <Button
                     variant="primary"
                     size="lg"
-                    className="rounded-lg hover:shadow-lg hover:shadow-accent-frost-blue/30 transition-all hover:-translate-y-1"
+                    className="rounded-lg !bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
                   >
                     {primaryCtaText}
                   </Button>

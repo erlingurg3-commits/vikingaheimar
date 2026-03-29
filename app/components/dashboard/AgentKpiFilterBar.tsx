@@ -67,6 +67,7 @@ export default function AgentKpiFilterBar({
           >
             <option value="revenue">Revenue</option>
             <option value="pax">Pax</option>
+            <option value="yield">Yield</option>
             <option value="bookings">Bookings</option>
             <option value="confirmation_rate">Confirmation rate</option>
           </select>

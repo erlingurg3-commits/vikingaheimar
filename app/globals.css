@@ -83,12 +83,8 @@ p + p {
    ================================================ */
 
 a {
-  color: var(--color-accent-frost-blue);
+  color: inherit;
   transition: color var(--transition-duration-fast) var(--transition-easing-ease-out);
-}
-
-a:hover {
-  color: #7fc3f0;
 }
 
 a:focus-visible {
@@ -102,6 +98,117 @@ a:focus-visible {
    ================================================ */
 
 ::selection {
-  background-color: var(--color-accent-frost-blue);
-  color: var(--color-base-charcoal);
+  background-color: rgba(200,135,74,0.30);
+  color: #1a1a1a;
+}
+
+@keyframes bookingSuccessPop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.booking-success-pop {
+  animation: bookingSuccessPop 360ms ease-out;
+}
+
+@keyframes glowAmber {
+  0%,
+  100% {
+    box-shadow: 0 0 4px 0 rgba(217, 119, 6, 0.0);
+  }
+  50% {
+    box-shadow: 0 0 22px 6px rgba(217, 119, 6, 0.22);
+  }
+}
+
+/* ================================================
+   FOG DRIFT — HeroFog atmosphere layer
+   Only animates when user has no motion preference
+   ================================================ */
+
+@keyframes fogDrift {
+  0%   { transform: translateX(-5%) translateY(0); }
+  50%  { transform: translateX(3%) translateY(-2%); }
+  100% { transform: translateX(-5%) translateY(0); }
+}
+
+
+/* ================================================
+   PARCHMENT GRAIN — tactile aged texture on light sections
+   Opacity very low (0.025) — just enough to feel physical
+   ================================================ */
+
+.parchment-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ================================================
+   HERO SEQUENTIAL REVEAL — on page load, each element
+   rises and fades in with its own delay.
+   Initial opacity-0 is set on the class; the animation
+   is enabled only if the user has no motion preference.
+   Reduced-motion: elements jump to full opacity immediately.
+   ================================================ */
+
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-fade-1,
+.hero-fade-2,
+.hero-fade-3,
+.hero-fade-4,
+.hero-fade-5 {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-fade-1 { animation: heroReveal 1000ms  200ms ease-out forwards; }
+  .hero-fade-2 { animation: heroReveal 1200ms  400ms ease-out forwards; }
+  .hero-fade-3 { animation: heroReveal 1000ms  700ms ease-out forwards; }
+  .hero-fade-4 { animation: heroReveal  800ms 1000ms ease-out forwards; }
+  .hero-fade-5 { animation: heroReveal  600ms 1400ms ease-out forwards; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-1,
+  .hero-fade-2,
+  .hero-fade-3,
+  .hero-fade-4,
+  .hero-fade-5 {
+    opacity: 1;
+  }
+}
+
+/* ================================================
+   AMBIENT PULSE — warm ember glow in dark CTA section
+   Used by the NorthernLights component (two orbs).
+   ================================================ */
+
+@keyframes ambientPulse1 {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+  50%       { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+}
+
+@keyframes ambientPulse2 {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-orb { animation: none !important; }
 }

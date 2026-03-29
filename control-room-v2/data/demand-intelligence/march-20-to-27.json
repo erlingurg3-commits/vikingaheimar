@@ -1,0 +1,265 @@
+{
+  "generated_at": "2026-03-15T12:00:00.000Z",
+  "date_range": {
+    "start": "2026-03-20",
+    "end": "2026-03-27"
+  },
+  "signals": [
+    {
+      "date": "2026-03-20",
+      "signal_type": "flights",
+      "title": "KEF Spring Traffic Uptick - Week 12",
+      "summary": "ISAVIA weekly statistics indicate above-baseline international arrivals at Keflavik International Airport for the week commencing March 20. Primarily European leisure and stopover traffic, consistent with the seasonal spring recovery pattern.",
+      "estimated_impact_score": 42,
+      "confidence_score": 72,
+      "source_name": "ISAVIA",
+      "source_url": "https://www.isavia.is/en/corporate/statistics/",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-20",
+        "end": "2026-03-22"
+      }
+    },
+    {
+      "date": "2026-03-21",
+      "signal_type": "weather",
+      "title": "Yellow Weather Warning - Reykjanes Peninsula",
+      "summary": "Icelandic Met Office issued a yellow level warning for the southern coast and Reykjanes peninsula on March 21. Wind gusts up to 20 m/s forecast. No road closures indicated at time of issue. Moderate outdoor disruption risk.",
+      "estimated_impact_score": 35,
+      "confidence_score": 82,
+      "source_name": "Icelandic Met Office",
+      "source_url": "https://en.vedur.is/weather/forecasts/areas/",
+      "source_reliability": "official",
+      "region": "Reykjanes",
+      "affected_date_range": {
+        "start": "2026-03-21",
+        "end": "2026-03-21"
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "signal_type": "cruise",
+      "title": "Cruise Call - Port of Reykjavik, March 22",
+      "summary": "Port of Reykjavik scheduled cruise call on March 22. Vessel capacity approximately 2,400 passengers. Status: scheduled. Estimated arrival window 07:00-09:00 local time. Passengers expected to disperse across Reykjavik and surrounding day-trip destinations.",
+      "estimated_impact_score": 68,
+      "confidence_score": 90,
+      "source_name": "Faxafloahafnir - Associated Icelandic Ports",
+      "source_url": "https://www.faxafloahafnir.is/en/cruise/schedule/",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-22",
+        "end": "2026-03-22"
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "signal_type": "events",
+      "title": "Reykjavik Arts Festival - Spring Preview Weekend",
+      "summary": "Reykjavik Arts Festival spring preview events scheduled across central Reykjavik venues on March 22 and 23. Multi-venue format attracting domestic and international cultural visitors. Official programme confirmed by the festival organisation.",
+      "estimated_impact_score": 55,
+      "confidence_score": 85,
+      "source_name": "Reykjavik Arts Festival",
+      "source_url": "https://www.listahatid.is/en/programme",
+      "source_reliability": "official",
+      "region": "Reykjavik",
+      "affected_date_range": {
+        "start": "2026-03-22",
+        "end": "2026-03-23"
+      }
+    },
+    {
+      "date": "2026-03-22",
+      "signal_type": "flights",
+      "title": "KEF Above-Baseline Arrivals - March 22",
+      "summary": "Weekend flight schedule shows above-baseline international inbound arrivals at KEF on March 22. Elevated widebody share noted. Pattern consistent with cruise-coincident demand and event-driven travel.",
+      "estimated_impact_score": 52,
+      "confidence_score": 74,
+      "source_name": "ISAVIA",
+      "source_url": "https://www.isavia.is/en/corporate/statistics/",
+      "source_reliability": "official",
+      "region": "KEF",
+      "affected_date_range": {
+        "start": "2026-03-22",
+        "end": "2026-03-22"
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "signal_type": "weather",
+      "title": "Orange Weather Warning - Reykjanes Peninsula",
+      "summary": "Icelandic Met Office issued an orange level warning for the Reykjanes peninsula on March 24. Severe gales forecast with gusts up to 30 m/s. SafeTravel advisory issued simultaneously. Road access and outdoor visitor activity likely disrupted. Demand suppression expected.",
+      "estimated_impact_score": 74,
+      "confidence_score": 88,
+      "source_name": "Icelandic Met Office / SafeTravel Iceland",
+      "source_url": "https://safetravel.is/latest-alerts/",
+      "source_reliability": "official",
+      "region": "Reykjanes",
+      "affected_date_range": {
+        "start": "2026-03-24",
+        "end": "2026-03-24"
+      }
+    },
+    {
+      "date": "2026-03-26",
+      "signal_type": "travel_tourism_news",
+      "title": "Visit Iceland Spring Campaign - Demand Uplift Window",
+      "summary": "Visit Iceland launched a spring promotional campaign targeting European short-break travellers for late March through mid-April. Organic demand uplift expected across spring weekends. Secondary confirmation from partner booking aggregators showing increased search interest.",
+      "estimated_impact_score": 38,
+      "confidence_score": 60,
+      "source_name": "Visit Iceland",
+      "source_url": "https://visiticeland.com/news/",
+      "source_reliability": "official",
+      "region": "Iceland",
+      "affected_date_range": {
+        "start": "2026-03-26",
+        "end": "2026-04-12"
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "signal_type": "events",
+      "title": "Reykjanes Cultural Heritage Weekend - Guided Geopark Tours",
+      "summary": "Reykjanes municipality scheduled a cultural heritage weekend with guided volcano and UNESCO Global Geopark tours on March 27. Promoted via official Visit Reykjanes tourism channels. Expected footfall in the 300-600 visitor range.",
+      "estimated_impact_score": 45,
+      "confidence_score": 68,
+      "source_name": "Visit Reykjanes",
+      "source_url": "https://visitreykjanes.is/en/events/",
+      "source_reliability": "official-partner",
+      "region": "Reykjanes",
+      "affected_date_range": {
+        "start": "2026-03-27",
+        "end": "2026-03-27"
+      }
+    }
+  ],
+  "daily_summary": [
+    {
+      "date": "2026-03-20",
+      "flight_pressure": 42,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 0,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 72,
+      "reasons": [
+        "KEF arrivals above seasonal baseline for Week 12.",
+        "Single category active (flights). High-alert requires at least 2 different categories."
+      ]
+    },
+    {
+      "date": "2026-03-21",
+      "flight_pressure": 42,
+      "cruise_pressure": 0,
+      "weather_risk": 35,
+      "event_pressure": 0,
+      "alert_level": "watch",
+      "net_demand_signal": "neutral",
+      "high_alert_day": false,
+      "confidence": 77,
+      "reasons": [
+        "Yellow wind warning issued by Met Office for Reykjanes peninsula.",
+        "Residual KEF flight pressure from Week 12 uptick.",
+        "Two categories present (flights, weather) but neither score reaches the 70 high-alert threshold. Watch level."
+      ]
+    },
+    {
+      "date": "2026-03-22",
+      "flight_pressure": 52,
+      "cruise_pressure": 68,
+      "weather_risk": 0,
+      "event_pressure": 55,
+      "alert_level": "high-alert",
+      "net_demand_signal": "strong_positive",
+      "high_alert_day": true,
+      "confidence": 83,
+      "reasons": [
+        "Cruise call at Port of Reykjavik (~2,400 passengers). Official port schedule confirmed.",
+        "Reykjavik Arts Festival spring preview events active across multiple venues.",
+        "Above-baseline KEF arrivals aligning with cruise-day and event-travel pattern.",
+        "Three distinct categories active (cruise, events, flights). Combined pressure qualifies for high-alert. 2-category rule satisfied."
+      ]
+    },
+    {
+      "date": "2026-03-23",
+      "flight_pressure": 28,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 40,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 65,
+      "reasons": [
+        "Arts Festival events continue on day 2.",
+        "Flight pressure normalising post-weekend peak.",
+        "Single category above threshold (events). 2-category rule not satisfied."
+      ]
+    },
+    {
+      "date": "2026-03-24",
+      "flight_pressure": 20,
+      "cruise_pressure": 0,
+      "weather_risk": 74,
+      "event_pressure": 0,
+      "alert_level": "high-alert",
+      "net_demand_signal": "negative",
+      "high_alert_day": false,
+      "confidence": 88,
+      "reasons": [
+        "Orange weather warning for Reykjanes peninsula. Severe gales forecast with gusts to 30 m/s.",
+        "SafeTravel advisory issued. Road access and outdoor activity likely disrupted.",
+        "Weather score reaches high-alert threshold (74) but only one category is active. 2-category rule not satisfied. high_alert_day = false."
+      ]
+    },
+    {
+      "date": "2026-03-25",
+      "flight_pressure": 22,
+      "cruise_pressure": 0,
+      "weather_risk": 18,
+      "event_pressure": 0,
+      "alert_level": "normal",
+      "net_demand_signal": "neutral",
+      "high_alert_day": false,
+      "confidence": 60,
+      "reasons": [
+        "Residual weather risk from March 24 advisory dissipating.",
+        "No significant demand signals detected for this date."
+      ]
+    },
+    {
+      "date": "2026-03-26",
+      "flight_pressure": 32,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 22,
+      "alert_level": "normal",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 60,
+      "reasons": [
+        "Visit Iceland spring promotional campaign generating organic demand uplift.",
+        "Tourism news signal is secondary-class. Insufficient alone to trigger watch or high-alert."
+      ]
+    },
+    {
+      "date": "2026-03-27",
+      "flight_pressure": 35,
+      "cruise_pressure": 0,
+      "weather_risk": 0,
+      "event_pressure": 45,
+      "alert_level": "watch",
+      "net_demand_signal": "positive",
+      "high_alert_day": false,
+      "confidence": 68,
+      "reasons": [
+        "Reykjanes cultural heritage weekend active. Official-partner source confirmed.",
+        "Weekend leisure flight pattern adds moderate flight pressure.",
+        "Two categories active (events, flights). Neither score reaches 70. Watch level, not high-alert."
+      ]
+    }
+  ]
+}

@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "demand:index": "node scripts/build-demand-intelligence-index.mjs",
     "supabase:types": "supabase gen types typescript --linked --schema public > lib/database.types.ts"
   },
   "dependencies": {

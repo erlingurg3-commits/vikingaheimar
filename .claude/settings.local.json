@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/mistt/vikingaheimar -type f \\\\\\(-name *.tsx -o -name *.ts \\\\\\) -path *forecast* -not -path */.next/* -not -path */node_modules/*)",
+      "Bash(grep -r \"\\\\/api\\\\/claude\\\\|api\\\\/claude\" /c/Users/mistt/vikingaheimar --include=*.ts --include=*.tsx --include=*.html --include=*.js)",
+      "Bash(ls:*)",
+      "mcp__claude_ai_Google_Calendar__gcal_list_events",
+      "WebSearch",
+      "WebFetch(domain:simplemaps.com)",
+      "WebFetch(domain:mapsvg.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:www.amcharts.com)",
+      "WebFetch(domain:code.highcharts.com)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "Bash(curl -s https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/)",
+      "Bash(curl -sL https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson)",
+      "Bash(python3 -c \":*)",
+      "Bash(curl -sL https://raw.githubusercontent.com/martynafford/natural-earth-geojson/master/50m/cultural/ne_50m_admin_0_countries.json)",
+      "Bash(node:*)",
+      "Bash(find /c/Users/mistt/vikingaheimar -type d -name *control-room*)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(grep -r -i bokun --include=*.ts --include=*.tsx --include=*.js --include=*.json --include=*.env* -l)",
+      "WebFetch(domain:bokun.dev)",
+      "WebFetch(domain:api-docs.bokun.dev)",
+      "WebFetch(domain:docs.bokun.io)",
+      "Bash(curl -s http://localhost:3111/api/bokun/test)",
+      "Bash(curl:*)",
+      "Bash(npx supabase:*)",
+      "Bash(node -e \":*)",
+      "Bash(git clone:*)",
+      "Bash(cp -r /tmp/agency-agents/* ~/.claude/agents/)",
+      "Bash(mkdir -p ~/.claude/agents)"
+    ]
+  }
+}

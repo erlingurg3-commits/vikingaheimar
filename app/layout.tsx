@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Merriweather, Sora } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import SiteLayout from "./components/layout/SiteLayout";
 
@@ -68,6 +69,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
@@ -100,6 +106,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(museumSchema) }}
         />
         <SiteLayout>{children}</SiteLayout>
+        <Script
+          src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=20a864e3-4bf8-45c4-864f-62c268deb95a"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

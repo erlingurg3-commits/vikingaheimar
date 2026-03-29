@@ -14,7 +14,7 @@ type UseAgentKpiOrdersOptions = {
 };
 
 const ORDER_FIELDS =
-  "id,created_at,agent_company,agent_name,visit_date,visit_time,total_tickets,total_amount,status,source,source_type,source_id";
+  "id,created_at,agent_company,agent_name,visit_date,visit_time,total_tickets,ticket_general,ticket_youth,ticket_family,group_size,request_type,admin_status,total_amount,status,source,source_type,source_id";
 
 function getFromDate(range: AgentDateRange): string | null {
   if (range === "all") {

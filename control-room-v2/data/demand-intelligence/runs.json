@@ -1,0 +1,118 @@
+{
+  "generated_at": "2026-03-16T23:48:49.219Z",
+  "run_count": 8,
+  "runs": [
+    {
+      "filename": "2026-03-16_to_2026-03-22__20260316T234848960Z.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-16_to_2026-03-22__20260316T234848960Z.json",
+      "is_latest": false,
+      "generated_at": "2026-03-16T23:48:48.960Z",
+      "date_range": {
+        "start": "2026-03-16",
+        "end": "2026-03-22"
+      },
+      "signal_count": 13,
+      "high_alert_days": 4,
+      "watch_days": 3,
+      "normal_days": 0
+    },
+    {
+      "filename": "latest-signals.json",
+      "path": "control-room-v2/data/demand-intelligence/latest-signals.json",
+      "is_latest": true,
+      "generated_at": "2026-03-16T23:48:48.960Z",
+      "date_range": {
+        "start": "2026-03-16",
+        "end": "2026-03-22"
+      },
+      "signal_count": 13,
+      "high_alert_days": 4,
+      "watch_days": 3,
+      "normal_days": 0
+    },
+    {
+      "filename": "2026-03-15_to_2026-03-21__20260315T170628499Z.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-15_to_2026-03-21__20260315T170628499Z.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T17:06:28.499Z",
+      "date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      },
+      "signal_count": 16,
+      "high_alert_days": 7,
+      "watch_days": 0,
+      "normal_days": 0
+    },
+    {
+      "filename": "2026-03-15_to_2026-03-21__20260315T170529042Z.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-15_to_2026-03-21__20260315T170529042Z.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T17:05:29.042Z",
+      "date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      },
+      "signal_count": 16,
+      "high_alert_days": 7,
+      "watch_days": 0,
+      "normal_days": 0
+    },
+    {
+      "filename": "2026-03-15_to_2026-03-21__20260315T165958605Z.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-15_to_2026-03-21__20260315T165958605Z.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T16:59:58.605Z",
+      "date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      },
+      "signal_count": 14,
+      "high_alert_days": 7,
+      "watch_days": 0,
+      "normal_days": 0
+    },
+    {
+      "filename": "2026-03-15_to_2026-03-21__20260315T165916720Z.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-15_to_2026-03-21__20260315T165916720Z.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T16:59:16.720Z",
+      "date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      },
+      "signal_count": 14,
+      "high_alert_days": 7,
+      "watch_days": 0,
+      "normal_days": 0
+    },
+    {
+      "filename": "2026-03-15_to_2026-03-21.json",
+      "path": "control-room-v2/data/demand-intelligence/2026-03-15_to_2026-03-21.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T16:20:00Z",
+      "date_range": {
+        "start": "2026-03-15",
+        "end": "2026-03-21"
+      },
+      "signal_count": 11,
+      "high_alert_days": 1,
+      "watch_days": 4,
+      "normal_days": 2
+    },
+    {
+      "filename": "march-20-to-27.json",
+      "path": "control-room-v2/data/demand-intelligence/march-20-to-27.json",
+      "is_latest": false,
+      "generated_at": "2026-03-15T12:00:00.000Z",
+      "date_range": {
+        "start": "2026-03-20",
+        "end": "2026-03-27"
+      },
+      "signal_count": 8,
+      "high_alert_days": 2,
+      "watch_days": 4,
+      "normal_days": 2
+    }
+  ]
+}

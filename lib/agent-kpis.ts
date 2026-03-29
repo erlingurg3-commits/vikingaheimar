@@ -11,6 +11,7 @@ export type AgentKpiRow = {
   group_approval_rate: number;
   group_heavy: boolean;
   total_revenue: number;
+  yield_per_guest: number | null;
   confirmed_count: number;
   pending_count: number;
   confirmation_rate: number;
@@ -19,15 +20,59 @@ export type AgentKpiRow = {
 export type AgentKpiSummary = {
   totalAgencyRevenue: number;
   totalAgencyPax: number;
+  averageAgencyYield: number | null;
   totalGroupRequests: number;
   totalGroupPax: number;
   groupApprovalRate: number;
   topPerformingAgency: AgentKpiRow | null;
   highestRevenueAgency: AgentKpiRow | null;
+  highestYieldAgency: AgentKpiRow | null;
 };
 
-export type AgentSortKey = "revenue" | "pax" | "bookings" | "confirmation_rate";
+export type AgentSortKey = "revenue" | "pax" | "yield" | "bookings" | "confirmation_rate";
 export type AgentSortDirection = "asc" | "desc";
+
+function toPositiveNumber(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
+function isGroupBooking(order: OrderRow): boolean {
+  return (
+    order.request_type === "group" ||
+    order.source === "travel_agent" ||
+    order.source_type === "group_request"
+  );
+}
+
+export function extractOrderPax(order: OrderRow): number {
+  const anyOrder = order as OrderRow & {
+    pax?: number | null;
+    guests?: number | null;
+    quantity?: number | null;
+    booking_group_size?: number | null;
+  };
+
+  const explicitPax =
+    toPositiveNumber(anyOrder.pax) ||
+    toPositiveNumber(anyOrder.guests) ||
+    toPositiveNumber(anyOrder.quantity) ||
+    toPositiveNumber(anyOrder.booking_group_size);
+
+  const ticketPax =
+    toPositiveNumber(order.total_tickets) ||
+    toPositiveNumber(order.ticket_general) +
+      toPositiveNumber(order.ticket_youth) +
+      toPositiveNumber(order.ticket_family);
+
+  const groupPax = toPositiveNumber(order.group_size);
+
+  if (isGroupBooking(order)) {
+    return groupPax || explicitPax || ticketPax;
+  }
+
+  return explicitPax || ticketPax || groupPax;
+}
 
 export function isAgentOrder(order: OrderRow): boolean {
   return typeof order.agent_company === "string" && order.agent_company.trim().length > 0;
@@ -43,15 +88,9 @@ export function aggregateAgentKpis(orders: OrderRow[]): AgentKpiRow[] {
 
     const company = order.agent_company!.trim();
     const status = (order.status ?? "").toLowerCase();
-    const requestType = order.request_type ?? "standard";
-    const source = order.source ?? "";
-    const sourceType = order.source_type ?? "standard";
-    const isGroupRequest =
-      requestType === "group" || source === "travel_agent" || sourceType === "group_request";
+    const isGroupRequest = isGroupBooking(order);
     const adminStatus = (order.admin_status ?? "").toLowerCase();
-    const individualPax = Number(order.total_tickets ?? 0);
-    const groupPax = Number(order.group_size ?? 0);
-    const effectivePax = isGroupRequest ? groupPax : individualPax;
+    const effectivePax = extractOrderPax(order);
 
     const current = map.get(company) ?? {
       agent_company: company,
@@ -64,6 +103,7 @@ export function aggregateAgentKpis(orders: OrderRow[]): AgentKpiRow[] {
       group_approval_rate: 0,
       group_heavy: false,
       total_revenue: 0,
+      yield_per_guest: null,
       confirmed_count: 0,
       pending_count: 0,
       confirmation_rate: 0,
@@ -75,13 +115,13 @@ export function aggregateAgentKpis(orders: OrderRow[]): AgentKpiRow[] {
 
     if (isGroupRequest) {
       current.group_requests += 1;
-      current.group_pax += groupPax;
+      current.group_pax += effectivePax;
 
       if (adminStatus === "approved") {
         current.group_approved_count += 1;
       }
     } else {
-      current.individual_pax += individualPax;
+      current.individual_pax += effectivePax;
     }
 
     if (status === "confirmed") {
@@ -100,6 +140,7 @@ export function aggregateAgentKpis(orders: OrderRow[]): AgentKpiRow[] {
     group_approval_rate:
       row.group_requests > 0 ? row.group_approved_count / row.group_requests : 0,
     group_heavy: row.group_pax > row.individual_pax,
+    yield_per_guest: row.total_pax > 0 ? row.total_revenue / row.total_pax : null,
   }));
 }
 
@@ -117,6 +158,8 @@ export function sortAgentKpis(
       delta = right.total_revenue - left.total_revenue;
     } else if (sortBy === "pax") {
       delta = right.total_pax - left.total_pax;
+    } else if (sortBy === "yield") {
+      delta = (right.yield_per_guest ?? -1) - (left.yield_per_guest ?? -1);
     } else if (sortBy === "confirmation_rate") {
       delta = right.confirmation_rate - left.confirmation_rate;
     } else {
@@ -136,6 +179,7 @@ export function sortAgentKpis(
 export function buildAgentKpiSummary(rows: AgentKpiRow[]): AgentKpiSummary {
   const totalAgencyRevenue = rows.reduce((sum, row) => sum + row.total_revenue, 0);
   const totalAgencyPax = rows.reduce((sum, row) => sum + row.total_pax, 0);
+  const averageAgencyYield = totalAgencyPax > 0 ? totalAgencyRevenue / totalAgencyPax : null;
   const totalGroupRequests = rows.reduce((sum, row) => sum + row.group_requests, 0);
   const totalGroupPax = rows.reduce((sum, row) => sum + row.group_pax, 0);
   const totalGroupApproved = rows.reduce((sum, row) => sum + row.group_approved_count, 0);
@@ -152,13 +196,19 @@ export function buildAgentKpiSummary(rows: AgentKpiRow[]): AgentKpiSummary {
     (left, right) => right.total_revenue - left.total_revenue
   )[0] ?? null;
 
+  const highestYieldAgency = [...rows]
+    .filter((row) => (row.yield_per_guest ?? 0) > 0)
+    .sort((left, right) => (right.yield_per_guest ?? 0) - (left.yield_per_guest ?? 0))[0] ?? null;
+
   return {
     totalAgencyRevenue,
     totalAgencyPax,
+    averageAgencyYield,
     totalGroupRequests,
     totalGroupPax,
     groupApprovalRate,
     topPerformingAgency,
     highestRevenueAgency,
+    highestYieldAgency,
   };
 }

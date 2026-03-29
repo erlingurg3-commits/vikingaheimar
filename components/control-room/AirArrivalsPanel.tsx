@@ -21,6 +21,7 @@ type ArrivalRow = {
   is_widebody: boolean | null;
   provider: string | null;
   source_confidence: number | null;
+  status_text?: string | null;
 };
 
 type TopOrigin = {
@@ -36,6 +37,11 @@ type AirArrivalsPayload = {
     airArrivals7d: number;
     widebodies7d: number;
     avgConfidence: number;
+  };
+  isavia?: {
+    flightsLeftToday: number | null;
+    bagsOnBelt: number | null;
+    source: "isavia-live" | "unavailable";
   };
   demandDays: DemandDay[];
   arrivals: ArrivalRow[];
@@ -54,6 +60,14 @@ function formatDate(value: string) {
 function toInt(value: unknown): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? Math.trunc(parsed) : 0;
+}
+
+function formatNullableNumber(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "—";
+  }
+
+  return toInt(value).toLocaleString();
 }
 
 export default function AirArrivalsPanel() {
@@ -100,10 +114,9 @@ export default function AirArrivalsPanel() {
 
       {!loading && !error && data ? (
         <>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <Metric title="Flights (7d)" value={data.totals.flights7d.toLocaleString()} />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <Metric title="Flights left today" value={formatNullableNumber(data.isavia?.flightsLeftToday)} />
             <Metric title="Air arrivals (7d)" value={data.totals.airArrivals7d.toLocaleString()} />
-            <Metric title="Widebodies (7d)" value={data.totals.widebodies7d.toLocaleString()} />
             <Metric title="Avg confidence" value={`${data.totals.avgConfidence}%`} />
           </div>
 
@@ -171,8 +184,8 @@ export default function AirArrivalsPanel() {
                       <th className="px-3 py-2 text-left">Date</th>
                       <th className="px-3 py-2 text-left">Flight</th>
                       <th className="px-3 py-2 text-left">Origin</th>
-                      <th className="px-3 py-2 text-left">Aircraft</th>
-                      <th className="px-3 py-2 text-right">Type</th>
+                      <th className="px-3 py-2 text-left">Status</th>
+                      <th className="px-3 py-2 text-right">Aircraft</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -181,9 +194,9 @@ export default function AirArrivalsPanel() {
                         <td className="px-3 py-2">{formatDate(row.date)}</td>
                         <td className="px-3 py-2">{row.flight_number ?? "—"}</td>
                         <td className="px-3 py-2">{row.origin ?? "—"}</td>
-                        <td className="px-3 py-2">{row.aircraft_type ?? "Unknown"}</td>
+                        <td className="px-3 py-2">{row.status_text ?? "Unknown"}</td>
                         <td className="px-3 py-2 text-right">
-                          {row.aircraft_type ? (row.is_widebody ? "Widebody" : "Narrowbody") : "Unknown"}
+                          {row.aircraft_type ?? "Unknown"}
                         </td>
                       </tr>
                     ))}

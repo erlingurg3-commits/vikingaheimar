@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "control-room-v2/data/demand-intelligence/demand-intelligence.schema.json",
+  "title": "Demand Intelligence Output Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "generated_at",
+    "date_range",
+    "signals",
+    "daily_summary"
+  ],
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "end": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "signal_type",
+          "title",
+          "summary",
+          "estimated_impact_score",
+          "confidence_score",
+          "source_name",
+          "source_url",
+          "source_reliability",
+          "region",
+          "affected_date_range"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "signal_type": {
+            "type": "string",
+            "enum": [
+              "flights",
+              "cruise",
+              "weather",
+              "events",
+              "travel_tourism_news"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "estimated_impact_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "confidence_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "source_name": {
+            "type": "string"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "source_reliability": {
+            "type": "string",
+            "enum": ["official", "official-partner", "secondary"]
+          },
+          "region": {
+            "type": "string"
+          },
+          "affected_date_range": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["start", "end"],
+            "properties": {
+              "start": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              },
+              "end": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "daily_summary": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "flight_pressure",
+          "cruise_pressure",
+          "weather_risk",
+          "event_pressure",
+          "alert_level",
+          "net_demand_signal",
+          "high_alert_day",
+          "confidence",
+          "reasons"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "flight_pressure": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cruise_pressure": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "weather_risk": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "event_pressure": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "alert_level": {
+            "type": "string",
+            "enum": ["normal", "watch", "high-alert"]
+          },
+          "net_demand_signal": {
+            "type": "string",
+            "enum": [
+              "strong_negative",
+              "negative",
+              "neutral",
+              "positive",
+              "strong_positive"
+            ]
+          },
+          "high_alert_day": {
+            "type": "boolean"
+          },
+          "confidence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

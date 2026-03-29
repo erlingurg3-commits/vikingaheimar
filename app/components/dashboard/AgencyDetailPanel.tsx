@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Badge } from "@/app/components/primitives/Badge";
-import type { AgentKpiRow } from "@/lib/agent-kpis";
+import { extractOrderPax, type AgentKpiRow } from "@/lib/agent-kpis";
 import type { OrderRow } from "@/lib/orders";
 
 type AgencyDetailPanelProps = {
@@ -32,17 +32,6 @@ function shortId(value: string) {
   return value.slice(0, 8);
 }
 
-function getOrderPax(order: OrderRow): number {
-  if (
-    order.request_type === "group" ||
-    order.source === "travel_agent" ||
-    order.source_type === "group_request"
-  ) {
-    return Number(order.group_size ?? 0);
-  }
-
-  return Number(order.total_tickets ?? 0);
-}
 
 export default function AgencyDetailPanel({
   open,
@@ -56,7 +45,7 @@ export default function AgencyDetailPanel({
 
     for (const order of orders) {
       const key = order.visit_time || "Unknown";
-      byHour.set(key, (byHour.get(key) ?? 0) + getOrderPax(order));
+      byHour.set(key, (byHour.get(key) ?? 0) + extractOrderPax(order));
     }
 
     return [...byHour.entries()]
@@ -147,7 +136,7 @@ export default function AgencyDetailPanel({
                   <span className="text-emerald-200">{formatCurrencyISK(Number(order.total_amount ?? 0))}</span>
                 </div>
                 <div className="mt-1 flex items-center justify-between gap-2">
-                  <span>{getOrderPax(order)} pax</span>
+                  <span>{extractOrderPax(order)} pax</span>
                   {order.status?.toLowerCase() === "confirmed" ? (
                     <Badge variant="success" size="sm">Confirmed</Badge>
                   ) : order.status?.toLowerCase() === "pending" ? (

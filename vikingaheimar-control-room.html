@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Víkingaheimar · Control Room</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+/* ═══ Variables ═══ */
+:root {
+  --bg: #0d0c0a;
+  --bg2: #131210;
+  --bg3: #1a1815;
+  --surface: #1e1c18;
+  --surface2: #252320;
+  --border: rgba(200,135,74,0.12);
+  --border2: rgba(200,135,74,0.22);
+  --amber: #c8874a;
+  --amber-light: #e0a870;
+  --amber-dim: rgba(200,135,74,0.15);
+  --amber-glow: rgba(200,135,74,0.06);
+  --text: #e8e0d2;
+  --text2: #a89880;
+  --text3: #665e52;
+  --entrance: #5b7fa6;
+  --entrance-dim: rgba(91,127,166,0.15);
+  --breakfast: #c8874a;
+  --breakfast-dim: rgba(200,135,74,0.15);
+  --special: #7a9e8a;
+  --special-dim: rgba(122,158,138,0.15);
+  --cruise: #9b7db5;
+  --cruise-dim: rgba(155,125,181,0.15);
+  --red: #c05a5a;
+  --red-dim: rgba(192,90,90,0.12);
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-accent: 'Instrument Serif', serif;
+}
+
+/* ═══ Reset & Base ═══ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ Scrollbars ═══ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--amber); }
+
+/* ═══ Header ═══ */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 52px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+  letter-spacing: 0.18em;
+}
+.logo-sep { color: var(--text3); font-size: 7px; }
+.logo-sub {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.header-right { display: flex; align-items: center; gap: 12px; }
+.status-indicator { display: flex; align-items: center; gap: 7px; margin-right: 4px; }
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text3); flex-shrink: 0;
+}
+.status-dot.live { background: #4ade80; animation: pulse-dot 2s ease infinite; }
+.status-dot.loading { background: var(--amber); animation: pulse-dot 0.8s ease infinite; }
+.status-dot.stale { background: var(--amber); }
+.status-dot.error { background: var(--red); }
+.refresh-time { font-size: 10px; color: var(--text3); font-variant-numeric: tabular-nums; }
+
+/* ═══ Buttons ═══ */
+.btn-amber {
+  background: var(--amber-dim);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn-amber:hover { background: rgba(200,135,74,0.25); }
+.btn-amber:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-outline:hover { border-color: var(--amber); color: var(--amber); }
+.btn-text {
+  background: none; border: none;
+  color: var(--text3);
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.btn-text:hover { color: var(--text2); }
+.btn-icon {
+  background: none; border: none;
+  color: var(--text3);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 6px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+.btn-icon:hover { color: var(--text2); }
+
+/* ═══ Stat Bar ═══ */
+#stat-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.stat-card {
+  background: var(--bg2);
+  padding: 14px 16px;
+  text-align: center;
+}
+.stat-card.primary { background: var(--bg); }
+.stat-value {
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.stat-card.primary .stat-value { font-size: 30px; color: var(--amber); }
+.stat-sub { font-size: 10px; color: var(--text3); margin-top: 2px; min-height: 14px; }
+.stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 6px;
+}
+
+/* ═══ Main Layout ═══ */
+#main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+#today-panel { flex: 1; overflow-y: auto; }
+#week-panel {
+  width: 380px;
+  overflow-y: auto;
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.section-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text2);
+}
+.section-date {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+/* ═══ Booking Rows (Today) ═══ */
+.booking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px 11px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+.booking-row:hover { background: var(--amber-glow); }
+.row-accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: 0 1px 1px 0;
+}
+.row-time {
+  font-size: 12px;
+  color: var(--text2);
+  min-width: 44px;
+  font-variant-numeric: tabular-nums;
+}
+.row-operator {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row-ref {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.row-pax {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--amber);
+  min-width: 58px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ═══ Service Badges ═══ */
+.badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.badge-breakfast { background: var(--breakfast-dim); color: var(--breakfast); }
+.badge-entrance  { background: var(--entrance-dim);  color: var(--entrance);  }
+.badge-special   { background: var(--special-dim);   color: var(--special);   }
+.badge-cruise    { background: var(--cruise-dim);     color: var(--cruise);    }
+.badge-other     { background: rgba(100,100,100,0.1); color: var(--text3);    }
+
+/* ═══ Week Panel ═══ */
+.week-day { border-bottom: 1px solid var(--border); }
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  user-select: none;
+}
+.day-header:hover { background: var(--amber-glow); }
+.week-day.is-today .day-header { background: var(--amber-glow); }
+.week-day.is-today .day-name { color: var(--amber); }
+.day-name {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  min-width: 30px;
+}
+.day-date {
+  font-size: 11px;
+  color: var(--text2);
+  font-family: var(--font-accent);
+  font-style: italic;
+}
+.day-pax {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--amber);
+  background: var(--amber-dim);
+  padding: 1px 7px;
+  border-radius: 2px;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.day-count { font-size: 9px; color: var(--text3); }
+.day-chevron {
+  font-size: 10px;
+  color: var(--text3);
+  transition: transform 0.2s;
+}
+.week-day.collapsed .day-chevron { transform: rotate(-90deg); }
+.week-day.collapsed .day-body { display: none; }
+.day-body { padding: 0 0 4px 0; }
+.wb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 26px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wb-row:hover { background: var(--amber-glow); }
+.wb-time { font-size: 11px; color: var(--text3); min-width: 36px; font-variant-numeric: tabular-nums; }
+.wb-badge.badge { font-size: 8px; padding: 1px 5px; }
+.wb-operator {
+  flex: 1; font-size: 11px; color: var(--text2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wb-pax { font-size: 11px; font-weight: 600; color: var(--amber); min-width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+.wb-empty { font-size: 11px; color: var(--text3); font-style: italic; padding: 6px 26px; font-family: var(--font-accent); }
+
+/* ═══ Empty State ═══ */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+}
+.empty-state svg { width: 80px; height: 52px; margin-bottom: 16px; opacity: 0.3; }
+.empty-state p { font-size: 12px; font-style: italic; font-family: var(--font-accent); }
+
+/* ═══ Error State ═══ */
+.error-state { padding: 28px 20px; text-align: center; }
+.error-state p { font-size: 12px; color: var(--red); margin: 0; line-height: 1.6; }
+
+/* ═══ Overlays ═══ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.15s ease;
+}
+.overlay.hidden { display: none; }
+.overlay-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  background: none; border: none;
+  color: var(--text3);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.overlay-close:hover { color: var(--text); }
+
+/* ═══ Detail Overlay ═══ */
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 28px 32px;
+  max-width: 480px;
+  width: 92%;
+  position: relative;
+  animation: fadeUp 0.2s ease;
+}
+.detail-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 8px 0 20px 0;
+  line-height: 1.3;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.detail-label {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.detail-value { font-size: 13px; color: var(--text); }
+.pax-highlight { font-size: 24px; font-weight: 700; color: var(--amber); }
+.detail-desc-section { margin-bottom: 16px; }
+.detail-desc {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+  max-height: 100px;
+  overflow-y: auto;
+  margin-top: 5px;
+  word-break: break-word;
+}
+.detail-cal-link {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--amber);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--border);
+  width: 100%;
+  transition: color 0.15s;
+}
+.detail-cal-link:hover { color: var(--amber-light); }
+
+/* ═══ New Booking Modal ═══ */
+.modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 28px 32px;
+  max-width: 520px;
+  width: 92%;
+  position: relative;
+  animation: fadeUp 0.2s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--amber);
+  letter-spacing: 0.08em;
+  margin: 0 0 24px 0;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.form-group { margin-bottom: 14px; }
+.form-row .form-group { margin-bottom: 0; }
+.time-pair { display: flex; gap: 8px; }
+.time-pair > div { flex: 1; }
+.preview-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  margin: 16px 0 0 0;
+}
+.preview-text {
+  font-size: 13px;
+  color: var(--amber-light);
+  font-family: var(--font-body);
+  margin-top: 4px;
+  word-break: break-word;
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ Form Inputs ═══ */
+.input-field {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 8px 11px;
+  border-radius: 2px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+.input-field:focus { border-color: var(--amber); }
+.input-field::placeholder { color: var(--text3); }
+select.input-field { cursor: pointer; }
+select.input-field option { background: var(--bg3); color: var(--text); }
+textarea.input-field { resize: vertical; min-height: 40px; }
+.field-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* ═══ Status Messages ═══ */
+.status-success { color: var(--special); font-size: 13px; font-weight: 500; }
+.status-error { color: var(--red); font-size: 12px; line-height: 1.5; }
+
+/* ═══ Setup Overlay ═══ */
+.setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 92%;
+  text-align: center;
+}
+.setup-logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--amber);
+  letter-spacing: 0.18em;
+}
+.setup-sub {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 4px 0 28px 0;
+}
+.setup-text {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* ═══ Loading Overlay ═══ */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+.loading-content { text-align: center; }
+.loading-logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--amber);
+  letter-spacing: 0.2em;
+}
+.loading-sub {
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* ═══ Loading Bar ═══ */
+.loading-bar {
+  height: 2px;
+  background: var(--bg3);
+  overflow: hidden;
+  border-radius: 1px;
+}
+.loading-bar::after {
+  content: '';
+  display: block;
+  width: 25%;
+  height: 100%;
+  background: var(--amber);
+  animation: loading-slide 1.2s ease-in-out infinite;
+}
+
+/* ═══ Animations ═══ */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes loading-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* ═══ View Tabs ═══ */
+.view-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  padding: 0 20px;
+}
+.view-tab {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: -1px;
+}
+.view-tab:hover { color: var(--text2); }
+.view-tab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+/* ═══ KPI View ═══ */
+#kpi-view {
+  flex: 1;
+  overflow-y: auto;
+  display: none;
+  flex-direction: column;
+}
+#kpi-view.active { display: flex; }
+#main.hidden-view { display: none; }
+
+/* ═══ Season Summary Bar ═══ */
+.season-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.season-stat {
+  background: var(--bg2);
+  padding: 16px 18px;
+  text-align: center;
+}
+.season-stat-value {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.season-stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 6px;
+}
+.season-stat-sub {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* ═══ KPI Content Layout ═══ */
+.kpi-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.kpi-main {
+  flex: 1;
+  overflow-y: auto;
+}
+.kpi-sidebar {
+  width: 220px;
+  border-left: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ═══ KPI Section Header ═══ */
+.kpi-section-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 10;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.kpi-updated {
+  font-size: 10px;
+  color: var(--text3);
+  font-style: italic;
+  font-family: var(--font-accent);
+}
+
+/* ═══ KPI Table ═══ */
+.kpi-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.kpi-table th {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg);
+}
+.kpi-table th.r { text-align: right; }
+.kpi-table td {
+  padding: 11px 14px;
+  font-size: 12px;
+  color: var(--text);
+  vertical-align: middle;
+}
+.kpi-table td.r { text-align: right; font-variant-numeric: tabular-nums; }
+.kpi-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.kpi-table tbody tr:nth-child(odd) { background: var(--bg); }
+.kpi-table tbody tr:nth-child(even) { background: var(--bg2); }
+.kpi-table tbody tr:hover { background: var(--amber-glow); }
+.kpi-table .row-primary { border-left: 3px solid var(--amber); }
+.kpi-operator-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kpi-operator-name {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+}
+.type-pill {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.kpi-share-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.share-bar-track {
+  width: 80px;
+  height: 4px;
+  background: var(--bg3);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.share-bar-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+.share-pct {
+  font-size: 11px;
+  color: var(--text2);
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-notes {
+  font-size: 11px;
+  color: var(--text3);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kpi-revenue { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.kpi-estimate-note {
+  font-size: 10px;
+  color: var(--text3);
+  font-style: italic;
+  font-family: var(--font-accent);
+  padding: 8px 20px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+/* ═══ Donut Chart ═══ */
+.donut-container { text-align: center; }
+.donut-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 14px;
+}
+.donut-svg { display: block; margin: 0 auto; }
+.donut-legend {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--text2);
+}
+.donut-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.donut-legend-name { flex: 1; text-align: left; }
+.donut-legend-pct { font-variant-numeric: tabular-nums; color: var(--text3); }
+
+/* ═══ Sidebar Stats ═══ */
+.sidebar-stat-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px;
+  text-align: center;
+}
+.sidebar-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+.sidebar-stat-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ═══ Operator Detail Overlay ═══ */
+.op-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 28px 32px;
+  max-width: 480px;
+  width: 92%;
+  position: relative;
+  animation: fadeUp 0.2s ease;
+}
+.op-detail-color-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 4px 4px 0 0;
+}
+.op-detail-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 12px 0 6px 0;
+  line-height: 1.3;
+}
+.op-detail-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+.op-metric-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.op-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+.op-metric-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-top: 4px;
+}
+.op-detail-share { margin: 16px 0; }
+.op-share-bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.op-share-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.op-share-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.op-share-text {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+.op-share-pct {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.op-detail-notes {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 960px) {
+  #stat-bar { grid-template-columns: repeat(3, 1fr); }
+  #main { flex-direction: column; }
+  #week-panel {
+    width: 100%;
+    max-height: 320px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+  .season-bar { grid-template-columns: repeat(3, 1fr); }
+  .kpi-content { flex-direction: column; }
+  .kpi-sidebar {
+    width: 100%;
+    max-height: 280px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .kpi-notes { max-width: 180px; }
+}
+@media (max-width: 640px) {
+  #stat-bar { grid-template-columns: repeat(2, 1fr); }
+  #header { padding: 0 14px; }
+  .form-row { grid-template-columns: 1fr; }
+  .booking-row { gap: 8px; padding: 10px 14px; }
+  .detail-card, .modal-card { padding: 20px; }
+  .season-bar { grid-template-columns: repeat(2, 1fr); }
+  .kpi-notes { display: none; }
+  .kpi-sidebar { padding: 14px; }
+  .view-tabs { padding: 0 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Loading Overlay ═══ -->
+<div id="loading-overlay">
+  <div class="loading-content">
+    <div class="loading-logo">VÍKINGAHEIMAR</div>
+    <div class="loading-sub">Control Room</div>
+    <div class="loading-bar" style="width:160px;margin:24px auto 0"></div>
+  </div>
+</div>
+
+<!-- ═══ Header ═══ -->
+<header id="header">
+  <div class="header-left">
+    <span class="logo">VÍKINGAHEIMAR</span>
+    <span class="logo-sep">&#9670;</span>
+    <span class="logo-sub">Control Room</span>
+  </div>
+  <div class="header-right">
+    <div class="status-indicator">
+      <span id="status-dot" class="status-dot"></span>
+      <span id="last-refresh" class="refresh-time">&mdash;</span>
+    </div>
+    <button id="btn-new" class="btn-amber">+ New Booking</button>
+    <button id="btn-refresh" class="btn-outline">&#8635; Refresh</button>
+  </div>
+</header>
+
+<!-- ═══ Stat Bar ═══ -->
+<div id="stat-bar">
+  <div class="stat-card primary">
+    <div class="stat-value" id="s-today-pax">&mdash;</div>
+    <div class="stat-sub">&nbsp;</div>
+    <div class="stat-label">Today &middot; Total Pax</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="s-breakfast">&mdash;</div>
+    <div class="stat-sub">&nbsp;</div>
+    <div class="stat-label">Today &middot; Breakfast</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="s-entrance">&mdash;</div>
+    <div class="stat-sub">&nbsp;</div>
+    <div class="stat-label">Today &middot; Entrance</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="s-tomorrow">&mdash;</div>
+    <div class="stat-sub" id="s-tomorrow-sub">&nbsp;</div>
+    <div class="stat-label">Tomorrow</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="s-week">&mdash;</div>
+    <div class="stat-sub" id="s-week-sub">&nbsp;</div>
+    <div class="stat-label">This Week</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="s-month">&mdash;</div>
+    <div class="stat-sub" id="s-month-sub">&nbsp;</div>
+    <div class="stat-label">Next 30 Days</div>
+  </div>
+</div>
+
+<!-- ═══ View Tabs ═══ -->
+<div class="view-tabs">
+  <button class="view-tab active" data-view="schedule">Schedule</button>
+  <button class="view-tab" data-view="kpi">Season KPIs</button>
+</div>
+
+<!-- ═══ Main Layout ═══ -->
+<main id="main">
+  <div id="today-panel">
+    <div class="section-header">
+      <div class="section-title">Today's Schedule</div>
+      <div class="section-date" id="today-date"></div>
+    </div>
+    <div id="today-list"><div class="loading-bar" style="margin:24px 20px"></div></div>
+  </div>
+  <div id="week-panel">
+    <div class="section-header">
+      <div class="section-title">This Week</div>
+      <div class="section-date" id="week-range"></div>
+    </div>
+    <div id="week-list"><div class="loading-bar" style="margin:24px 14px"></div></div>
+  </div>
+</main>
+
+<!-- ═══ KPI View ═══ -->
+<div id="kpi-view">
+  <div class="season-bar" id="season-bar"></div>
+  <div class="kpi-estimate-note" id="kpi-note"></div>
+  <div class="kpi-content">
+    <div class="kpi-main">
+      <div class="kpi-section-header">
+        <div class="section-title">Top 10 Operators</div>
+        <span class="kpi-updated">Season: 23 Mar – 30 Sep 2026</span>
+      </div>
+      <table class="kpi-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Operator</th>
+            <th class="r">Bookings</th>
+            <th class="r">Total Pax</th>
+            <th class="r">Est. Revenue</th>
+            <th class="r">Season Share</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="kpi-table-body"></tbody>
+      </table>
+    </div>
+    <div class="kpi-sidebar">
+      <div class="donut-container" id="donut-container"></div>
+      <div class="sidebar-stat-box">
+        <div class="sidebar-stat-value" id="sidebar-bookings"></div>
+        <div class="sidebar-stat-label">Total Bookings</div>
+      </div>
+      <div class="sidebar-stat-box">
+        <div class="sidebar-stat-value" id="sidebar-pax"></div>
+        <div class="sidebar-stat-label">Total Season Pax</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Operator Detail Overlay ═══ -->
+<div id="op-detail-overlay" class="overlay hidden">
+  <div class="op-detail-card">
+    <button class="overlay-close">&times;</button>
+    <div class="op-detail-color-bar" id="op-color-bar"></div>
+    <div id="op-type-pill" class="type-pill"></div>
+    <h2 id="op-detail-name" class="op-detail-name"></h2>
+    <div class="op-detail-metrics">
+      <div class="op-metric-box">
+        <div class="op-metric-value" id="op-bookings"></div>
+        <div class="op-metric-label">Bookings</div>
+      </div>
+      <div class="op-metric-box">
+        <div class="op-metric-value" id="op-pax"></div>
+        <div class="op-metric-label">Total Pax</div>
+      </div>
+      <div class="op-metric-box">
+        <div class="op-metric-value" id="op-revenue"></div>
+        <div class="op-metric-label">Est. Revenue</div>
+      </div>
+    </div>
+    <div class="op-detail-share">
+      <div class="op-share-label">
+        <span class="op-share-text">Season Share</span>
+        <span class="op-share-pct" id="op-share-pct"></span>
+      </div>
+      <div class="op-share-bar-track">
+        <div class="op-share-bar-fill" id="op-share-bar"></div>
+      </div>
+    </div>
+    <div class="op-detail-notes" id="op-notes"></div>
+  </div>
+</div>
+
+<!-- ═══ Detail Overlay ═══ -->
+<div id="detail-overlay" class="overlay hidden">
+  <div class="detail-card">
+    <button class="overlay-close">&times;</button>
+    <div id="detail-badge" class="badge"></div>
+    <h2 id="detail-operator" class="detail-title"></h2>
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="detail-label">Date &amp; Time</span>
+        <span id="detail-time" class="detail-value"></span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Pax</span>
+        <span id="detail-pax" class="detail-value pax-highlight"></span>
+      </div>
+      <div class="detail-item" id="detail-ref-row">
+        <span class="detail-label">Reference</span>
+        <span id="detail-ref" class="detail-value"></span>
+      </div>
+    </div>
+    <div id="detail-desc-section" class="detail-desc-section">
+      <span class="detail-label">Notes</span>
+      <div id="detail-desc" class="detail-desc"></div>
+    </div>
+    <div id="detail-title-section" class="detail-desc-section">
+      <span class="detail-label">Calendar Title</span>
+      <div id="detail-full-title" class="detail-desc" style="font-size:11px;color:var(--text3)"></div>
+    </div>
+    <a id="detail-link" href="#" target="_blank" rel="noopener" class="detail-cal-link">Open in Google Calendar &#8599;</a>
+  </div>
+</div>
+
+<!-- ═══ New Booking Modal ═══ -->
+<div id="booking-modal" class="overlay hidden">
+  <div class="modal-card">
+    <button class="overlay-close">&times;</button>
+    <h2 class="modal-title">New Booking</h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="field-label">Service Type</label>
+        <select id="nb-service" class="input-field">
+          <option value="breakfast">Breakfast</option>
+          <option value="entrance">Entrance</option>
+          <option value="lunch">Lunch</option>
+          <option value="soup">Soup</option>
+          <option value="special">Special (Thor refreshments)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="field-label">Pax Count</label>
+        <input id="nb-pax" type="number" class="input-field" min="1" max="9999" placeholder="e.g. 45">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Operator / Group Name</label>
+      <input id="nb-operator" type="text" class="input-field" placeholder="e.g. Iceland Travel, EF Cultural Tours">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="field-label">Date</label>
+        <input id="nb-date" type="date" class="input-field">
+      </div>
+      <div class="form-group">
+        <div class="time-pair">
+          <div>
+            <label class="field-label">Start</label>
+            <input id="nb-start" type="time" class="input-field">
+          </div>
+          <div>
+            <label class="field-label">End</label>
+            <input id="nb-end" type="time" class="input-field">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Booking Reference <span style="font-weight:400;color:var(--text3)">(optional)</span></label>
+      <input id="nb-ref" type="text" class="input-field" placeholder="e.g. ATL010234, 185836">
+    </div>
+
+    <div class="form-group">
+      <label class="field-label">Notes <span style="font-weight:400;color:var(--text3)">(optional)</span></label>
+      <textarea id="nb-notes" class="input-field" rows="3" placeholder="Extra details..."></textarea>
+    </div>
+
+    <div class="preview-box">
+      <span class="field-label">Event title preview</span>
+      <div id="nb-preview" class="preview-text">&mdash;</div>
+    </div>
+
+    <div id="nb-status" style="margin-top:12px"></div>
+
+    <div class="form-actions">
+      <button id="nb-cancel" class="btn-text">Cancel</button>
+      <button id="nb-submit" class="btn-amber">Create Booking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ═══ Constants ═══ */
+  var CALENDAR_API = '/api/calendar';
+  var CALENDAR_CREATE_API = '/api/calendar/create';
+  var REFRESH_MS = 60000;
+  var STALE_MS = 90000;
+  var TZ = 'Atlantic/Reykjavik';
+
+  /* ═══ State ═══ */
+  var parsedEvents = [];
+  var refreshTimer = null;
+  var staleTimer = null;
+
+  /* ═══ Operator KPI Data ═══ */
+  var TOP_OPERATORS = [
+    { rank:1, name:"Atlantik", type:"cruise_broker", bookings:57, pax:18877, revenueISK:32090900, sharePercent:67.1, notes:"Shore excursion broker. MSC Preziosa, Norwegian Star, AIDA fleet, Ambition, Ambience.", color:"#9b7db5" },
+    { rank:2, name:"Iceland Travel", type:"cruise_fit", bookings:33, pax:2840, revenueISK:5357000, sharePercent:10.1, notes:"Cruise groups + FIT. Princess fleet, HAL, Fred Olsen, Queen series, Ponant via IT.", color:"#5b7fa6" },
+    { rank:3, name:"EF Cultural Tours", type:"educational", bookings:39, pax:1717, revenueISK:6755300, sharePercent:6.1, notes:"US student groups. Always breakfast + entrance. High booking volume, smaller groups.", color:"#c8874a" },
+    { rank:4, name:"Viking River Cruises", type:"river_cruise", bookings:30, pax:945, revenueISK:4063500, sharePercent:3.4, notes:"Viking Mars, Mira, Saturn. Always 45 pax. Always Thor refreshments (dried fish + Viking beer).", color:"#7a9e8a" },
+    { rank:5, name:"TTT School Groups", type:"school", bookings:28, pax:872, revenueISK:1482400, sharePercent:3.1, notes:"Weekly recurring. TTT 1–23. Always 56 pax, always 15:30, always entrance only.", color:"#a89880" },
+    { rank:6, name:"Ponant", type:"luxury_cruise", bookings:12, pax:700, revenueISK:1190000, sharePercent:2.5, notes:"French luxury cruise. Always 70 pax split 2×35. L'Austral, Le Bellot, Le Lapérouse.", color:"#6b9ab8" },
+    { rank:7, name:"Fred Olsen", type:"cruise", bookings:6, pax:260, revenueISK:442000, sharePercent:0.9, notes:"Via Iceland Travel. Block bookings confirmed for full 2026 season.", color:"#8b7355" },
+    { rank:8, name:"GJ Travel", type:"travel_agent", bookings:9, pax:253, revenueISK:1012000, sharePercent:0.9, notes:"Guðmundur Jónasson ehf. School + leisure groups. Canadian and US markets.", color:"#7a8a6a" },
+    { rank:9, name:"Star Pride (Windstar)", type:"luxury_cruise", bookings:9, pax:225, revenueISK:954000, sharePercent:0.8, notes:"Windstar luxury. Always 45 pax, always soup service. Regular throughout summer.", color:"#9a8a7a" },
+    { rank:10, name:"Morgan Groups", type:"travel_agent", bookings:6, pax:134, revenueISK:536000, sharePercent:0.5, notes:"Regular breakfast groups. SEF, IHS, PAC, FRS, COA, ATN group codes.", color:"#7a8a9a" }
+  ];
+
+  var SEASON_TOTALS = {
+    totalBookings: 282,
+    totalPax: 28141,
+    estimatedRevenueISK: 57100000,
+    seasonStart: "2026-03-23",
+    seasonEnd: "2026-09-30",
+    lastUpdated: "2026-03-23",
+    pricingBasis: "Estimated at standard group rates: Breakfast 4,000 ISK/pax, Entrance 1,700 ISK/pax, Special 4,300 ISK/pax"
+  };
+
+  /* ═══ DOM Shortcut ═══ */
+  var $ = function(id) { return document.getElementById(id); };
+
+  /* ═══ Escape HTML ═══ */
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  /* ═══ Date Utilities ═══ */
+  function icelandDate(d) {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d || new Date());
+  }
+
+  function icelandTime(iso) {
+    if (!iso) return '';
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false
+    }).format(new Date(iso));
+  }
+
+  function icelandFullDate(d) {
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    }).format(d || new Date());
+  }
+
+  function icelandShortDate(d) {
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: TZ, day: 'numeric', month: 'short'
+    }).format(d);
+  }
+
+  function getDayName(d) {
+    return new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'short' }).format(d);
+  }
+
+  function getWeekDays() {
+    var today = new Date();
+    var dow = today.getDay();
+    var offset = dow === 0 ? -6 : 1 - dow;
+    var monday = new Date(today);
+    monday.setDate(today.getDate() + offset);
+    monday.setHours(0, 0, 0, 0);
+    var days = [];
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  }
+
+  /* ═══ Event Parser ═══ */
+  function parseEvent(ev) {
+    var title = ev.summary || '';
+    var tl = title.toLowerCase();
+
+    // Service detection
+    var service = 'other';
+    if (/^breakfast/i.test(title) || /breakfast|morgunmat/i.test(tl)) service = 'breakfast';
+    else if (/^entrance|^admission/i.test(title)) service = 'entrance';
+    else if (/soup|súpa/i.test(tl)) service = 'soup';
+    else if (/lunch|hádegi/i.test(tl)) service = 'lunch';
+    else if (/refreshment|thor.*fish|dried fish|viking beer/i.test(tl)) service = 'special';
+    else if (/^atlantik/i.test(title) && /\d{3,}\s*pax|\d+\s*group/i.test(title)) service = 'cruise_block';
+    else if (/^ttt\s/i.test(title)) service = 'entrance';
+    else if (/viking\s*(mars|mira|saturn)/i.test(tl)) service = 'special';
+    else if (/entrance|admission/i.test(tl)) service = 'entrance';
+
+    // Pax extraction
+    var pax = 0;
+    var pm;
+    pm = title.match(/(\d+)\s*\+\s*(\d+)\s*pax/i);
+    if (pm) { pax = parseInt(pm[1]) + parseInt(pm[2]); }
+    if (!pax) { pm = title.match(/(\d+)\s*\+\s*(\d+)(?:\s*[;,])/); if (pm) pax = parseInt(pm[1]) + parseInt(pm[2]); }
+    if (!pax) { pm = title.match(/(\d+)\s*pax/i); if (pm) pax = parseInt(pm[1]); }
+    if (!pax) { pm = title.match(/pax[:\s]+(\d+)/i); if (pm) pax = parseInt(pm[1]); }
+    if (!pax) {
+      var parts = title.split(';');
+      for (var pi = 0; pi < parts.length; pi++) {
+        var pt = parts[pi].trim();
+        var pm2 = pt.match(/^(\d+)\s*\+\s*(\d+)$/);
+        if (pm2) { pax = parseInt(pm2[1]) + parseInt(pm2[2]); break; }
+        var pm3 = pt.match(/^(\d{1,4})$/);
+        if (pm3 && parseInt(pm3[1]) > 1 && parseInt(pm3[1]) < 2000) { pax = parseInt(pm3[1]); break; }
+      }
+    }
+
+    // Operator extraction
+    var sparts = title.split(';').map(function(s) { return s.trim(); });
+    var svcWords = ['breakfast','entrance','admission','lunch','soup','refreshment','atlantik'];
+    var operator = '';
+    var firstLower = (sparts[0] || '').toLowerCase();
+    if (sparts.length >= 3 && svcWords.some(function(k) { return firstLower.startsWith(k); })) {
+      operator = sparts[2];
+    } else if (sparts.length >= 1) {
+      operator = sparts[0];
+    }
+    operator = operator
+      .replace(/\b\d+\s*(?:\+\s*\d+)?\s*pax\b/gi, '')
+      .replace(/\b\d{1,2}[\.\-\/]\d{1,2}[\.\-\/]\d{2,4}\b/g, '')
+      .replace(/\b\d{1,2}\s*(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*(?:\d{2,4})?\b/gi, '')
+      .replace(/\b\d{2}:\d{2}\b/g, '')
+      .replace(/\bATL\d{5,}\b/gi, '')
+      .replace(/\bb\.?nr\.?\s*\S+/gi, '')
+      .replace(/^\s*[-–—:;,()]\s*/, '')
+      .replace(/\s*[-–—:;,()]\s*$/, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+    if (!operator || operator.length < 2) operator = sparts[0] || title;
+    if (operator.length > 65) operator = operator.slice(0, 65) + '\u2026';
+
+    // Reference extraction
+    var ref = '';
+    var rm = title.match(/\b(ATL\d{5,})\b/i);
+    if (rm) ref = rm[1];
+    if (!ref) { rm = title.match(/(?:Ref\.?#?|b\.?nr\.?)\s*([A-Z0-9\-]{4,20})/i); if (rm) ref = rm[1]; }
+    if (!ref && sparts.length >= 4) {
+      var lp = sparts[sparts.length - 1].trim();
+      if (/^\d{4,10}$/.test(lp)) ref = lp;
+    }
+
+    var startDt = (ev.start && (ev.start.dateTime || ev.start.date)) || '';
+    var endDt = (ev.end && (ev.end.dateTime || ev.end.date)) || '';
+    var isAllDay = !(ev.start && ev.start.dateTime) && !!(ev.start && ev.start.date);
+    var desc = (ev.description || '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/\s{2,}/g, ' ').trim();
+
+    return {
+      id: ev.id || '', title: title, service: service, pax: pax,
+      operator: operator, ref: ref,
+      startDt: startDt, endDt: endDt, isAllDay: isAllDay,
+      desc: desc, htmlLink: ev.htmlLink || '', colorId: ev.colorId || ''
+    };
+  }
+
+  /* ═══ API: Fetch Events ═══ */
+  async function fetchEvents(timeMin, timeMax) {
+    var params = new URLSearchParams({ timeMin: timeMin, timeMax: timeMax });
+    var res = await fetch(CALENDAR_API + '?' + params.toString());
+
+    if (!res.ok) {
+      var errText = '';
+      try { errText = await res.text(); } catch(e) {}
+      throw new Error('Calendar error ' + res.status + ': ' + errText.slice(0, 300));
+    }
+
+    var events = await res.json();
+    if (!Array.isArray(events)) throw new Error('Invalid response from calendar API');
+    return events;
+  }
+
+  /* ═══ API: Create Event ═══ */
+  async function createEvent(payload) {
+    var res = await fetch(CALENDAR_CREATE_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      var errText = '';
+      try { errText = await res.text(); } catch(e) {}
+      throw new Error('Calendar error ' + res.status + ': ' + errText.slice(0, 300));
+    }
+    return await res.json();
+  }
+
+  /* ═══ Service Helpers ═══ */
+  function badgeClass(svc) {
+    var m = { breakfast:'breakfast', entrance:'entrance', soup:'special', lunch:'special',
+              special:'special', cruise_block:'cruise', school:'entrance', other:'other' };
+    return 'badge badge-' + (m[svc] || 'other');
+  }
+  function badgeLabel(svc) {
+    var m = { breakfast:'Breakfast', entrance:'Entrance', soup:'Soup', lunch:'Lunch',
+              special:'Special', cruise_block:'Cruise', school:'School', other:'Other' };
+    return m[svc] || 'Other';
+  }
+  function serviceColor(svc) {
+    var m = { breakfast:'var(--breakfast)', entrance:'var(--entrance)', soup:'var(--special)',
+              lunch:'var(--special)', special:'var(--special)', cruise_block:'var(--cruise)',
+              school:'var(--entrance)', other:'var(--text3)' };
+    return m[svc] || 'var(--text3)';
+  }
+
+  /* ═══ Stats Calculator ═══ */
+  function calcStats() {
+    var todayStr = icelandDate();
+    var tmrw = new Date(); tmrw.setDate(tmrw.getDate() + 1);
+    var tmrwStr = icelandDate(tmrw);
+    var weekDays = getWeekDays();
+    var weekStart = icelandDate(weekDays[0]);
+    var weekEnd = icelandDate(weekDays[6]);
+    var d30 = new Date(); d30.setDate(d30.getDate() + 30);
+    var d30Str = icelandDate(d30);
+
+    var today = parsedEvents.filter(function(e) { return (e.startDt||'').slice(0,10) === todayStr; });
+    var tomorrow = parsedEvents.filter(function(e) { return (e.startDt||'').slice(0,10) === tmrwStr; });
+    var week = parsedEvents.filter(function(e) { var d = (e.startDt||'').slice(0,10); return d >= weekStart && d <= weekEnd; });
+    var month = parsedEvents.filter(function(e) { var d = (e.startDt||'').slice(0,10); return d >= todayStr && d <= d30Str; });
+
+    function sumPax(arr) { return arr.reduce(function(s,e) { return s + e.pax; }, 0); }
+
+    return {
+      todayPax: sumPax(today),
+      breakfastPax: sumPax(today.filter(function(e) { return e.service === 'breakfast'; })),
+      entrancePax: sumPax(today.filter(function(e) { return e.service === 'entrance'; })),
+      tmrwPax: sumPax(tomorrow), tmrwCount: tomorrow.length,
+      weekPax: sumPax(week), weekCount: week.length,
+      monthPax: sumPax(month), monthCount: month.length
+    };
+  }
+
+  /* ═══ Render: Stats ═══ */
+  function renderStats(s) {
+    $('s-today-pax').textContent = s.todayPax.toLocaleString();
+    $('s-breakfast').textContent = s.breakfastPax.toLocaleString();
+    $('s-entrance').textContent = s.entrancePax.toLocaleString();
+    $('s-tomorrow').textContent = s.tmrwPax.toLocaleString();
+    $('s-tomorrow-sub').textContent = s.tmrwCount + (s.tmrwCount === 1 ? ' booking' : ' bookings');
+    $('s-week').textContent = s.weekPax.toLocaleString();
+    $('s-week-sub').textContent = s.weekCount + (s.weekCount === 1 ? ' booking' : ' bookings');
+    $('s-month').textContent = s.monthPax.toLocaleString();
+    $('s-month-sub').textContent = s.monthCount + (s.monthCount === 1 ? ' booking' : ' bookings');
+  }
+
+  /* ═══ Render: Today ═══ */
+  function renderToday() {
+    var todayStr = icelandDate();
+    var events = parsedEvents.filter(function(e) { return (e.startDt||'').slice(0,10) === todayStr; });
+    var container = $('today-list');
+
+    $('today-date').textContent = icelandFullDate();
+
+    if (events.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">' +
+          '<svg viewBox="0 0 120 80" fill="none">' +
+            '<path d="M10 55 Q60 72 110 55" stroke="var(--text3)" stroke-width="1.5"/>' +
+            '<path d="M15 55 Q60 38 105 55" stroke="var(--text3)" stroke-width="1.5"/>' +
+            '<path d="M60 55 L60 18" stroke="var(--text3)" stroke-width="1.5"/>' +
+            '<path d="M60 18 L82 38 L60 38" fill="var(--amber-dim)" stroke="var(--amber)" stroke-width="1"/>' +
+            '<line x1="25" y1="55" x2="28" y2="64" stroke="var(--text3)" stroke-width="1"/>' +
+            '<line x1="45" y1="57" x2="47" y2="66" stroke="var(--text3)" stroke-width="1"/>' +
+            '<line x1="75" y1="57" x2="73" y2="66" stroke="var(--text3)" stroke-width="1"/>' +
+            '<line x1="95" y1="55" x2="92" y2="64" stroke="var(--text3)" stroke-width="1"/>' +
+          '</svg>' +
+          '<p>No bookings today</p>' +
+        '</div>';
+      return;
+    }
+
+    container.innerHTML = events.map(function(ev) {
+      return '<div class="booking-row" data-event-id="' + esc(ev.id) + '">' +
+        '<div class="row-accent" style="background:' + serviceColor(ev.service) + '"></div>' +
+        '<span class="row-time">' + (ev.isAllDay ? 'All day' : icelandTime(ev.startDt)) + '</span>' +
+        '<span class="row-operator">' + esc(ev.operator) + '</span>' +
+        '<span class="' + badgeClass(ev.service) + '">' + badgeLabel(ev.service) + '</span>' +
+        (ev.ref ? '<span class="row-ref">' + esc(ev.ref) + '</span>' : '') +
+        '<span class="row-pax">' + (ev.pax ? ev.pax + ' pax' : '') + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* ═══ Render: Week ═══ */
+  function renderWeek() {
+    var weekDays = getWeekDays();
+    var todayStr = icelandDate();
+    var container = $('week-list');
+
+    $('week-range').textContent = icelandShortDate(weekDays[0]) + ' \u2013 ' + icelandShortDate(weekDays[6]);
+
+    container.innerHTML = weekDays.map(function(day) {
+      var dayStr = icelandDate(day);
+      var isToday = dayStr === todayStr;
+      var dayEvents = parsedEvents.filter(function(e) { return (e.startDt||'').slice(0,10) === dayStr; });
+      var totalPax = dayEvents.reduce(function(s,e) { return s + e.pax; }, 0);
+      var collapsed = !isToday;
+
+      var bodyHtml;
+      if (dayEvents.length === 0) {
+        bodyHtml = '<div class="wb-empty">No bookings</div>';
+      } else {
+        bodyHtml = dayEvents.map(function(ev) {
+          return '<div class="wb-row" data-event-id="' + esc(ev.id) + '">' +
+            '<span class="wb-time">' + (ev.isAllDay ? 'All day' : icelandTime(ev.startDt)) + '</span>' +
+            '<span class="' + badgeClass(ev.service) + ' wb-badge">' + badgeLabel(ev.service).charAt(0) + '</span>' +
+            '<span class="wb-operator">' + esc(ev.operator) + '</span>' +
+            '<span class="wb-pax">' + (ev.pax || '') + '</span>' +
+          '</div>';
+        }).join('');
+      }
+
+      return '<div class="week-day ' + (collapsed ? 'collapsed' : '') + (isToday ? ' is-today' : '') + '">' +
+        '<div class="day-header">' +
+          '<span class="day-name">' + getDayName(day) + '</span>' +
+          '<span class="day-date">' + icelandShortDate(day) + '</span>' +
+          '<span class="day-pax">' + totalPax + ' pax</span>' +
+          '<span class="day-count">' + dayEvents.length + '</span>' +
+          '<span class="day-chevron">&#9662;</span>' +
+        '</div>' +
+        '<div class="day-body">' + bodyHtml + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* ═══ Render: All ═══ */
+  function render() {
+    renderStats(calcStats());
+    renderToday();
+    renderWeek();
+  }
+
+  /* ═══ Detail Overlay ═══ */
+  function showDetail(id) {
+    var ev = parsedEvents.find(function(e) { return e.id === id; });
+    if (!ev) return;
+
+    $('detail-badge').className = badgeClass(ev.service);
+    $('detail-badge').textContent = badgeLabel(ev.service);
+    $('detail-operator').textContent = ev.operator;
+
+    var dateStr = '';
+    if (ev.startDt) {
+      try {
+        dateStr = new Intl.DateTimeFormat('en-GB', {
+          timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long'
+        }).format(new Date(ev.startDt));
+      } catch(e) {}
+    }
+    var timeRange = ev.isAllDay ? 'All day' : (icelandTime(ev.startDt) + ' \u2013 ' + icelandTime(ev.endDt));
+    $('detail-time').textContent = dateStr + (dateStr ? ', ' : '') + timeRange;
+
+    $('detail-pax').textContent = ev.pax ? ev.pax.toString() : '\u2014';
+
+    if (ev.ref) {
+      $('detail-ref-row').style.display = '';
+      $('detail-ref').textContent = ev.ref;
+    } else {
+      $('detail-ref-row').style.display = 'none';
+    }
+
+    if (ev.desc) {
+      $('detail-desc-section').style.display = '';
+      $('detail-desc').textContent = ev.desc;
+    } else {
+      $('detail-desc-section').style.display = 'none';
+    }
+
+    $('detail-full-title').textContent = ev.title;
+
+    if (ev.htmlLink) {
+      $('detail-link').href = ev.htmlLink;
+      $('detail-link').style.display = '';
+    } else {
+      $('detail-link').style.display = 'none';
+    }
+
+    $('detail-overlay').classList.remove('hidden');
+  }
+
+  function closeDetail() { $('detail-overlay').classList.add('hidden'); }
+
+  /* ═══ New Booking Modal ═══ */
+  function openBookingModal() {
+    $('nb-date').value = icelandDate();
+    $('nb-start').value = '09:00';
+    $('nb-end').value = '10:00';
+    $('nb-service').value = 'breakfast';
+    $('nb-operator').value = '';
+    $('nb-pax').value = '';
+    $('nb-ref').value = '';
+    $('nb-notes').value = '';
+    $('nb-status').innerHTML = '';
+    $('nb-submit').disabled = false;
+    $('nb-submit').textContent = 'Create Booking';
+    updatePreview();
+    $('booking-modal').classList.remove('hidden');
+    setTimeout(function() { $('nb-operator').focus(); }, 50);
+  }
+
+  function closeBookingModal() { $('booking-modal').classList.add('hidden'); }
+
+  function updatePreview() {
+    var svc = $('nb-service');
+    var label = svc.options[svc.selectedIndex].text.split(' (')[0];
+    var operator = $('nb-operator').value.trim();
+    var pax = $('nb-pax').value;
+    var ref = $('nb-ref').value.trim();
+
+    var title = '';
+    if (pax) {
+      title = label + '; ' + pax + ' pax';
+      if (operator) title += '; ' + operator;
+      if (ref) title += '; ' + ref;
+    }
+    $('nb-preview').textContent = title || '\u2014';
+  }
+
+  function onStartTimeChange() {
+    var val = $('nb-start').value;
+    if (!val) return;
+    var parts = val.split(':').map(Number);
+    var h = parts[0], m = parts[1] || 0;
+    $('nb-end').value = String((h + 1) % 24).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    updatePreview();
+  }
+
+  async function submitBooking() {
+    var service = $('nb-service').value;
+    var operator = $('nb-operator').value.trim();
+    var pax = $('nb-pax').value;
+    var date = $('nb-date').value;
+    var start = $('nb-start').value;
+    var end = $('nb-end').value;
+    var ref = $('nb-ref').value.trim();
+    var notes = $('nb-notes').value.trim();
+
+    if (!operator || !pax || !date || !start || !end) {
+      $('nb-status').innerHTML = '<span class="status-error">Please fill in all required fields</span>';
+      return;
+    }
+
+    var svc = $('nb-service');
+    var label = svc.options[svc.selectedIndex].text.split(' (')[0];
+    var summary = label + '; ' + pax + ' pax; ' + operator;
+    if (ref) summary += '; ' + ref;
+
+    var colorMap = { breakfast: '5', entrance: '7', lunch: '2', soup: '2', special: '2' };
+
+    var payload = {
+      summary: summary,
+      description: notes || '',
+      start: { dateTime: date + 'T' + start + ':00', timeZone: TZ },
+      end: { dateTime: date + 'T' + end + ':00', timeZone: TZ },
+      colorId: colorMap[service] || '2'
+    };
+
+    $('nb-submit').disabled = true;
+    $('nb-submit').textContent = 'Creating booking\u2026';
+    $('nb-status').innerHTML = '<div class="loading-bar"></div>';
+
+    try {
+      await createEvent(payload);
+      $('nb-status').innerHTML = '<span class="status-success">\u2713 Booking created</span>';
+      setTimeout(function() {
+        closeBookingModal();
+        loadData();
+      }, 1800);
+    } catch (err) {
+      console.error('Create booking error:', err);
+      $('nb-status').innerHTML = '<span class="status-error">Error: ' + esc(err.message) + '</span>';
+      $('nb-submit').disabled = false;
+      $('nb-submit').textContent = 'Create Booking';
+    }
+  }
+
+  /* ═══ Status Indicator ═══ */
+  function setStatus(state) {
+    $('status-dot').className = 'status-dot ' + state;
+    if (state === 'live') {
+      $('last-refresh').textContent = new Intl.DateTimeFormat('en-GB', {
+        timeZone: TZ, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+      }).format(new Date());
+    }
+  }
+
+  function startStaleTimer() {
+    clearTimeout(staleTimer);
+    staleTimer = setTimeout(function() { setStatus('stale'); }, STALE_MS);
+  }
+
+  /* ═══ Main Load ═══ */
+  async function loadData() {
+    setStatus('loading');
+    try {
+      var now = new Date();
+      var yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+      var future = new Date(now); future.setDate(now.getDate() + 35);
+
+      var events = await fetchEvents(yesterday.toISOString(), future.toISOString());
+      parsedEvents = events.map(parseEvent).sort(function(a, b) {
+        return (a.startDt || '').localeCompare(b.startDt || '');
+      });
+
+      setStatus('live');
+      startStaleTimer();
+      render();
+    } catch (err) {
+      console.error('Load error:', err);
+      setStatus('error');
+      if (!parsedEvents.length) {
+        $('today-list').innerHTML = '<div class="error-state"><p>' + esc(err.message) + '</p></div>';
+        $('week-list').innerHTML = '<div class="error-state"><p>Failed to load calendar data</p></div>';
+      }
+    } finally {
+      var lo = $('loading-overlay');
+      if (lo && lo.style.display !== 'none') lo.style.display = 'none';
+    }
+  }
+
+  /* ═══ Event Delegation ═══ */
+  document.addEventListener('click', function(e) {
+    // KPI table row click → operator detail
+    var opRow = e.target.closest('[data-op-rank]');
+    if (opRow) { showOperatorDetail(parseInt(opRow.dataset.opRank)); return; }
+
+    // Operator detail overlay backdrop
+    if (e.target === $('op-detail-overlay')) { closeOpDetail(); return; }
+
+    // Booking row click → detail overlay
+    var row = e.target.closest('[data-event-id]');
+    if (row) { showDetail(row.dataset.eventId); return; }
+
+    // Day header click → toggle collapse
+    var header = e.target.closest('.day-header');
+    if (header) { header.parentElement.classList.toggle('collapsed'); return; }
+
+    // Detail overlay backdrop
+    if (e.target === $('detail-overlay')) { closeDetail(); return; }
+
+    // Booking modal backdrop
+    if (e.target === $('booking-modal')) { closeBookingModal(); return; }
+  });
+
+  /* ═══ Keyboard Shortcuts ═══ */
+  document.addEventListener('keydown', function(e) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    var inInput = tag === 'input' || tag === 'textarea' || tag === 'select';
+
+    if (e.key === 'Escape') {
+      if (!$('op-detail-overlay').classList.contains('hidden')) { closeOpDetail(); return; }
+      if (!$('booking-modal').classList.contains('hidden')) { closeBookingModal(); return; }
+      if (!$('detail-overlay').classList.contains('hidden')) { closeDetail(); return; }
+    }
+    if (inInput) return;
+    if (e.key === 'r' || e.key === 'R') { e.preventDefault(); loadData(); }
+    if (e.key === 'n' || e.key === 'N') {
+      if ($('detail-overlay').classList.contains('hidden') && $('booking-modal').classList.contains('hidden')) {
+        e.preventDefault();
+        openBookingModal();
+      }
+    }
+  });
+
+  /* ═══ KPI Helpers ═══ */
+  function formatISK(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M ISK';
+    if (n >= 1000) return (n / 1000).toFixed(0) + 'K ISK';
+    return n.toLocaleString() + ' ISK';
+  }
+  function formatPax(n) { return n.toLocaleString('en-GB'); }
+
+  function typeLabel(t) {
+    var m = { cruise_broker:'Cruise Broker', cruise_fit:'Cruise / FIT', educational:'Educational',
+              river_cruise:'River Cruise', school:'School', luxury_cruise:'Luxury Cruise',
+              cruise:'Cruise', travel_agent:'Travel Agent' };
+    return m[t] || t;
+  }
+
+  function typePillStyle(op) {
+    return 'background:' + op.color + '22;color:' + op.color + ';';
+  }
+
+  /* ═══ Render: Season Bar ═══ */
+  function renderSeasonBar() {
+    var sb = $('season-bar');
+    sb.innerHTML =
+      '<div class="season-stat">' +
+        '<div class="season-stat-value">' + formatPax(SEASON_TOTALS.totalPax) + '</div>' +
+        '<div class="season-stat-label">Total Season Pax</div>' +
+      '</div>' +
+      '<div class="season-stat">' +
+        '<div class="season-stat-value">' + SEASON_TOTALS.totalBookings + '</div>' +
+        '<div class="season-stat-label">Total Bookings</div>' +
+      '</div>' +
+      '<div class="season-stat">' +
+        '<div class="season-stat-value">~' + formatISK(SEASON_TOTALS.estimatedRevenueISK) + '</div>' +
+        '<div class="season-stat-label">Est. Revenue</div>' +
+      '</div>' +
+      '<div class="season-stat">' +
+        '<div class="season-stat-value">23 Mar – 30 Sep</div>' +
+        '<div class="season-stat-label">Season 2026</div>' +
+      '</div>' +
+      '<div class="season-stat">' +
+        '<div class="season-stat-value">Atlantik</div>' +
+        '<div class="season-stat-sub">67.1% of pax</div>' +
+        '<div class="season-stat-label">Top Operator</div>' +
+      '</div>';
+
+    $('kpi-note').textContent = 'Revenue figures are estimates based on standard group rates. Last updated: ' + SEASON_TOTALS.lastUpdated;
+    $('sidebar-bookings').textContent = SEASON_TOTALS.totalBookings;
+    $('sidebar-pax').textContent = formatPax(SEASON_TOTALS.totalPax);
+  }
+
+  /* ═══ Render: KPI Table ═══ */
+  function renderKpiTable() {
+    var tbody = $('kpi-table-body');
+    tbody.innerHTML = TOP_OPERATORS.map(function(op) {
+      var isPrimary = op.rank === 1;
+      return '<tr data-op-rank="' + op.rank + '"' + (isPrimary ? ' class="row-primary"' : '') + '>' +
+        '<td class="r" style="color:var(--text3);font-weight:600">' + op.rank + '</td>' +
+        '<td><div class="kpi-operator-cell">' +
+          '<span class="kpi-operator-name">' + esc(op.name) + '</span>' +
+          '<span class="type-pill" style="' + typePillStyle(op) + '">' + typeLabel(op.type) + '</span>' +
+        '</div></td>' +
+        '<td class="r">' + op.bookings + '</td>' +
+        '<td class="r">' + formatPax(op.pax) + '</td>' +
+        '<td class="r kpi-revenue">' + formatISK(op.revenueISK) + '</td>' +
+        '<td class="r"><div class="kpi-share-cell">' +
+          '<div class="share-bar-track"><div class="share-bar-fill" style="width:' + (op.sharePercent / 67.1 * 100) + '%"></div></div>' +
+          '<span class="share-pct">' + op.sharePercent.toFixed(1) + '%</span>' +
+        '</div></td>' +
+        '<td><span class="kpi-notes">' + esc(op.notes) + '</span></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  /* ═══ Render: Donut Chart ═══ */
+  function renderDonut() {
+    var container = $('donut-container');
+    var top5 = TOP_OPERATORS.slice(0, 5);
+    var otherPct = 100 - top5.reduce(function(s, o) { return s + o.sharePercent; }, 0);
+
+    var R = 50, CX = 60, CY = 60, SW = 16;
+    var C = 2 * Math.PI * R;
+    var offset = 0;
+    var arcs = '';
+
+    top5.forEach(function(op) {
+      var dash = (op.sharePercent / 100) * C;
+      arcs += '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" ' +
+        'stroke="' + op.color + '" stroke-width="' + SW + '" ' +
+        'stroke-dasharray="' + dash + ' ' + (C - dash) + '" ' +
+        'stroke-dashoffset="' + (-offset) + '" ' +
+        'transform="rotate(-90 ' + CX + ' ' + CY + ')" />';
+      offset += dash;
+    });
+
+    if (otherPct > 0) {
+      var dash = (otherPct / 100) * C;
+      arcs += '<circle cx="' + CX + '" cy="' + CY + '" r="' + R + '" fill="none" ' +
+        'stroke="var(--text3)" stroke-width="' + SW + '" stroke-opacity="0.3" ' +
+        'stroke-dasharray="' + dash + ' ' + (C - dash) + '" ' +
+        'stroke-dashoffset="' + (-offset) + '" ' +
+        'transform="rotate(-90 ' + CX + ' ' + CY + ')" />';
+    }
+
+    var legend = top5.map(function(op) {
+      return '<div class="donut-legend-item">' +
+        '<div class="donut-legend-dot" style="background:' + op.color + '"></div>' +
+        '<span class="donut-legend-name">' + esc(op.name) + '</span>' +
+        '<span class="donut-legend-pct">' + op.sharePercent.toFixed(1) + '%</span>' +
+      '</div>';
+    }).join('');
+
+    container.innerHTML =
+      '<div class="donut-title">Revenue Share</div>' +
+      '<svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">' +
+        arcs +
+      '</svg>' +
+      '<div class="donut-legend">' + legend + '</div>';
+  }
+
+  /* ═══ Render: Full KPI View ═══ */
+  function renderKpiView() {
+    renderSeasonBar();
+    renderKpiTable();
+    renderDonut();
+  }
+
+  /* ═══ Operator Detail ═══ */
+  function showOperatorDetail(rank) {
+    var op = TOP_OPERATORS.find(function(o) { return o.rank === rank; });
+    if (!op) return;
+
+    $('op-color-bar').style.background = op.color;
+    $('op-type-pill').textContent = typeLabel(op.type);
+    $('op-type-pill').setAttribute('style', typePillStyle(op));
+    $('op-detail-name').textContent = op.name;
+    $('op-bookings').textContent = op.bookings;
+    $('op-pax').textContent = formatPax(op.pax);
+    $('op-revenue').textContent = formatISK(op.revenueISK);
+    $('op-share-pct').textContent = op.sharePercent.toFixed(1) + '%';
+    $('op-share-bar').style.width = op.sharePercent + '%';
+    $('op-share-bar').style.background = op.color;
+    $('op-notes').textContent = op.notes;
+
+    $('op-detail-overlay').classList.remove('hidden');
+  }
+
+  function closeOpDetail() { $('op-detail-overlay').classList.add('hidden'); }
+
+  /* ═══ View Switching ═══ */
+  var currentView = 'schedule';
+  var kpiRendered = false;
+
+  function switchView(view) {
+    if (view === currentView) return;
+    currentView = view;
+
+    document.querySelectorAll('.view-tab').forEach(function(tab) {
+      tab.classList.toggle('active', tab.dataset.view === view);
+    });
+
+    if (view === 'schedule') {
+      $('main').classList.remove('hidden-view');
+      $('kpi-view').classList.remove('active');
+    } else {
+      $('main').classList.add('hidden-view');
+      $('kpi-view').classList.add('active');
+      if (!kpiRendered) { renderKpiView(); kpiRendered = true; }
+    }
+  }
+
+  /* ═══ Init ═══ */
+  function init() {
+    // Button handlers
+    $('btn-new').addEventListener('click', openBookingModal);
+    $('btn-refresh').addEventListener('click', loadData);
+    $('nb-cancel').addEventListener('click', closeBookingModal);
+    $('nb-submit').addEventListener('click', submitBooking);
+
+    // Close buttons
+    document.querySelectorAll('.overlay-close').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var overlay = btn.closest('.overlay');
+        if (overlay) overlay.classList.add('hidden');
+      });
+    });
+
+    // Form live preview
+    ['nb-service','nb-operator','nb-pax','nb-ref'].forEach(function(id) {
+      var el = $(id);
+      if (el) {
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+      }
+    });
+    $('nb-start').addEventListener('change', onStartTimeChange);
+
+    // View tab switching
+    document.querySelectorAll('.view-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() { switchView(tab.dataset.view); });
+    });
+
+    // Start — auth is server-side, just load
+    loadData();
+    refreshTimer = setInterval(loadData, REFRESH_MS);
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
