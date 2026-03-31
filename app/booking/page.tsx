@@ -33,7 +33,7 @@ const info = [
   { label: "Hours (Summer)", value: "09:00–17:00" },
   { label: "Hours (Winter)", value: "10:00–16:00" },
   { label: "Children under 12", value: "FREE of charge in the company of adults" },
-  { label: "Seniors / Students", value: "10% online discount applied" },
+  { label: "Seniors / Students", value: "10% online discount applied — valid documentation required" },
   { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 11 min from Keflavík Airport" },
   { label: "Parking", value: "Free on site" },
 ];
@@ -118,7 +118,7 @@ export default function BookingPage() {
           <div className="lg:col-span-5 order-1 lg:order-2 relative min-h-[600px] lg:sticky lg:top-16">
             {/* Info sections overlay — desktop only, sticky */}
             <div className="hidden lg:block absolute inset-0 z-20 flex items-start pointer-events-none">
-              <div className="max-w-[420px] pl-12 pt-12 space-y-12 pointer-events-auto sticky top-16">
+              <div className="max-w-[420px] pl-8 pt-8 space-y-6 pointer-events-auto sticky top-16">
                 {/* What's Included */}
                 <section aria-labelledby="included-heading">
                   <SectionHeading>
@@ -155,8 +155,6 @@ export default function BookingPage() {
               </div>
             </div>
 
-            {/* Subtle readability gradient overlay — desktop only */}
-            <div className="hidden lg:block absolute inset-0 z-10 bg-gradient-to-r from-white/20 via-white/5 to-transparent pointer-events-none" />
 
             {/* Map background */}
             <div className="relative z-0">

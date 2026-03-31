@@ -34,7 +34,19 @@
       "Bash(node -e \":*)",
       "Bash(git clone:*)",
       "Bash(cp -r /tmp/agency-agents/* ~/.claude/agents/)",
-      "Bash(mkdir -p ~/.claude/agents)"
+      "Bash(mkdir -p ~/.claude/agents)",
+      "WebFetch(domain:localhost)",
+      "Bash(python -m json.tool)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''lastSync:'''', d.get\\(''''lastSync''''\\)\\)\")",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"demand_days\\\\|flight_arrivals\" /c/Users/mistt/vikingaheimar/supabase/migrations/*.sql)",
+      "Bash(find /c/Users/mistt/vikingaheimar -maxdepth 2 -type f \\\\\\(-name .env* -o -name *.config.* \\\\\\))",
+      "Bash(grep -r \"ISAVIA\\\\|KEF\\\\|kefairport\\\\|isavia\" /c/Users/mistt/vikingaheimar --include=*.ts --include=*.tsx --include=*.md)",
+      "WebFetch(domain:www.kefairport.is)",
+      "WebFetch(domain:www.isavia.is)",
+      "WebFetch(domain:www.kefairport.com)",
+      "Read(//c/Users/mistt/vikingaheimar/$LOCALAPPDATA/Temp/agency-agents-fresh/**)",
+      "Read(//c/Users/mistt/AppData/Local/Temp/agency-agents-fresh/**)"
     ]
   }
 }

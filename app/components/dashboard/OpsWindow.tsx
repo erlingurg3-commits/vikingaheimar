@@ -12,6 +12,19 @@ type CalendarEvent = {
   description?: string;
 };
 
+type BokunRecentBooking = {
+  code: string;
+  status: string;
+  channel: string;
+  customer: string;
+  nationality: string | null;
+  pax: number;
+  revenue: string;
+  visitDate: string;
+  bookedAt: string;
+  rate: string;
+};
+
 type ParsedBooking = {
   id: string;
   time: string;
@@ -20,12 +33,21 @@ type ParsedBooking = {
   pax: number;
 };
 
+type GroupDetail = {
+  summary: string;
+  pax: number;
+  time: string;
+};
+
 type DaySummary = {
   date: Date;
   dateStr: string;
-  dayName: string;
-  dayNum: string;
-  monthStr: string;
+  label: string;
+  bokunPax: number;
+  bokunCount: number;
+  groupPax: number;
+  groupCount: number;
+  groupDetails: GroupDetail[];
   pax: number;
   bookings: number;
   isToday: boolean;
@@ -49,20 +71,25 @@ function icelandTime(iso: string): string {
   }).format(new Date(iso));
 }
 
-function getWeekDays(): Date[] {
+function getNext7Days(): Date[] {
   const today = new Date();
-  const dow = today.getDay();
-  const offset = dow === 0 ? -6 : 1 - dow;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() + offset);
-  monday.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
   const days: Date[] = [];
   for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
     days.push(d);
   }
   return days;
+}
+
+function formatDayLabel(d: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    timeZone: "Atlantic/Reykjavik",
+  }).format(d);
 }
 
 function parseEvent(ev: CalendarEvent): ParsedBooking {
@@ -119,6 +146,23 @@ function parseEvent(ev: CalendarEvent): ParsedBooking {
   };
 }
 
+function parseBokunBooking(b: BokunRecentBooking): ParsedBooking {
+  const rate = (b.rate ?? "").toLowerCase();
+  let service: ParsedBooking["service"] = "entrance";
+  if (rate.includes("breakfast") || rate.includes("morgunverð")) service = "breakfast";
+  else if (rate.includes("special") || rate.includes("soup") || rate.includes("lunch")) service = "special";
+
+  const bookedTime = b.bookedAt ? icelandTime(b.bookedAt) : "";
+
+  return {
+    id: `bokun-${b.code}`,
+    time: bookedTime || "—",
+    service,
+    operator: `${b.customer}${b.nationality ? ` (${b.nationality})` : ""} · ${b.code}`,
+    pax: b.pax,
+  };
+}
+
 const SERVICE_STYLES: Record<string, { bg: string; text: string; label: string }> = {
   breakfast: { bg: "bg-amber-500/20", text: "text-amber-300", label: "BREAKFAST" },
   entrance: { bg: "bg-slate-500/20", text: "text-slate-300", label: "ENTRANCE" },
@@ -139,59 +183,132 @@ export default function OpsWindow() {
   const fetchData = useCallback(async () => {
     try {
       setStatus("loading");
-      const now = new Date();
-      const weekStart = getWeekDays()[0];
-      const weekEnd = getWeekDays()[6];
-      weekEnd.setHours(23, 59, 59);
+
+      const days = getNext7Days();
+      const todayStr = icelandDate();
+      const rangeEnd = new Date(days[6]);
+      rangeEnd.setHours(23, 59, 59);
 
       const params = new URLSearchParams({
-        timeMin: weekStart.toISOString(),
-        timeMax: weekEnd.toISOString(),
+        timeMin: days[0].toISOString(),
+        timeMax: rangeEnd.toISOString(),
       });
 
-      const res = await fetch(`/api/calendar?${params}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // Fetch calendar events and Bókun data in parallel
+      const [calRes, bokunRes] = await Promise.all([
+        fetch(`/api/calendar?${params}`).catch(() => null),
+        fetch("/api/bokun/test").catch(() => null),
+      ]);
 
-      const events = (await res.json()) as CalendarEvent[];
-      if (!Array.isArray(events)) throw new Error("Invalid response");
+      const events: CalendarEvent[] =
+        calRes?.ok ? await calRes.json().catch(() => []) : [];
+      const validEvents = Array.isArray(events) ? events : [];
 
-      const todayStr = icelandDate();
-      const todayEvents = events
+      // Parse all Bókun bookings keyed by visit date
+      let bokunByDate = new Map<string, BokunRecentBooking[]>();
+      let bokunAvailByDate = new Map<string, number>();
+      if (bokunRes?.ok) {
+        try {
+          const bokunData = await bokunRes.json();
+          // Recent bookings (individual details)
+          for (const b of (bokunData.recentBookings ?? []) as BokunRecentBooking[]) {
+            if (b.status !== "CONFIRMED" && b.status !== "ARRIVED") continue;
+            const existing = bokunByDate.get(b.visitDate) ?? [];
+            existing.push(b);
+            bokunByDate.set(b.visitDate, existing);
+          }
+          // Upcoming availability (aggregated booked counts per day)
+          for (const a of bokunData.upcomingAvailability ?? []) {
+            // Parse date like "Sun 29.Mar'26" → match against our dateStr
+            if (a.booked > 0) {
+              // Match by finding the day in our range
+              for (const d of days) {
+                const ds = icelandDate(d);
+                // The availability date string varies, so match on the booked count
+                // We'll use it as a fallback pax count
+                const dayLabel = formatDayLabel(d);
+                if (a.date.includes(dayLabel.split(" ")[1]?.replace(",", "") ?? "__none__")) {
+                  bokunAvailByDate.set(ds, a.booked);
+                }
+              }
+            }
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+
+      // Build today's detailed bookings (merged)
+      const calToday = validEvents
         .filter((ev) => {
           const dt = ev.start?.dateTime || ev.start?.date || "";
           return dt.slice(0, 10) === todayStr;
         })
         .map(parseEvent)
         .sort((a, b) => a.time.localeCompare(b.time));
-      setTodayBookings(todayEvents);
 
-      // Week summary
-      const days = getWeekDays();
+      const bokunTodayRaw = bokunByDate.get(todayStr) ?? [];
+      const bokunTodayParsed = bokunTodayRaw.map(parseBokunBooking);
+
+      const calIds = new Set(calToday.map((b) => b.operator.toLowerCase()));
+      const uniqueBokunToday = bokunTodayParsed.filter(
+        (b) => !calIds.has(b.operator.toLowerCase())
+      );
+      const merged = [...calToday, ...uniqueBokunToday].sort((a, b) =>
+        a.time.localeCompare(b.time)
+      );
+      setTodayBookings(merged);
+
+      // Build 7-day summaries with both sources tracked separately
       const daySummaries: DaySummary[] = days.map((d) => {
         const ds = icelandDate(d);
-        const dayEvents = events.filter((ev) => {
+
+        // Calendar (group) bookings for this day
+        const dayCalEvents = validEvents.filter((ev) => {
           const dt = ev.start?.dateTime || ev.start?.date || "";
           return dt.slice(0, 10) === ds;
         });
-        const parsed = dayEvents.map(parseEvent);
-        const totalPax = parsed.reduce((s, e) => s + e.pax, 0);
+        const groupParsed = dayCalEvents.map(parseEvent);
+        const groupPax = groupParsed.reduce((s, e) => s + e.pax, 0);
+
+        // Build group detail lines for the week view
+        const groupDetails: GroupDetail[] = dayCalEvents.map((ev) => {
+          const parsed = parseEvent(ev);
+          const summary = ev.summary ?? "";
+          const paxStr = parsed.pax > 0 ? `${parsed.pax} pax` : "";
+          const label = [summary.replace(/\s*;\s*/g, " · ").trim(), paxStr]
+            .filter(Boolean)
+            .join(" ");
+          return {
+            summary: label || summary,
+            pax: parsed.pax,
+            time: parsed.time,
+          };
+        });
+
+        // Bókun bookings for this day
+        const dayBokun = bokunByDate.get(ds) ?? [];
+        const bknPax = dayBokun.reduce((s, b) => s + b.pax, 0);
+        // Fall back to availability aggregated count if no individual bookings
+        const bokunPaxFinal = bknPax || (bokunAvailByDate.get(ds) ?? 0);
+
         return {
           date: d,
           dateStr: ds,
-          dayName: new Intl.DateTimeFormat("en-GB", { weekday: "short", timeZone: "Atlantic/Reykjavik" })
-            .format(d)
-            .toUpperCase(),
-          dayNum: new Intl.DateTimeFormat("en-GB", { day: "numeric", timeZone: "Atlantic/Reykjavik" }).format(d),
-          monthStr: new Intl.DateTimeFormat("en-GB", { month: "short", timeZone: "Atlantic/Reykjavik" }).format(d),
-          pax: totalPax,
-          bookings: dayEvents.length,
+          label: formatDayLabel(d),
+          bokunPax: bokunPaxFinal,
+          bokunCount: dayBokun.length || (bokunAvailByDate.has(ds) ? 1 : 0),
+          groupPax,
+          groupCount: dayCalEvents.length,
+          groupDetails,
+          pax: bokunPaxFinal + groupPax,
+          bookings: dayBokun.length + dayCalEvents.length,
           isToday: ds === todayStr,
         };
       });
       setWeekDays(daySummaries);
       setStatus("live");
 
-      // Stale timer
       if (staleRef.current) clearTimeout(staleRef.current);
       staleRef.current = setTimeout(() => setStatus("stale"), 90_000);
     } catch {
@@ -255,7 +372,7 @@ export default function OpsWindow() {
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
-            This Week
+            Next 7 Days
           </button>
         </div>
       </div>
@@ -314,37 +431,57 @@ export default function OpsWindow() {
             {weekDays.map((d) => (
               <div
                 key={d.dateStr}
-                className={`flex items-center gap-3 rounded-lg px-2 py-1.5 ${
+                className={`rounded-lg px-2 py-1.5 ${
                   d.isToday ? "border-l-2 border-l-emerald-400 bg-emerald-500/5" : ""
                 }`}
               >
-                <span className="text-[10px] font-semibold text-gray-400 w-7 flex-shrink-0">
-                  {d.dayName}
-                </span>
-                <span className="text-[10px] text-gray-500 w-12 flex-shrink-0">
-                  {d.dayNum} {d.monthStr}
-                </span>
-                <div className="flex-1 h-2 rounded-full bg-white/[0.03] overflow-hidden">
-                  {d.pax > 0 && (
-                    <div
-                      className="h-full rounded-full bg-emerald-500/40 transition-all"
-                      style={{ width: `${(d.pax / maxDayPax) * 100}%` }}
-                    />
-                  )}
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-semibold text-gray-400 w-[90px] flex-shrink-0">
+                    {d.label}
+                  </span>
+                  <div className="flex-1 h-2 rounded-full bg-white/[0.03] overflow-hidden">
+                    {d.pax > 0 && (
+                      <div
+                        className="h-full rounded-full bg-emerald-500/40 transition-all"
+                        style={{ width: `${(d.pax / maxDayPax) * 100}%` }}
+                      />
+                    )}
+                  </div>
+                  <span className="text-xs text-gray-300 tabular-nums w-14 text-right flex-shrink-0">
+                    {d.pax > 0 ? `${d.pax} pax` : "—"}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-300 tabular-nums w-14 text-right flex-shrink-0">
-                  {d.pax > 0 ? `${d.pax} pax` : "—"}
-                </span>
-                <span className="text-[10px] text-gray-600 w-20 text-right flex-shrink-0">
-                  {d.bookings > 0
-                    ? `${d.bookings} ${d.bookings === 1 ? "booking" : "bookings"}`
-                    : "no bookings"}
-                </span>
+                {/* Source breakdown */}
+                {(d.bokunCount > 0 || d.groupCount > 0) && (
+                  <div className="mt-1 ml-[102px] space-y-0.5">
+                    {d.bokunCount > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-amber-400/90 bg-amber-500/10 px-1 py-px rounded">
+                          BÓKUN
+                        </span>
+                        <span className="text-[9px] text-gray-400">
+                          {d.bokunPax} pax · {d.bokunCount}{" "}
+                          {d.bokunCount === 1 ? "booking" : "bookings"}
+                        </span>
+                      </div>
+                    )}
+                    {d.groupDetails.map((g, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-gray-500 bg-gray-700/30 px-1 py-px rounded">
+                          GROUP
+                        </span>
+                        <span className="text-[9px] text-gray-400 truncate">
+                          {g.summary}{g.time && g.time !== "All day" ? ` ${g.time}` : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
 
             <div className="pt-2 mt-2 border-t border-white/5 text-[10px] text-gray-500">
-              Week total: <span className="text-gray-300 font-medium">{weekTotal} pax</span> ·{" "}
+              7-day total: <span className="text-gray-300 font-medium">{weekTotal} pax</span> ·{" "}
               {weekBookings} {weekBookings === 1 ? "booking" : "bookings"}
             </div>
           </div>

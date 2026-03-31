@@ -55,7 +55,7 @@ type AirArrivalsResponse = {
   topOrigins: Array<{ origin: string; flights: number }>;
 };
 
-const ISAVIA_KEF_ARRIVALS_URL = "https://www.kefairport.is/api/flightData";
+const ISAVIA_KEF_ARRIVALS_URL = "https://www.kefairport.com/api/flightData";
 
 type IsaviaFlightDataResponse = {
   ok?: boolean;
@@ -69,6 +69,9 @@ type IsaviaFlightDataRow = {
   belt?: string | null;
   arrival?: boolean | null;
   date?: string | null;
+  time?: string | null;
+  airline?: string | null;
+  airportCode?: string | null;
 };
 
 const AIR_ARRIVALS_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -168,6 +171,10 @@ function toIsaviaStatusText(rawStatus: string | null | undefined): string {
     return "Lent";
   }
 
+  if (status === "PRE") {
+    return "Á áætlun";
+  }
+
   if (status === "BELT" || status === "BAG") {
     return "Töskur á belti";
   }
@@ -181,7 +188,7 @@ function toIsaviaStatusText(rawStatus: string | null | undefined): string {
   }
 
   if (status === "CNL" || status === "CANCELLED") {
-    return "Fellt niður";
+    return "Aflýst";
   }
 
   if (status === "ATD" || status === "DEP" || status === "DEPARTED") {
@@ -241,9 +248,21 @@ async function getIsaviaSnapshot(): Promise<IsaviaSnapshot> {
       })
       .filter((row) => row.flight_number && row.origin);
 
-    const uniqueRows = Array.from(
-      new Map(arrivalsOnly.map((row) => [row.flight_number, row])).values(),
-    ).sort((a, b) => {
+    // Prefer today's flights; fall back to all if none match today
+    const todayArrivals = arrivalsOnly.filter((row) => row.date === today);
+    const baseArrivals = todayArrivals.length > 0 ? todayArrivals : arrivalsOnly;
+
+    // Deduplicate by flight number, preferring today's date over stale entries
+    const dedup = new Map<string, (typeof baseArrivals)[number]>();
+    for (const row of baseArrivals) {
+      const key = row.flight_number!;
+      const existing = dedup.get(key);
+      if (!existing || row.date === today) {
+        dedup.set(key, row);
+      }
+    }
+
+    const uniqueRows = Array.from(dedup.values()).sort((a, b) => {
       const aTime = a.scheduledAt ? a.scheduledAt.getTime() : Number.MAX_SAFE_INTEGER;
       const bTime = b.scheduledAt ? b.scheduledAt.getTime() : Number.MAX_SAFE_INTEGER;
       return aTime - bTime;
@@ -415,11 +434,16 @@ export async function GET(req: Request) {
       };
     }
 
-    let arrivalsForPanel = arrivals.slice(0, 30);
+    // Merge today's live Isavia data with future days from Supabase
+    const futureDays = arrivals.filter((row) => row.date > today);
+    let todayFlights: FlightArrivalRow[] = arrivals.filter((row) => row.date === today);
+
     if (effectiveIsavia.arrivals.length > 0) {
       const isaviaUpcoming = effectiveIsavia.arrivals.filter((row) => isUpcomingStatus(row.status_text));
-      arrivalsForPanel = (isaviaUpcoming.length > 0 ? isaviaUpcoming : effectiveIsavia.arrivals).slice(0, 30);
+      todayFlights = isaviaUpcoming.length > 0 ? isaviaUpcoming : effectiveIsavia.arrivals;
     }
+
+    const arrivalsForPanel = [...todayFlights, ...futureDays].slice(0, 30);
 
     const totals = {
       flights7d: demandRows.slice(0, 7).reduce((sum, row) => sum + toInt(row.flights), 0),

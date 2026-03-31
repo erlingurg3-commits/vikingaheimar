@@ -89,17 +89,37 @@ export default function BokunPanel() {
 
   const triggerSync = async () => {
     setSyncing(true);
+    setError(null);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 55_000);
     try {
-      const res = await fetch("/api/bokun/sync", { method: "POST" });
+      const res = await fetch("/api/bokun/sync", {
+        method: "POST",
+        signal: controller.signal,
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(text || `Sync returned ${res.status}`);
+      }
       const result = await res.json();
       if (result.status === "ok") {
-        await fetchDashboard(); // Refresh after sync
+        // Update lastSync immediately so the UI reflects success
+        setData((prev) =>
+          prev ? { ...prev, lastSync: new Date().toISOString() } : prev
+        );
+        // Then refresh full dashboard in background
+        fetchDashboard();
       } else {
-        setError(result.message);
+        setError(result.message || "Sync returned an error");
       }
-    } catch {
-      setError("Sync failed");
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        setError("Sync timed out — try again");
+      } else {
+        setError(err instanceof Error ? err.message : "Sync failed");
+      }
     } finally {
+      clearTimeout(timeout);
       setSyncing(false);
     }
   };
@@ -153,6 +173,10 @@ export default function BokunPanel() {
         <div className="flex items-center gap-3">
           <Ticket className="text-emerald-400" size={20} />
           <h2 className="text-lg font-semibold text-white">Bokun Live</h2>
+          <span className="flex items-center gap-1.5 rounded-md border border-emerald-500/20 bg-emerald-950/20 px-2 py-0.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] text-emerald-300 font-medium">Live</span>
+          </span>
           {data.lastSync && (
             <span className="text-xs text-gray-500">
               Last sync:{" "}

@@ -1,10 +1,13 @@
 export const ROUTES = {
   home: "/",
+  saga: "/saga",
   experience: "/experience",
   visit: "/visit",
   tickets: "/tickets",
+  booking: "/booking",
   checkout: "/checkout",
   thankYou: "/thank-you",
+  provisions: "/provisions",
   groups: "/groups",
   groupsRequest: "/groups/request",
   about: "/about",

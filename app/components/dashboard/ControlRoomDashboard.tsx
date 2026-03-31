@@ -5,6 +5,8 @@ import AIPanel from "@/app/components/dashboard/AIPanel";
 import NextHighDaySignalCard from "@/app/components/dashboard/NextHighDaySignalCard";
 import OpsWindow from "@/app/components/dashboard/OpsWindow";
 import BokunPanel from "@/app/components/dashboard/BokunPanel";
+import BookingAlerts from "@/app/components/controlroom/BookingAlerts";
+import AIBriefing from "@/app/components/controlroom/AIBriefing";
 
 const CONTROL_INTELLIGENCE_PROMPT = `You are Vikingaheimar Control Intelligence.
 Provide factual, concise, read-only operational analysis.
@@ -72,6 +74,12 @@ export default function ControlRoomDashboard() {
 
       {/* Bokun Live */}
       <BokunPanel />
+
+      {/* Booking Alerts + AI Briefing */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <BookingAlerts />
+        <AIBriefing />
+      </div>
 
       {/* AI Intelligence */}
       <div className="bg-gradient-to-br from-gray-900/40 to-black/70 border border-cyan-500/20 rounded-2xl p-6 backdrop-blur-xl">

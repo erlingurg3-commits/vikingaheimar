@@ -37,11 +37,13 @@ async function fetchViaMcp(timeMin: string, timeMax: string) {
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 8192,
-      mcp_servers: {
-        google_calendar: {
+      mcp_servers: [
+        {
+          type: "url",
           url: MCP_URL,
+          name: "google-calendar",
         },
-      },
+      ],
       messages: [
         {
           role: "user",
