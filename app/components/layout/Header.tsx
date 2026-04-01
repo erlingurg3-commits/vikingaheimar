@@ -222,7 +222,7 @@ export default function Header() {
       {/* Mobile overlay */}
       <div
         id="mobile-navigation-overlay"
-        className={`lg:hidden fixed inset-0 z-[1025] bg-[#f5f3ee] transition-all duration-500 motion-reduce:transition-none ${
+        className={`lg:hidden fixed inset-0 z-[1040] bg-[#f5f3ee] transition-all duration-500 motion-reduce:transition-none ${
           mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         role="dialog"
@@ -230,7 +230,7 @@ export default function Header() {
         aria-label="Mobile navigation"
         aria-hidden={!mobileOpen}
       >
-        <Container size="xl" className="h-full py-7 flex flex-col">
+        <Container size="xl" className="h-full py-7 flex flex-col overflow-y-auto">
           <div className="flex items-center justify-between">
             <Link
               href="/"
