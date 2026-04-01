@@ -267,9 +267,13 @@ export default function Header() {
                   onClick={closeMenu}
                   aria-current={active ? "page" : undefined}
                   className={`font-display text-4xl leading-tight transition-all duration-500 motion-reduce:transition-none rounded-sm ${
-                    active ? "text-[#1a1a1a]" : "text-[#7a7672] hover:text-[#1a1a1a]"
-                  } ${mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-                  style={{ transitionDelay: `${index * 35}ms`, textDecoration: "none" }}
+                    mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                  }`}
+                  style={{
+                    transitionDelay: `${index * 35}ms`,
+                    textDecoration: "none",
+                    color: active ? "#1a1a1a" : "#7a7672",
+                  }}
                 >
                   {item.label}
                 </Link>
