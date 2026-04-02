@@ -254,8 +254,10 @@ export default function SagaPageClient() {
                       onClick={() => {
                         const v = videoRef.current;
                         if (!v) return;
+                        v.muted = false;
                         v.play();
                         setPlaying(true);
+                        setMuted(false);
                       }}
                       aria-label="Play video"
                       style={{
