@@ -7,7 +7,7 @@ export const ROUTES = {
   booking: "/booking",
   checkout: "/checkout",
   thankYou: "/thank-you",
-  provisions: "/provisions",
+  vikings: "/vikings",
   groups: "/groups",
   groupsRequest: "/groups/request",
   about: "/about",

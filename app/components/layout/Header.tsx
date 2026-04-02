@@ -9,7 +9,7 @@ import Container from "@/app/components/primitives/Container";
 const NAV_ITEMS = [
   { label: "The Saga", href: "/saga" },
   { label: "Visit", href: "/visit" },
-  { label: "Provisions", href: "/provisions" },
+  { label: "The Vikings", href: "/vikings" },
 ] as const;
 
 export default function Header() {
