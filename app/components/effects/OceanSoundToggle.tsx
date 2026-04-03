@@ -13,18 +13,25 @@ export default function OceanSoundToggle() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const toggle = () => {
+  const toggle = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
     if (isPlaying) {
       audio.pause();
       setIsPlaying(false);
-    } else {
-      audio.play().catch(() => {
-        /* autoplay policy rejection — silently ignore */
-      });
+      return;
+    }
+
+    audio.volume = 0.6;
+    audio.muted = false;
+
+    try {
+      await audio.play();
       setIsPlaying(true);
+    } catch (error) {
+      console.warn("OceanSoundToggle: audio play blocked", error);
+      setIsPlaying(false);
     }
   };
 
@@ -32,9 +39,9 @@ export default function OceanSoundToggle() {
     <>
       <audio
         ref={audioRef}
-        src="/viking%20drums.m4a"
+        src={encodeURI("/viking drums.m4a")}
         loop
-        preload="none"
+        preload="metadata"
       />
 
       <div

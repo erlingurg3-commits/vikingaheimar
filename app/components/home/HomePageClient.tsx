@@ -424,8 +424,8 @@ export default function HomePageClient() {
             }}
           >
             <Image
-              src="/wood.jpg"
-              alt="Group Visits — Viking ship timber detail"
+              src="/building.jpg"
+              alt="Group Visits — building exterior"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover group-hover:scale-[1.02]"

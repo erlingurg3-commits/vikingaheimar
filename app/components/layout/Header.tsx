@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -38,7 +39,7 @@ export default function Header() {
   }, []);
 
   const isHomepage = pathname === "/";
-  const isTransparent = isHomepage && !scrolled;
+  const isTransparent = false; // Always opaque on load (no invisible nav)
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
@@ -57,10 +58,10 @@ export default function Header() {
         }}
       >
         <Container size="xl" className="h-16 flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo + brand link */}
           <Link
             href="/"
-            className="font-display focus-visible:outline-2 focus-visible:outline-offset-4 rounded-sm"
+            className="font-display focus-visible:outline-2 focus-visible:outline-offset-4 rounded-sm inline-flex items-center gap-2"
             style={{
               fontSize: 13,
               fontWeight: 700,
@@ -69,9 +70,19 @@ export default function Header() {
               textDecoration: "none",
               color: isTransparent ? "#ffffff" : "#1a1a1a",
               transition: "color 600ms ease",
+              background: "transparent",
+              padding: "6px 10px",
+              borderRadius: 4,
             }}
           >
-            V&Iacute;KINGAHEIMAR
+            <Image
+              src="/logo.png"
+              alt="Víkingaheimar logo"
+              width={44}
+              height={44}
+              style={{ display: "block", objectFit: "contain" }}
+            />
+            VÍKINGAHEIMAR
           </Link>
 
           {/* Desktop nav — center */}
