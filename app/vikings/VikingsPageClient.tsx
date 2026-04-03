@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from "react";
 import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import VikingArsenal from "@/app/components/VikingArsenal";
+import ScrollViking from "@/app/components/ScrollViking";
 
 /* ── Scroll-reveal helper (same pattern as Saga page) ── */
 function reveal(visible: boolean, delay = 0): React.CSSProperties {
@@ -606,7 +607,12 @@ export default function VikingsPageClient() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          1b. VIKING ARSENAL — animated weapon showcase
+          1b. SCROLL VIKING — centrepiece scroll-driven assembly
+          ═══════════════════════════════════════════════════════════════ */}
+      <ScrollViking />
+
+      {/* ═══════════════════════════════════════════════════════════════
+          1c. VIKING ARSENAL — animated weapon showcase
           ═══════════════════════════════════════════════════════════════ */}
       <VikingArsenal />
 
