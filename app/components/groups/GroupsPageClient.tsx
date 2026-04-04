@@ -1,120 +1,594 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import Container from "@/app/components/primitives/Container";
-import Button from "@/app/components/primitives/Button";
-import Input from "@/app/components/primitives/Input";
-import {
-  SectionTitle,
-  Body,
-  BodySmall,
-} from "@/app/components/primitives/Typography";
-import { Divider } from "@/app/components/primitives/Badge";
-import { trackGroupsInquiryClick } from "@/lib/analytics";
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  occasion: string;
+  guests: string;
+  date: string;
+  message: string;
+}
+
+const initialForm: FormData = {
+  name: "",
+  email: "",
+  phone: "",
+  occasion: "",
+  guests: "",
+  date: "",
+  message: "",
+};
 
 export default function GroupsPageClient() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [groupSize, setGroupSize] = useState("");
-  const [error, setError] = useState("");
+  const [form, setForm] = useState<FormData>(initialForm);
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const validate = () => {
+    const e: Partial<FormData> = {};
+    if (!form.name.trim()) e.name = "Required";
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      e.email = "Valid email required";
+    if (!form.occasion) e.occasion = "Required";
+    return e;
+  };
 
-    if (!name.trim() || !email.trim() || !groupSize.trim()) {
-      setError("Please complete name, email, and group size before submitting.");
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
       return;
     }
-
-    setError("");
-    trackGroupsInquiryClick({
-      source: "groups_page_form_submit",
-      hasName: Boolean(name.trim()),
-      hasEmail: Boolean(email.trim()),
-      groupSize,
-    });
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/groups-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setStatus("success");
+      setForm(initialForm);
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
-    <main className="w-full py-24 lg:py-32 bg-gradient-to-b from-base-charcoal to-neutral-950">
-      <Container size="lg" className="space-y-8">
-        <SectionTitle
-          overline="Groups & Schools"
-          title="Tailored Nordic Experiences for Groups"
-          subtitle="Designed for schools, travel groups, and cultural programs with flexible planning support."
-        />
+    <main className="groups-page">
+      {/* ── Hero ── */}
+      <section className="groups-hero">
+        <p className="eyebrow">Group &amp; Private Events</p>
+        <h1 className="headline">
+          Gather in the spirit<br />
+          of <em>the Vikings</em>
+        </h1>
+        <p className="subtext">
+          Víkingaheimar is opening its halls for private hire — dinners,
+          celebrations, and ceremonies set against one of Iceland&#39;s most
+          storied backdrops.
+        </p>
+      </section>
 
-        <Divider variant="gradient" spacing="sm" />
+      {/* ── Info grid ── */}
+      <div className="groups-body">
+        {/* Occasions */}
+        <div className="left-col">
+          <p className="section-label">Occasions</p>
+          <ul className="occasions">
+            {[
+              "Private dining & banquets",
+              "Weddings",
+              "Baptisms & christenings",
+              "Confirmations",
+              "Corporate events",
+              "Group tours",
+            ].map((item) => (
+              <li key={item}>
+                <span className="dot" />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <div className="coming-soon-box">
+            <p>
+              Our event hall is <strong>coming soon</strong>. We are
+              finalising the space and will announce availability shortly.
+              Reach out now to register your interest or enquire about dates.
+            </p>
+          </div>
+        </div>
 
-        <Body className="text-neutral-300">
-          We support group capacities, educational storytelling formats, and
-          custom arrival windows. Share your goals and we will tailor a visit
-          plan.
-        </Body>
+        {/* Direct contacts */}
+        <div className="right-col">
+          <p className="section-label">Direct contact</p>
+          <div className="direct-contacts">
+            <div className="contact-item">
+              <p className="contact-label">General enquiries</p>
+              <a href="mailto:info@vikingworld.is">info@vikingworld.is</a>
+              <p className="contact-note">Group bookings &amp; event hire</p>
+            </div>
+            <div className="divider" />
+            <div className="contact-item">
+              <p className="contact-label">
+                Erlingur Gunnarsson — Operations Director
+              </p>
+              <a href="mailto:erlingur@vikingworld.is">
+                erlingur@vikingworld.is
+              </a>
+              <p className="contact-note">
+                <a href="tel:+3548938383" className="phone-link">
+                  +354 893 8383
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <form className="space-y-4 max-w-2xl" onSubmit={handleSubmit} noValidate>
-          <Input
-            label="Contact Name"
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            error={error && !name.trim() ? "Name is required" : undefined}
-            helperText="Who should we contact about this group booking?"
-          />
+      {/* ── Enquiry form ── */}
+      <section className="form-section">
+        <p className="section-label">Send an enquiry</p>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="form-grid">
+            <div className={`field${errors.name ? " has-error" : ""}`}>
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Your full name"
+              />
+              {errors.name && <span className="field-error">{errors.name}</span>}
+            </div>
 
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            error={error && !email.trim() ? "Email is required" : undefined}
-            helperText="We will reply with availability and pricing options."
-          />
+            <div className={`field${errors.email ? " has-error" : ""}`}>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="your@email.com"
+              />
+              {errors.email && <span className="field-error">{errors.email}</span>}
+            </div>
 
-          <Input
-            label="Estimated Group Size"
-            type="text"
-            value={groupSize}
-            onChange={(event) => setGroupSize(event.target.value)}
-            error={error && !groupSize.trim() ? "Group size is required" : undefined}
-            helperText="Example: 24 students + 3 staff"
-          />
+            <div className="field">
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+354 000 0000"
+              />
+            </div>
 
-          <div>
-            <label
-              htmlFor="group-notes"
-              className="block text-sm font-medium text-off-white mb-2"
-            >
-              Notes (optional)
-            </label>
-            <textarea
-              id="group-notes"
-              className="w-full min-h-28 px-4 py-3 rounded-lg bg-neutral-900/50 border-2 border-neutral-700 text-off-white placeholder-neutral-500 focus-visible:outline-none focus-visible:border-accent-frost-blue focus-visible:ring-1 focus-visible:ring-accent-frost-blue/30"
-              placeholder="Tell us preferred date, age range, or learning goals."
-            />
+            <div className={`field${errors.occasion ? " has-error" : ""}`}>
+              <label htmlFor="occasion">Type of occasion</label>
+              <select
+                id="occasion"
+                name="occasion"
+                value={form.occasion}
+                onChange={handleChange}
+              >
+                <option value="" disabled>
+                  Select occasion
+                </option>
+                {[
+                  "Private dining / banquet",
+                  "Wedding",
+                  "Baptism / christening",
+                  "Confirmation",
+                  "Corporate event",
+                  "Group tour",
+                  "Other",
+                ].map((o) => (
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+              {errors.occasion && (
+                <span className="field-error">{errors.occasion}</span>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="guests">Estimated number of guests</label>
+              <input
+                type="number"
+                id="guests"
+                name="guests"
+                value={form.guests}
+                onChange={handleChange}
+                placeholder="e.g. 40"
+                min="1"
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="date">Preferred date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="field full">
+              <label htmlFor="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                placeholder="Tell us about your event, any special requirements, or questions..."
+              />
+            </div>
           </div>
 
-          {error && <p className="text-sm text-status-error" role="alert">{error}</p>}
+          <div className="submit-row">
+            <button
+              type="submit"
+              className="btn-submit"
+              disabled={status === "loading" || status === "success"}
+            >
+              {status === "loading" ? "Sending..." : "Send enquiry"}
+            </button>
+            <p className="submit-note">
+              We aim to respond within one business day
+            </p>
+          </div>
 
-          <Button variant="primary" size="lg" type="submit">
-            Submit Groups Inquiry
-          </Button>
+          {status === "success" && (
+            <p className="success-msg">
+              Your enquiry has been sent. We will be in touch shortly.
+            </p>
+          )}
+          {status === "error" && (
+            <p className="error-msg">
+              Something went wrong. Please email us directly at{" "}
+              <a href="mailto:info@vikingworld.is">info@vikingworld.is</a>
+            </p>
+          )}
         </form>
+      </section>
 
-        <BodySmall className="text-neutral-400">
-          TODO: Connect form submission to CRM/contact API endpoint.
-        </BodySmall>
+      {/* ── Footer bar ── */}
+      <div className="groups-footer">
+        <span>Víkingaheimar</span>
+        <div className="vl" />
+        <span>Víkingabraut 1, 260 Reykjanesbær</span>
+      </div>
 
-        <div>
-          <Link
-            href="/groups/request"
-            className="inline-flex items-center rounded-lg border border-accent-frost-blue/40 bg-accent-frost-blue/10 px-4 py-2 text-sm font-medium text-accent-ice-white hover:bg-accent-frost-blue/20"
-          >
-            Open Instant Group Request Agent
-          </Link>
-        </div>
-      </Container>
+      <style jsx>{`
+        .groups-page {
+          background: #0a0a0a;
+          color: #e8e2d9;
+          font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+          font-weight: 300;
+          min-height: 100vh;
+        }
+
+        /* Hero */
+        .groups-hero {
+          padding: 80px 60px 60px;
+          border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+        .eyebrow {
+          font-size: 11px;
+          font-weight: 400;
+          letter-spacing: 0.22em;
+          color: #8a7a5a;
+          text-transform: uppercase;
+          margin-bottom: 24px;
+        }
+        .headline {
+          font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+          font-size: clamp(40px, 6vw, 68px);
+          font-weight: 300;
+          line-height: 1.05;
+          color: #f0ece4;
+          margin-bottom: 20px;
+        }
+        .headline em {
+          font-style: italic;
+          color: #c9b07a;
+        }
+        .subtext {
+          font-size: 14px;
+          color: rgba(232, 226, 217, 0.5);
+          line-height: 1.7;
+          max-width: 480px;
+        }
+
+        /* Body grid */
+        .groups-body {
+          padding: 60px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 80px;
+        }
+        .section-label {
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #8a7a5a;
+          margin-bottom: 24px;
+          font-weight: 400;
+        }
+
+        /* Occasions */
+        .occasions {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .occasions li {
+          padding: 15px 0;
+          border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+          font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+          font-size: 21px;
+          font-weight: 300;
+          color: #d4cbbf;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .occasions li:first-child {
+          border-top: 0.5px solid rgba(255, 255, 255, 0.07);
+        }
+        .dot {
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: #8a7a5a;
+          flex-shrink: 0;
+        }
+        .coming-soon-box {
+          margin-top: 28px;
+          padding: 18px;
+          border: 0.5px solid rgba(201, 176, 122, 0.2);
+          border-radius: 2px;
+        }
+        .coming-soon-box p {
+          font-size: 13px;
+          color: rgba(232, 226, 217, 0.4);
+          line-height: 1.65;
+        }
+        .coming-soon-box strong {
+          color: #c9b07a;
+          font-weight: 400;
+        }
+
+        /* Contacts */
+        .right-col {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .direct-contacts {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+        .contact-item .contact-label {
+          font-size: 10px;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: #8a7a5a;
+          margin-bottom: 8px;
+          font-weight: 400;
+        }
+        .contact-item a {
+          font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+          font-size: 20px;
+          font-weight: 300;
+          color: #e8e2d9;
+          text-decoration: none;
+          display: block;
+          transition: color 0.2s;
+        }
+        .contact-item a:hover {
+          color: #c9b07a;
+        }
+        .contact-note {
+          font-size: 12px;
+          color: rgba(232, 226, 217, 0.3);
+          margin-top: 3px;
+        }
+        .phone-link {
+          font-family: var(--font-dm-sans, 'DM Sans', sans-serif) !important;
+          font-size: 13px !important;
+          color: rgba(232, 226, 217, 0.45) !important;
+        }
+        .divider {
+          width: 32px;
+          height: 0.5px;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Form */
+        .form-section {
+          border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+          padding: 48px 60px 60px;
+        }
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin-bottom: 20px;
+        }
+        .field {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .field.full {
+          grid-column: 1 / -1;
+        }
+        .field label {
+          font-size: 10px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #8a7a5a;
+          font-weight: 400;
+        }
+        .field input,
+        .field select,
+        .field textarea {
+          background: rgba(255, 255, 255, 0.03);
+          border: 0.5px solid rgba(255, 255, 255, 0.12);
+          border-radius: 2px;
+          color: #e8e2d9;
+          font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+          font-size: 14px;
+          font-weight: 300;
+          padding: 12px 14px;
+          outline: none;
+          transition: border-color 0.2s, background 0.2s;
+          width: 100%;
+        }
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+          border-color: rgba(201, 176, 122, 0.5);
+          background: rgba(201, 176, 122, 0.04);
+        }
+        .field.has-error input,
+        .field.has-error select {
+          border-color: rgba(201, 80, 80, 0.5);
+        }
+        .field-error {
+          font-size: 11px;
+          color: rgba(201, 100, 100, 0.8);
+          letter-spacing: 0.05em;
+        }
+        .field select {
+          appearance: none;
+          cursor: pointer;
+        }
+        .field textarea {
+          resize: vertical;
+          min-height: 100px;
+        }
+        .field input::placeholder,
+        .field textarea::placeholder {
+          color: rgba(232, 226, 217, 0.2);
+        }
+        .submit-row {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-top: 28px;
+        }
+        .btn-submit {
+          background: transparent;
+          border: 0.5px solid rgba(201, 176, 122, 0.5);
+          color: #c9b07a;
+          font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+          font-size: 11px;
+          font-weight: 400;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          padding: 14px 36px;
+          cursor: pointer;
+          transition: background 0.2s, color 0.2s;
+          border-radius: 2px;
+        }
+        .btn-submit:hover:not(:disabled) {
+          background: rgba(201, 176, 122, 0.1);
+          color: #e0ca96;
+        }
+        .btn-submit:disabled {
+          opacity: 0.4;
+          cursor: default;
+        }
+        .submit-note {
+          font-size: 12px;
+          color: rgba(232, 226, 217, 0.25);
+        }
+        .success-msg {
+          font-size: 13px;
+          color: #c9b07a;
+          margin-top: 20px;
+          letter-spacing: 0.05em;
+        }
+        .error-msg {
+          font-size: 13px;
+          color: rgba(201, 100, 100, 0.8);
+          margin-top: 20px;
+        }
+        .error-msg a {
+          color: #c9b07a;
+        }
+
+        /* Footer */
+        .groups-footer {
+          padding: 20px 60px;
+          border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .groups-footer span {
+          font-size: 11px;
+          color: rgba(232, 226, 217, 0.18);
+          letter-spacing: 0.05em;
+        }
+        .vl {
+          width: 0.5px;
+          height: 10px;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .groups-hero,
+          .groups-body,
+          .form-section,
+          .groups-footer {
+            padding-left: 24px;
+            padding-right: 24px;
+          }
+          .groups-body {
+            grid-template-columns: 1fr;
+            gap: 48px;
+          }
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+          .field.full {
+            grid-column: 1;
+          }
+          .submit-row {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
+      `}</style>
     </main>
   );
 }

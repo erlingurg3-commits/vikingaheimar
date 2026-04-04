@@ -46,7 +46,8 @@
       "WebFetch(domain:www.isavia.is)",
       "WebFetch(domain:www.kefairport.com)",
       "Read(//c/Users/mistt/vikingaheimar/$LOCALAPPDATA/Temp/agency-agents-fresh/**)",
-      "Read(//c/Users/mistt/AppData/Local/Temp/agency-agents-fresh/**)"
+      "Read(//c/Users/mistt/AppData/Local/Temp/agency-agents-fresh/**)",
+      "Bash(npm install:*)"
     ]
   }
 }

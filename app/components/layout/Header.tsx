@@ -171,44 +171,8 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Right side — Control Room + mobile hamburger */}
+          {/* Right side — mobile hamburger */}
           <div className="flex items-center gap-2">
-            <Link
-              href="/control-room"
-              className="font-text hidden md:inline-flex"
-              style={{
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                alignItems: "center",
-                padding: "8px 16px",
-                borderRadius: 2,
-                background: isTransparent ? "rgba(255,255,255,0.10)" : "transparent",
-                border: isTransparent ? "1px solid rgba(255,255,255,0.20)" : "1px solid #e2ddd7",
-                color: isTransparent ? "rgba(255,255,255,0.80)" : "#7a7672",
-                transition: "all 400ms ease",
-              }}
-              onMouseEnter={(e) => {
-                if (isTransparent) {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.18)";
-                } else {
-                  e.currentTarget.style.borderColor = "#c8874a";
-                  e.currentTarget.style.color = "#c8874a";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (isTransparent) {
-                  e.currentTarget.style.background = "rgba(255,255,255,0.10)";
-                } else {
-                  e.currentTarget.style.borderColor = "#e2ddd7";
-                  e.currentTarget.style.color = "#7a7672";
-                }
-              }}
-            >
-              Control Room
-            </Link>
 
             {/* Mobile hamburger */}
             <button
