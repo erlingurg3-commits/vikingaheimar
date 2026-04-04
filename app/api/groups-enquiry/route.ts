@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     `;
 
     // Send to both inboxes
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "Víkingaheimar Website <no-reply@vikingworld.is>",
       to: ["info@vikingworld.is", "erlingur@vikingworld.is"],
       replyTo: email,
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Auto-reply to the enquirer
-    await resend.emails.send({
+    await getResend().emails.send({
       from: "Erlingur at Víkingaheimar <erlingur@vikingworld.is>",
       to: [email],
       subject: "We received your enquiry — Víkingaheimar",
