@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
-
-const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
+  const { Resend } = await import("resend");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
     const body = await req.json();
     const { name, email, phone, occasion, guests, date, message } = body;
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     `;
 
     // Send to both inboxes
-    await getResend().emails.send({
+    await resend.emails.send({
       from: "Víkingaheimar Website <no-reply@vikingworld.is>",
       to: ["info@vikingworld.is", "erlingur@vikingworld.is"],
       replyTo: email,
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Auto-reply to the enquirer
-    await getResend().emails.send({
+    await resend.emails.send({
       from: "Erlingur at Víkingaheimar <erlingur@vikingworld.is>",
       to: [email],
       subject: "We received your enquiry — Víkingaheimar",
