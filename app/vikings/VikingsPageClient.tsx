@@ -6,6 +6,7 @@ import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import VikingArsenal from "@/app/components/VikingArsenal";
 import ScrollViking from "@/app/components/ScrollViking";
+import Gunnbjorn from "@/app/components/Gunnbjorn";
 
 /* ── Scroll-reveal helper (same pattern as Saga page) ── */
 function reveal(visible: boolean, delay = 0): React.CSSProperties {
@@ -619,9 +620,6 @@ export default function VikingsPageClient() {
       {/* ═══════════════════════════════════════════════════════════════
           2. FACT SECTIONS
           ═══════════════════════════════════════════════════════════════ */}
-      {FACTS.map((fact, i) => (
-        <FactSection key={fact.tag} fact={fact} index={i} />
-      ))}
 
       {/* ═══════════════════════════════════════════════════════════════
           3. WORLD REACH MAP
@@ -729,6 +727,11 @@ export default function VikingsPageClient() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
+          4b. GUNNBJÖRN
+          ═══════════════════════════════════════════════════════════ */}
+      <Gunnbjorn />
+
+      {/* ═══════════════════════════════════════════════════════════
           5. CTA FOOTER
           ═══════════════════════════════════════════════════════════════ */}
       <section

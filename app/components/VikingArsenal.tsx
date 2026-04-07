@@ -115,6 +115,16 @@ const ARSENAL_CSS = `
 @media(prefers-reduced-motion:reduce){
   .arsenal-anim *{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
 }
+
+/* Mobile: 2x2 grid, always-visible replay hint */
+@media (max-width: 767px){
+  .va-grid{grid-template-columns:repeat(2,1fr)!important;gap:14px!important}
+  .va-replay-hint{opacity:0.5!important}
+  .va-card .arsenal-card-inner{min-height:200px!important;padding:20px 10px 16px!important}
+}
+@media (hover:none){
+  .va-replay-hint{opacity:0.5!important}
+}
 `;
 
 /* ═══════════════════════════════════════════════════════════
@@ -148,9 +158,8 @@ function ArsenalCard({
         if (e.key === "Enter" || e.key === " ") onReplay();
       }}
       aria-label={`${label} animation — click to replay`}
+      className="va-card"
       style={{
-        flex: "1 1 220px",
-        maxWidth: 280,
         cursor: "pointer",
         position: "relative",
         opacity: triggered ? 1 : 0,
@@ -181,6 +190,7 @@ function ArsenalCard({
           }}
         >
           <span
+            className="va-replay-hint"
             style={{
               position: "absolute",
               top: 8,
@@ -1080,12 +1090,15 @@ export default function VikingArsenal() {
         </p>
 
         <div
+          className="va-grid"
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 32,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 24,
             justifyContent: "center",
             alignItems: "flex-start",
+            maxWidth: 1200,
+            margin: "0 auto",
           }}
         >
           {items.map((item, i) => (

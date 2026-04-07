@@ -22,19 +22,19 @@ const VOYAGE_WAYPOINTS = [
     text: "Nine men board a ship built without blueprints. The harbour watches them leave.",
   },
   {
-    date: "18–24 June",
-    place: "Open North Atlantic",
-    text: "No GPS. No engine. Just wool sails and the same stars the settlers followed a thousand years before.",
+    date: "15 July 2000",
+    place: "Brattahlíð, Greenland",
+    text: "Landfall after a ten-hour ordeal in bad weather off Cape Farewell. Millennium celebrations attended by Queen Margrethe II of Denmark.",
   },
   {
-    date: "28 June",
+    date: "28 July 2000",
     place: "L'Anse aux Meadows",
-    text: "Landfall at the Viking settlement in Newfoundland. The first Europeans stood here in 1000 AD.",
+    text: "The only authenticated Viking settlement on mainland North America. Millennium celebrations with other replica Viking ships.",
   },
   {
-    date: "5 July",
+    date: "5 October 2000",
     place: "New York Harbour",
-    text: "The Íslendingur passes the Statue of Liberty. A Viking ship in Manhattan — one thousand years late.",
+    text: "After three months at sea and several ports of call in Newfoundland, the Íslendingur passes the Statue of Liberty. One thousand years late.",
   },
 ] as const;
 

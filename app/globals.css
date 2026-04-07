@@ -1,6 +1,9 @@
 /* Import design system tokens and global styles */
 @import "../styles/design-tokens.css";
 
+/* Prevent horizontal overflow on mobile */
+html, body { overflow-x: hidden; max-width: 100vw; }
+
 /* ================================================
    SCROLL LINE CANVAS — La Linea storytelling layer
    pointer-events: none is CRITICAL — never blocks clicks

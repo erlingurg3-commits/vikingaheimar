@@ -713,17 +713,24 @@ function FactPanel({
       {/* ── Bottom: pinned controls (never pushed off-screen) ── */}
       <div className="sv-controls">
         <StepDots step={step} total={10} onSelect={onSelect} />
-        <button
-          className="sv-next-btn font-display"
-          onClick={complete ? onReset : onForge}
-          aria-label={
-            complete
-              ? "Board the Íslendingur"
-              : `Next: ${STEP_LABELS[Math.min(step + 1, 9)]}`
-          }
-        >
-          {complete ? "BOARD THE ÍSLENDINGUR \u2192" : "NEXT \u2192"}
-        </button>
+        {complete ? (
+          <a
+            href="/saga"
+            className="sv-next-btn font-display"
+            aria-label="Board the Íslendingur"
+            style={{ textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            BOARD THE ÍSLENDINGUR &rarr;
+          </a>
+        ) : (
+          <button
+            className="sv-next-btn font-display"
+            onClick={onForge}
+            aria-label={`Next: ${STEP_LABELS[Math.min(step + 1, 9)]}`}
+          >
+            CONTINUE &rarr;
+          </button>
+        )}
       </div>
     </div>
   );
@@ -870,10 +877,12 @@ export default function ScrollViking() {
 
       {/* Scoped styles */}
       <style>{`
-        /* ── Section — strict 100vh ── */
+        /* ── Section — strict 100dvh minus navbar ── */
         .sv-section {
+          --sv-nav-h: 72px;
           position: relative;
-          height: 100vh;
+          height: calc(100dvh - var(--sv-nav-h));
+          min-height: calc(100dvh - var(--sv-nav-h));
           background-color: #0d0c0a;
           display: flex;
           flex-direction: column;
@@ -965,16 +974,21 @@ export default function ScrollViking() {
           justify-content: center;
         }
 
-        /* ── Fact body — clamped to 4 lines ── */
+        /* ── Fact body — clamped to 5 lines on desktop ── */
         .sv-fact-body {
           font-size: 14px;
           line-height: 1.7;
           color: rgba(255,255,255,0.50);
           max-width: 420px;
           display: -webkit-box;
-          -webkit-line-clamp: 4;
+          -webkit-line-clamp: 5;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        /* Limit compressed facts on desktop to last 3 */
+        .sv-fact-content > div:first-child > div:nth-last-child(n+4) {
+          display: none;
         }
 
         /* ── Fact entry animation ── */
@@ -1053,12 +1067,15 @@ export default function ScrollViking() {
 
         /* ── Mobile ── */
         @media (max-width: 767px) {
+          .sv-section {
+            --sv-nav-h: 64px;
+          }
           .sv-layout {
             flex-direction: column !important;
           }
           .sv-viking-col {
             flex: 0 0 auto !important;
-            max-height: 42vh !important;
+            max-height: 40dvh !important;
             padding: 8px 16px 0 16px !important;
           }
           .sv-fact-col {
@@ -1071,6 +1088,10 @@ export default function ScrollViking() {
           .sv-fact-body {
             font-size: 13px !important;
             -webkit-line-clamp: 3 !important;
+          }
+          /* Hide all compressed prior facts on mobile */
+          .sv-fact-content > div:first-child {
+            display: none !important;
           }
           .sv-next-btn {
             height: 48px !important;
