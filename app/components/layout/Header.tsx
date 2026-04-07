@@ -279,28 +279,6 @@ export default function Header() {
             Book Your Raid
           </Link>
 
-          {/* Mobile Control Room link */}
-          <Link
-            href="/control-room"
-            onClick={closeMenu}
-            className={`mt-4 inline-flex items-center justify-center rounded-md font-text transition-all duration-500 ${
-              mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-            style={{
-              transitionDelay: `${(NAV_ITEMS.length + 1) * 35}ms`,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              padding: "12px 24px",
-              background: "transparent",
-              color: "#7a7672",
-              border: "1px solid #e2ddd7",
-            }}
-          >
-            Control Room
-          </Link>
         </Container>
       </div>
     </>
