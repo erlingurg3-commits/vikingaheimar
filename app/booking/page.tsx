@@ -34,7 +34,7 @@ const info = [
   { label: "Hours (Winter)", value: "10:00–16:00" },
   { label: "Children under 12", value: "FREE of charge in the company of adults" },
   { label: "Seniors / Students", value: "10% online discount applied — valid documentation required" },
-  { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 11 min from Keflavík Airport" },
+  { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 10 min from Keflavík Airport" },
   { label: "Parking", value: "Free on site" },
 ];
 
@@ -76,8 +76,8 @@ export default function BookingPage() {
         {/* Page header — full-width centered */}
         <header className="mx-auto max-w-6xl text-center mb-12">
           <div className="flex justify-center mb-4">
-            <img 
-              src="/Vikingaheimar-02.png" 
+            <img
+              src="/logo.png"
               alt="Víkingaheimar"
               className="h-24 w-auto"
             />

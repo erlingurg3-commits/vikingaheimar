@@ -4,12 +4,12 @@ import VisitPageClient from "./VisitPageClient";
 export const metadata: Metadata = {
   title: "Visit | Víkingaheimar",
   description:
-    "5 minutes from KEF Airport. Plan your visit to Víkingaheimar — hours, directions, transport, and layover planning.",
+    "10 minutes from KEF Airport. Plan your visit to Víkingaheimar — hours, directions, transport, and layover planning.",
   alternates: { canonical: "/visit" },
   openGraph: {
     title: "Visit | Víkingaheimar",
     description:
-      "5 minutes from KEF Airport. Plan your visit to Víkingaheimar.",
+      "10 minutes from KEF Airport. Plan your visit to Víkingaheimar.",
     url: "/visit",
     images: [
       {

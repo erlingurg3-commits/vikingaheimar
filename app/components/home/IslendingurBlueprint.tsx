@@ -324,7 +324,7 @@ export default function IslendingurBlueprint() {
 
   // Stats — begin counting as hull draws, finish when ship completes (~5400ms)
   const lengthVal = useCountUp(23.5, 1, 5000, 400, drawn);
-  const weightVal = useCountUp(18, 0, 4700, 700, drawn);
+  const weightVal = useCountUp(25, 0, 4700, 700, drawn);
   const nailsVal  = useCountUp(5000, 0, 4400, 1000, drawn);
   const crewVal   = useCountUp(9, 0, 4100, 1300, drawn);
 
@@ -444,7 +444,8 @@ export default function IslendingurBlueprint() {
             transition: `opacity 1200ms ${EASE} 2000ms, transform 1200ms ${EASE} 2000ms`,
           }}
         >
-          No GPS. No engine. Just wind, 9 crew, and a whole lot of guts.
+          Built to echo the Viking Age — traditional craftsmanship, ancient
+          materials, and the spirit of the open North Atlantic.
           <br />
           Sailed from Iceland to New York in the year 2000.
         </p>

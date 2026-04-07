@@ -78,37 +78,30 @@ export default function GroupsPageClient() {
           of <em>the Vikings</em>
         </h1>
         <p className="subtext">
-          Víkingaheimar is opening its halls for private hire — dinners,
-          celebrations, and ceremonies set against one of Iceland&#39;s most
-          storied backdrops.
+          Víkingaheimar is available for private hire — the hall, the ship,
+          and the setting. What you do with it is up to you.
         </p>
       </section>
 
       {/* ── Info grid ── */}
       <div className="groups-body">
-        {/* Occasions */}
+        {/* Private hire */}
         <div className="left-col">
-          <p className="section-label">Occasions</p>
-          <ul className="occasions">
-            {[
-              "Private dining & banquets",
-              "Weddings",
-              "Baptisms & christenings",
-              "Confirmations",
-              "Corporate events",
-              "Group tours",
-            ].map((item) => (
-              <li key={item}>
-                <span className="dot" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <p className="section-label">Private Hire</p>
+          <p className="hire-copy">
+            The museum hall can be hired for private use outside of opening
+            hours. We provide the space — your event, your planner, your
+            vision.
+          </p>
+          <p className="hire-copy">
+            Suitable for dinners, ceremonies, celebrations, corporate
+            gatherings, and group visits.
+          </p>
           <div className="coming-soon-box">
             <p>
-              Our event hall is <strong>coming soon</strong>. We are
-              finalising the space and will announce availability shortly.
-              Reach out now to register your interest or enquire about dates.
+              The hall is <strong>not yet available for hire</strong>. We are
+              finalising the space and will open bookings shortly — reach out
+              to register your interest.
             </p>
           </div>
         </div>
@@ -197,7 +190,6 @@ export default function GroupsPageClient() {
                 {[
                   "Private dining / banquet",
                   "Wedding",
-                  "Baptism / christening",
                   "Confirmation",
                   "Corporate event",
                   "Group tour",
@@ -338,6 +330,15 @@ export default function GroupsPageClient() {
           color: #8a7a5a;
           margin-bottom: 24px;
           font-weight: 400;
+        }
+
+        .hire-copy {
+          font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+          font-size: 19px;
+          font-weight: 300;
+          line-height: 1.65;
+          color: #d4cbbf;
+          margin: 0 0 18px;
         }
 
         /* Occasions */
@@ -488,7 +489,23 @@ export default function GroupsPageClient() {
         }
         .field select {
           appearance: none;
+          -webkit-appearance: none;
           cursor: pointer;
+          /* Solid background so the native dropdown panel isn't white */
+          background-color: #14120e;
+          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%238a7a5a' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>");
+          background-repeat: no-repeat;
+          background-position: right 14px center;
+          padding-right: 36px;
+          color: #e8e2d9;
+          color-scheme: dark;
+        }
+        .field select option {
+          background-color: #14120e;
+          color: #e8e2d9;
+        }
+        .field select option:disabled {
+          color: rgba(232, 226, 217, 0.4);
         }
         .field textarea {
           resize: vertical;

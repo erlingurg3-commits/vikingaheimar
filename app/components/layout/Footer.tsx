@@ -48,10 +48,19 @@ export default function Footer() {
               Location
             </h4>
             <div className="space-y-3 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.40)" }}>
-              <p>Víkingabraut 1, 260 Reykjanesbær, Iceland</p>
               <p>
-                <a href="tel:+3544266699" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
-                  +354 426 6699
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=V%C3%ADkingabraut+1%2C+260+Reykjanesb%C3%A6r%2C+Iceland"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}
+                >
+                  Víkingabraut 1, 260 Reykjanesbær, Iceland
+                </a>
+              </p>
+              <p>
+                <a href="tel:+3544222000" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
+                  +354 422 2000
                 </a>
               </p>
               <p>
@@ -59,7 +68,7 @@ export default function Footer() {
                   info@vikingaheimar.is
                 </a>
               </p>
-              <p>Open daily 10:00–18:00</p>
+              <p>Open daily 10:00–16:00</p>
             </div>
           </div>
 
@@ -79,7 +88,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm" style={{ color: "rgba(255,255,255,0.40)" }}>
               <li>
-                <Link href="/tickets" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
+                <Link href="/booking" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
                   Tickets
                 </Link>
               </li>
@@ -87,11 +96,6 @@ export default function Footer() {
                 <Link href="/groups" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
                   Groups
                 </Link>
-              </li>
-              <li>
-                <a href="#" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
-                  Press
-                </a>
               </li>
             </ul>
           </div>

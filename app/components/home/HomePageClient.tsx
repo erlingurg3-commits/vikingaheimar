@@ -460,7 +460,7 @@ export default function HomePageClient() {
                   textTransform: "uppercase",
                 }}
               >
-                GROUP VISITS
+                GROUPS AND PRIVATE EVENTS
               </p>
               <h3
                 className="font-display"
@@ -482,7 +482,7 @@ export default function HomePageClient() {
                   marginBottom: 32,
                 }}
               >
-                Private tours · Tailored experiences
+                Private events · Tailored experience
               </p>
               <span
                 className="font-text"

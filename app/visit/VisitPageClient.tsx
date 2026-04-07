@@ -29,7 +29,7 @@ function HeroSection() {
     <section className="relative h-screen w-full overflow-hidden">
       {/* Background image */}
       <Image
-        src="/ship.jpg"
+        src="/IMG_8277.jpg"
         alt="The Íslendingur Viking ship inside Víkingaheimar"
         fill
         priority
@@ -55,7 +55,7 @@ function HeroSection() {
             className="hero-fade-1 text-[11px] font-semibold uppercase tracking-[0.25em]"
             style={{ color: "rgba(78,168,222,0.80)" }}
           >
-            5 minutes from KEF Airport
+            10 minutes from KEF Airport
           </p>
 
           {/* Heading */}
@@ -171,7 +171,7 @@ function AtAGlanceSection() {
             style={reveal(v1)}
           >
             <p style={eyebrowStyle}>Opening Hours</p>
-            <h3 style={h3Style}>Daily 10:00–18:00</h3>
+            <h3 style={h3Style}>Daily 10:00–16:00</h3>
             <p style={bodyStyle}>Open every day of the year</p>
           </div>
 
@@ -221,11 +221,17 @@ function AtAGlanceSection() {
 /*  SECTION 3 — Getting Here                                          */
 /* ------------------------------------------------------------------ */
 
-const transportCards = [
+const transportCards: {
+  title: string;
+  headline: string;
+  body: string;
+  href?: string;
+}[] = [
   {
     title: "By Car",
-    headline: "5-minute drive",
-    body: "Take Route 41 from Keflavík. Free parking on-site with space for coaches and campervans.",
+    headline: "10-minute drive",
+    body: "Take Route 41 from Keflavík. Free parking on-site with space for coaches and campervans. Tap for directions.",
+    href: "https://www.google.com/maps/dir/?api=1&destination=V%C3%ADkingabraut+1%2C+260+Reykjanesb%C3%A6r%2C+Iceland&travelmode=driving",
   },
   {
     title: "By Bus",
@@ -234,8 +240,8 @@ const transportCards = [
   },
   {
     title: "By Taxi",
-    headline: "8 minutes, direct",
-    body: "Taxis queue outside KEF arrivals. Approximate fare 3,000–4,000 ISK one way.",
+    headline: "10 minutes, direct",
+    body: "Taxis queue outside KEF arrivals. Approximate fare 3,500–4,500 ISK one way.",
   },
 ];
 
@@ -267,15 +273,32 @@ function GettingHereSection() {
 
         {/* Transport cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {transportCards.map((card, i) => (
-            <div
+          {transportCards.map((card, i) => {
+            const CardTag = card.href ? "a" : "div";
+            return (
+            <CardTag
               key={card.title}
-              ref={cardRefs[i]}
-              className="rounded-lg border border-[#e2ddd7] p-8"
+              ref={cardRefs[i] as React.Ref<HTMLAnchorElement & HTMLDivElement>}
+              href={card.href}
+              target={card.href ? "_blank" : undefined}
+              rel={card.href ? "noopener noreferrer" : undefined}
+              className="rounded-lg border border-[#e2ddd7] p-8 block"
               style={{
                 borderTop: "4px solid #4ea8de",
+                textDecoration: "none",
+                color: "inherit",
+                cursor: card.href ? "pointer" : "default",
+                transition: "transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease",
                 ...reveal(cardVis[i], i * 120),
               }}
+              onMouseEnter={card.href ? (e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(78,168,222,0.15)";
+              } : undefined}
+              onMouseLeave={card.href ? (e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "none";
+              } : undefined}
             >
               <p
                 className="text-[11px] font-semibold uppercase tracking-[0.2em]"
@@ -305,8 +328,9 @@ function GettingHereSection() {
               >
                 {card.body}
               </p>
-            </div>
-          ))}
+            </CardTag>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -319,7 +343,7 @@ function GettingHereSection() {
 
 const timelineEntries = [
   { time: "10:00", desc: "Land at KEF, collect bags" },
-  { time: "10:15", desc: "Drive to Víkingaheimar (5 min)" },
+  { time: "10:15", desc: "Drive to Víkingaheimar (10 min)" },
   { time: "10:30 – 12:00", desc: "Explore the museum" },
   { time: "12:15", desc: "Return to KEF, continue your journey" },
 ];
@@ -351,55 +375,80 @@ function LayoverSection() {
           </p>
         </div>
 
-        {/* Timeline */}
-        <div className="relative mx-auto max-w-[540px]">
-          {/* Vertical line */}
-          <div
-            aria-hidden="true"
-            className="absolute left-[7px] top-2 bottom-2 w-px"
-            style={{ backgroundColor: "rgba(78,168,222,0.25)" }}
-          />
+        {/* Two-column: timeline left, roadmap image right */}
+        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-10 md:gap-20 items-start">
+          {/* Timeline */}
+          <div className="relative max-w-[540px] w-full mx-auto md:mx-0">
+            {/* Vertical line */}
+            <div
+              aria-hidden="true"
+              className="absolute left-[7px] top-2 bottom-2 w-px"
+              style={{ backgroundColor: "rgba(78,168,222,0.25)" }}
+            />
 
-          <div className="space-y-10">
-            {timelineEntries.map((entry, i) => (
-              <div
-                key={entry.time}
-                ref={nodes[i].ref}
-                className="relative flex items-start gap-6 pl-7"
-                style={reveal(nodes[i].isVisible, i * 150)}
-              >
-                {/* Dot */}
+            <div className="space-y-10">
+              {timelineEntries.map((entry, i) => (
                 <div
-                  aria-hidden="true"
-                  className="absolute left-0 top-[6px] h-[14px] w-[14px] rounded-full"
-                  style={{ backgroundColor: "#4ea8de" }}
-                />
+                  key={entry.time}
+                  ref={nodes[i].ref}
+                  className="relative flex items-start gap-6 pl-7"
+                  style={reveal(nodes[i].isVisible, i * 150)}
+                >
+                  {/* Dot */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute left-0 top-[6px] h-[14px] w-[14px] rounded-full"
+                    style={{ backgroundColor: "#4ea8de" }}
+                  />
 
-                <div>
-                  <p
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontWeight: 300,
-                      fontSize: "22px",
-                      lineHeight: 1.3,
-                      color: "#1a1a1a",
-                    }}
-                  >
-                    {entry.time}
-                  </p>
-                  <p
-                    className="mt-1"
-                    style={{
-                      fontSize: "15px",
-                      lineHeight: 1.65,
-                      color: "#7a7672",
-                    }}
-                  >
-                    {entry.desc}
-                  </p>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "var(--font-display)",
+                        fontWeight: 300,
+                        fontSize: "22px",
+                        lineHeight: 1.3,
+                        color: "#1a1a1a",
+                      }}
+                    >
+                      {entry.time}
+                    </p>
+                    <p
+                      className="mt-1"
+                      style={{
+                        fontSize: "15px",
+                        lineHeight: 1.65,
+                        color: "#7a7672",
+                      }}
+                    >
+                      {entry.desc}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Roadmap illustration — sticky on desktop, hidden on mobile */}
+          <div className="hidden md:block">
+            <div className="sticky top-24">
+              <img
+                src="/roadmap%20to%20vikings.png"
+                alt="Roadmap to Víkingaheimar"
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  maxHeight: "90vh",
+                  objectFit: "contain",
+                  objectPosition: "right center",
+                  opacity: 0.32,
+                  pointerEvents: "none",
+                  userSelect: "none",
+                  display: "block",
+                  marginLeft: "auto",
+                }}
+              />
+            </div>
           </div>
         </div>
 
@@ -471,7 +520,7 @@ function FinalCtaSection() {
                 ...reveal(v1),
               }}
             >
-              Open Daily 10:00–18:00
+              Open Daily 10:00–16:00
             </p>
 
             {/* Heading */}
