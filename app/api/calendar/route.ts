@@ -108,9 +108,11 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // Strategy 1: Direct Google Calendar API (fast, free — needs GOOGLE_REFRESH_TOKEN)
-  const hasRefreshToken = Boolean(process.env.GOOGLE_REFRESH_TOKEN);
-  if (hasRefreshToken) {
+  // Strategy 1: Direct Google Calendar API via service account JWT
+  const hasServiceAccount = Boolean(
+    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+  );
+  if (hasServiceAccount) {
     try {
       const events = await listCalendarEvents(CALENDAR_ID, timeMin, timeMax);
       return NextResponse.json(events);

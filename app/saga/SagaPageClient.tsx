@@ -571,7 +571,7 @@ export default function SagaPageClient() {
               ...reveal(ctaVisible, 100),
             }}
           >
-            11 minutes from Keflavík Airport.
+            10 minutes from Keflavík Airport.
           </p>
 
           <div

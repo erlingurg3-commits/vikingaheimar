@@ -727,7 +727,7 @@ export default function HomePageClient() {
                   marginBottom: 12,
                 }}
               >
-                Daily 10:00–18:00
+                Daily 10:00–16:00
               </h3>
               <p
                 className="font-text"
@@ -845,15 +845,15 @@ export default function HomePageClient() {
                   marginBottom: 12,
                 }}
               >
-                8 min from Keflavík
+                10 min from Keflavík
               </h3>
               <p
                 className="font-text"
                 style={{ fontSize: 15, color: "#7a7672", lineHeight: 1.7 }}
               >
-                8 min from Keflavík Airport
+                10 min from Keflavík Airport
                 <br />
-                40 min from Reykjavík city centre
+                45 min from Reykjavík
               </p>
             </div>
           </div>

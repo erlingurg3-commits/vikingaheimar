@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
-import VikingArsenal from "@/app/components/VikingArsenal";
+// Archived April 2026 — see _archived/viking-arsenal/
+// import VikingArsenal from "@/app/components/VikingArsenal";
 import ScrollViking from "@/app/components/ScrollViking";
 import Gunnbjorn from "@/app/components/Gunnbjorn";
 
@@ -615,7 +616,8 @@ export default function VikingsPageClient() {
       {/* ═══════════════════════════════════════════════════════════════
           1c. VIKING ARSENAL — animated weapon showcase
           ═══════════════════════════════════════════════════════════════ */}
-      <VikingArsenal />
+      {/* Archived April 2026 — see _archived/viking-arsenal/ */}
+      {/* <VikingArsenal /> */}
 
       {/* ═══════════════════════════════════════════════════════════════
           2. FACT SECTIONS
@@ -624,7 +626,8 @@ export default function VikingsPageClient() {
       {/* ═══════════════════════════════════════════════════════════════
           3. WORLD REACH MAP
           ═══════════════════════════════════════════════════════════════ */}
-      <WorldReachMap />
+      {/* Archived April 2026 — see _archived/map-world-routes/ */}
+      {/* <WorldReachMap /> */}
 
 
       {/* ═══════════════════════════════════════════════════════════════

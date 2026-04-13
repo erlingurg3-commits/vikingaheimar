@@ -114,11 +114,17 @@ export default function BookingPage() {
             </div>
           </div>
 
-          {/* ── Right column: map + layered info content (5/11 ≈ 45%) ── */}
-          <div className="lg:col-span-5 order-1 lg:order-2 relative min-h-[600px] lg:sticky lg:top-16">
-            {/* Info sections overlay — desktop only, sticky */}
-            <div className="hidden lg:block absolute inset-0 z-20 flex items-start pointer-events-none">
-              <div className="max-w-[420px] pl-8 pt-8 space-y-6 pointer-events-auto sticky top-16">
+          {/* ── Right column: map + info ── */}
+          <div className="lg:col-span-5 order-1 lg:order-2 relative lg:sticky lg:top-16">
+
+            {/* Map background */}
+            <div className="relative z-0">
+              <RouteMapLoader />
+            </div>
+
+            {/* Info sections overlaid on map — desktop */}
+            <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
+              <div className="max-w-[420px] pl-8 pt-8 space-y-6 pointer-events-auto">
                 {/* What's Included */}
                 <section aria-labelledby="included-heading">
                   <SectionHeading>
@@ -155,26 +161,20 @@ export default function BookingPage() {
               </div>
             </div>
 
-
-            {/* Map background */}
-            <div className="relative z-0">
-              <RouteMapLoader />
-            </div>
-
             {/* Info sections mobile stack */}
             <div className="lg:hidden space-y-12 mt-8">
               {/* What's Included */}
-              <section aria-labelledby="included-heading">
+              <section aria-labelledby="included-heading-m">
                 <SectionHeading>
-                  <span id="included-heading">What&apos;s Included</span>
+                  <span id="included-heading-m">What&apos;s Included</span>
                 </SectionHeading>
                 <CheckList items={included} />
               </section>
 
               {/* Visitor Info */}
-              <section aria-labelledby="info-heading">
+              <section aria-labelledby="info-heading-m">
                 <SectionHeading>
-                  <span id="info-heading">Visitor Info</span>
+                  <span id="info-heading-m">Visitor Info</span>
                 </SectionHeading>
                 <dl className="space-y-2.5">
                   {info.map((item) => (
@@ -190,9 +190,9 @@ export default function BookingPage() {
               </section>
 
               {/* Accessibility */}
-              <section aria-labelledby="accessibility-heading">
+              <section aria-labelledby="accessibility-heading-m">
                 <SectionHeading>
-                  <span id="accessibility-heading">Accessibility</span>
+                  <span id="accessibility-heading-m">Accessibility</span>
                 </SectionHeading>
                 <CheckList items={accessibilityItems} />
               </section>

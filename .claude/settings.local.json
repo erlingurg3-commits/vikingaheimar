@@ -47,7 +47,11 @@
       "WebFetch(domain:www.kefairport.com)",
       "Read(//c/Users/mistt/vikingaheimar/$LOCALAPPDATA/Temp/agency-agents-fresh/**)",
       "Read(//c/Users/mistt/AppData/Local/Temp/agency-agents-fresh/**)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(tasklist)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill:*)"
     ]
   }
 }

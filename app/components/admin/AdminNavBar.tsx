@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS: { label: string; href: string; external?: boolean }[] = [
   { label: "Dashboard", href: "/control-room/overview-v1" },
   { label: "Revenue Forecast", href: "/control-room" },
+  { label: "Revenue dashboard", href: "/revenue" },
   { label: "Capacity", href: "/control-room/capacity" },
   { label: "Group Requests", href: "/control-room/group-requests" },
   { label: "Travel Agent KPIs", href: "/control-room/agents" },

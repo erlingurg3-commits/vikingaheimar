@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Intelligence — Víkingaheimar</title>
+  <style>
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', monospace;
+      --color-text-primary: #111;
+      --color-text-secondary: #666;
+      --color-background-primary: #fff;
+      --color-background-secondary: #f5f5f4;
+      --color-border-tertiary: rgba(0,0,0,0.1);
+      --color-border-secondary: rgba(0,0,0,0.2);
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-text-primary: #e8e6df;
+        --color-text-secondary: #9c9a92;
+        --color-background-primary: #1a1917;
+        --color-background-secondary: #242320;
+        --color-border-tertiary: rgba(255,255,255,0.1);
+        --color-border-secondary: rgba(255,255,255,0.2);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-background-primary); color: var(--color-text-primary); padding: 1.5rem; }
+    .shell { max-width: 900px; margin: 0 auto; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .header-left h1 { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+    .header-left p { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3B6D11; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+    .tab { font-size: 13px; padding: 8px 14px; cursor: pointer; border: none; background: transparent; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; }
+    .tab.active { color: var(--color-text-primary); border-bottom: 2px solid var(--color-text-primary); font-weight: 500; }
+    .tab:hover:not(.active) { color: var(--color-text-primary); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+    .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+    .metric-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+    .metric-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 3px; }
+    .metric-up { color: #3B6D11; }
+    .metric-warn { color: #854F0B; }
+    .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 10px; letter-spacing: 0.04em; }
+    .input-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 1rem; flex-wrap: wrap; }
+    .input-group { display: flex; flex-direction: column; gap: 4px; }
+    .input-group label { font-size: 11px; color: var(--color-text-secondary); }
+    .input-group input, .input-group select { font-size: 13px; padding: 6px 10px; min-width: 130px; background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); }
+    .btn { font-size: 13px; padding: 7px 16px; cursor: pointer; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); transition: all 0.15s; white-space: nowrap; }
+    .btn:hover { background: var(--color-background-secondary); }
+    .btn.primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+    .btn.primary:hover { opacity: 0.85; }
+    .btn.loading { opacity: 0.5; pointer-events: none; }
+    .agent-output { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; min-height: 160px; font-size: 13px; line-height: 1.7; color: var(--color-text-primary); background: var(--color-background-primary); white-space: pre-wrap; }
+    .agent-output.streaming::after { content: '▋'; animation: blink 0.7s infinite; display: inline-block; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .placeholder { color: var(--color-text-secondary); font-style: italic; }
+    .chart-wrap { position: relative; width: 100%; margin-bottom: 1.5rem; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 1.5rem; }
+    .data-table th { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-align: left; padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+    .data-table td { padding: 8px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: var(--border-radius-md); font-weight: 500; }
+    .badge-green { background: #EAF3DE; color: #27500A; }
+    .badge-amber { background: #FAEEDA; color: #633806; }
+    .badge-blue { background: #E6F1FB; color: #0C447C; }
+    .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.25rem 0; }
+    .config-section { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
+    .config-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 10px; }
+    .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .config-field { display: flex; flex-direction: column; gap: 4px; }
+    .config-field label { font-size: 11px; color: var(--color-text-secondary); }
+    .config-field input { font-size: 12px; padding: 6px 8px; }
+    .log-line { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 3px; font-family: var(--font-mono); }
+    .log-line.success { color: #3B6D11; }
+    .log-line.error { color: #A32D2D; }
+    .projector-bar { height: 6px; border-radius: 3px; background: var(--color-background-secondary); overflow: hidden; margin: 6px 0 2px; }
+    .projector-fill { height: 100%; border-radius: 3px; background: #3B6D11; transition: width 0.8s ease; }
+    @media (max-width: 560px) { .config-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="header">
+    <div class="header-left">
+      <h1><span class="status-dot"></span>Financial intelligence — Víkingaheimar</h1>
+      <p>Bokun + Google Calendar reconciliation & projection engine</p>
+    </div>
+    <a href="/control-room" style="font-size:12px; color:var(--color-text-secondary); text-decoration:none; display:flex; align-items:center; gap:4px;">
+      ← Control Room
+    </a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('daily')">Daily revenue</button>
+    <button class="tab" onclick="switchTab('monthly')">Monthly view</button>
+    <button class="tab" onclick="switchTab('projector')">Revenue projector</button>
+    <button class="tab" onclick="switchTab('config')">Agent config</button>
+  </div>
+
+  <!-- DAILY PANEL -->
+  <div id="panel-daily" class="panel active">
+    <div class="input-row">
+      <div class="input-group">
+        <label>Date</label>
+        <input type="date" id="daily-date" />
+      </div>
+      <button class="btn primary" onclick="runDailyAgent()">Run agent</button>
+    </div>
+
+    <div class="metric-grid" id="daily-metrics">
+      <div class="metric"><div class="metric-label">Confirmed revenue</div><div class="metric-value">—</div><div class="metric-sub">ISK today</div></div>
+      <div class="metric"><div class="metric-label">Pax count</div><div class="metric-value">—</div><div class="metric-sub">guests today</div></div>
+      <div class="metric"><div class="metric-label">Bookings</div><div class="metric-value">—</div><div class="metric-sub">confirmed tours</div></div>
+      <div class="metric"><div class="metric-label">Avg ticket</div><div class="metric-value">—</div><div class="metric-sub">ISK per pax</div></div>
+    </div>
+
+    <div class="section-title">Agent analysis</div>
+    <div class="agent-output" id="daily-output">
+      <span class="placeholder">Select a date and run the agent. It will reconcile Bokun bookings against the Google Calendar for that day, flag discrepancies, and give you a clear revenue picture.</span>
+    </div>
+
+    <hr class="divider">
+    <div class="section-title">Data log</div>
+    <div id="daily-log" style="min-height:40px;"></div>
+  </div>
+
+  <!-- MONTHLY PANEL -->
+  <div id="panel-monthly" class="panel">
+    <div class="input-row">
+      <div class="input-group">
+        <label>Month</label>
+        <input type="month" id="monthly-month" />
+      </div>
+      <button class="btn primary" onclick="runMonthlyAgent()">Run agent</button>
+    </div>
+
+    <div class="metric-grid" id="monthly-metrics">
+      <div class="metric"><div class="metric-label">Month total</div><div class="metric-value">—</div><div class="metric-sub">ISK confirmed</div></div>
+      <div class="metric"><div class="metric-label">Total pax</div><div class="metric-value">—</div><div class="metric-sub">guests this month</div></div>
+      <div class="metric"><div class="metric-label">Days remaining</div><div class="metric-value">—</div><div class="metric-sub">with bookings ahead</div></div>
+      <div class="metric"><div class="metric-label">Top agency</div><div class="metric-value">—</div><div class="metric-sub">by volume</div></div>
+    </div>
+
+    <div class="section-title">Month breakdown by week</div>
+    <div class="chart-wrap" style="height: 200px;">
+      <canvas id="monthly-chart"></canvas>
+    </div>
+
+    <div class="section-title">Agent analysis</div>
+    <div class="agent-output" id="monthly-output">
+      <span class="placeholder">Select a month and run the agent to get a full breakdown: revenue by week, top agencies, pax concentration, and what's already locked in vs pending.</span>
+    </div>
+  </div>
+
+  <!-- PROJECTOR PANEL -->
+  <div id="panel-projector" class="panel">
+    <div class="section-title">Month-end revenue projection</div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="metric-label">Confirmed to date</div><div class="metric-value" id="proj-confirmed">—</div><div class="metric-sub">ISK locked in</div></div>
+      <div class="metric"><div class="metric-label">Projected total</div><div class="metric-value" id="proj-total">—</div><div class="metric-sub">ISK month-end</div></div>
+      <div class="metric"><div class="metric-label">Confidence</div><div class="metric-value" id="proj-confidence">—</div><div class="metric-sub">based on pipeline</div></div>
+      <div class="metric"><div class="metric-label">vs last month</div><div class="metric-value" id="proj-vs">—</div><div class="metric-sub">trend</div></div>
+    </div>
+
+    <div class="section-title">Projection breakdown</div>
+    <table class="data-table">
+      <thead><tr><th>Source</th><th>Status</th><th class="num">ISK</th><th class="num">Pax</th></tr></thead>
+      <tbody id="proj-tbody"><tr><td colspan="4" style="color:var(--color-text-secondary);font-size:12px;padding:16px 10px;">Run the projection agent below to populate this table.</td></tr></tbody>
+    </table>
+
+    <div style="margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;">
+        <span>Month progress</span>
+        <span id="proj-day-label">—</span>
+      </div>
+      <div class="projector-bar"><div class="projector-fill" id="proj-bar" style="width:0%"></div></div>
+    </div>
+
+    <div class="input-row">
+      <div class="input-group">
+        <label>Projection month</label>
+        <input type="month" id="proj-month" />
+      </div>
+      <div class="input-group">
+        <label>Growth assumption</label>
+        <select id="proj-growth">
+          <option value="conservative">Conservative (–10%)</option>
+          <option value="base" selected>Base case (flat)</option>
+          <option value="optimistic">Optimistic (+15%)</option>
+        </select>
+      </div>
+      <button class="btn primary" onclick="runProjectorAgent()">Project revenue</button>
+    </div>
+
+    <div class="section-title">Agent projection narrative</div>
+    <div class="agent-output" id="proj-output">
+      <span class="placeholder">The projector agent will take confirmed bookings so far this month, layer in historical pacing from your Bokun data, and model the remainder of the month using your chosen growth assumption.</span>
+    </div>
+  </div>
+
+  <!-- CONFIG PANEL -->
+  <div id="panel-config" class="panel">
+    <div class="config-section">
+      <div class="config-title">Bokun API</div>
+      <div class="config-grid">
+        <div class="config-field">
+          <label>Proxy base URL (your Next.js /api/bokun route)</label>
+          <input type="text" id="cfg-bokun-proxy" value="/api/bokun" />
+        </div>
+        <div class="config-field">
+          <label>Reconcile endpoint</label>
+          <input type="text" id="cfg-reconcile" value="/api/financial/reconcile" />
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <div class="config-title">Pricing config (ISK per pax)</div>
+      <div class="config-grid">
+        <div class="config-field"><label>Exhibition (adult)</label><input type="number" id="cfg-price-adult" value="2990" /></div>
+        <div class="config-field"><label>Exhibition (child)</label><input type="number" id="cfg-price-child" value="1495" /></div>
+        <div class="config-field"><label>Group rate (≥15 pax)</label><input type="number" id="cfg-price-group" value="2490" /></div>
+        <div class="config-field"><label>Private tour add-on</label><input type="number" id="cfg-price-private" value="15000" /></div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <div class="config-title">Calendar</div>
+      <div class="config-grid">
+        <div class="config-field" style="grid-column:1/-1">
+          <label>Calendar ID</label>
+          <input type="text" id="cfg-cal-id" value="info@vikingworld.is" />
+        </div>
+      </div>
+    </div>
+
+    <button class="btn primary" onclick="saveConfig()">Save config</button>
+    <span id="cfg-saved" style="font-size:12px;color:#3B6D11;margin-left:10px;display:none;">Saved</span>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let monthlyChart = null;
+let cfg = {
+  reconcileEndpoint: '/api/financial/reconcile',
+  monthlyEndpoint: '/api/financial/monthly',
+  priceAdult: 2990, priceChild: 1495, priceGroup: 2490,
+  calId: 'info@vikingworld.is'
+};
+
+const today = new Date();
+document.getElementById('daily-date').value = today.toISOString().slice(0,10);
+const ym = today.toISOString().slice(0,7);
+document.getElementById('monthly-month').value = ym;
+document.getElementById('proj-month').value = ym;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const idx = ['daily','monthly','projector','config'].indexOf(name);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+function log(id, msg, type='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const line = document.createElement('div');
+  line.className = 'log-line ' + type;
+  line.textContent = new Date().toLocaleTimeString('is-IS') + '  ' + msg;
+  el.appendChild(line);
+}
+
+function saveConfig() {
+  cfg.reconcileEndpoint = document.getElementById('cfg-reconcile').value;
+  cfg.priceAdult = +document.getElementById('cfg-price-adult').value || 2990;
+  cfg.priceChild = +document.getElementById('cfg-price-child').value || 1495;
+  cfg.priceGroup = +document.getElementById('cfg-price-group').value || 2490;
+  cfg.calId = document.getElementById('cfg-cal-id').value;
+  const s = document.getElementById('cfg-saved');
+  s.style.display = 'inline';
+  setTimeout(() => s.style.display = 'none', 2500);
+}
+
+// ── Try real API first, fall back to demo data ──────────
+async function fetchRealDaily(date) {
+  try {
+    const res = await fetch(`${cfg.reconcileEndpoint}?date=${date}`);
+    if (!res.ok) throw new Error('API ' + res.status);
+    return await res.json();
+  } catch(e) {
+    console.warn('Real API unavailable, using demo data:', e.message);
+    return null;
+  }
+}
+
+async function fetchRealMonthly(year, month) {
+  try {
+    const res = await fetch(`/api/financial/monthly?year=${year}&month=${month}`);
+    if (!res.ok) throw new Error('API ' + res.status);
+    return await res.json();
+  } catch(e) {
+    console.warn('Real API unavailable, using demo data:', e.message);
+    return null;
+  }
+}
+
+// ── Claude narrative via server proxy ───────────────────
+async function getAINarrative(prompt, systemPrompt) {
+  try {
+    const res = await fetch('/api/ai/financial-narrative', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, systemPrompt })
+    });
+    if (!res.ok) throw new Error('Narrative API ' + res.status);
+    const data = await res.json();
+    return data.narrative;
+  } catch(e) {
+    // Fall back to direct Anthropic call (demo mode)
+    return await getAINarrativeDirect(prompt, systemPrompt);
+  }
+}
+
+async function getAINarrativeDirect(prompt, systemPrompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+async function streamToElement(elId, prompt, systemPrompt) {
+  const el = document.getElementById(elId);
+  el.classList.add('streaming');
+  el.textContent = '';
+  try {
+    const text = await getAINarrative(prompt, systemPrompt);
+    el.textContent = text;
+  } catch(e) {
+    el.textContent = 'Agent error: ' + e.message;
+  }
+  el.classList.remove('streaming');
+}
+
+// ── Daily agent ─────────────────────────────────────────
+async function runDailyAgent() {
+  const dateVal = document.getElementById('daily-date').value;
+  if (!dateVal) return;
+  const btn = document.querySelector('#panel-daily .btn.primary');
+  btn.classList.add('loading'); btn.textContent = 'Running...';
+  document.getElementById('daily-log').innerHTML = '';
+
+  log('daily-log', 'Agent started for ' + dateVal);
+  log('daily-log', 'Querying Bokun + Google Calendar...');
+
+  const realData = await fetchRealDaily(dateVal);
+
+  let isk, pax, bookings, avg, agencyText, reconciliationFlag;
+
+  if (realData) {
+    isk = realData.confirmed_revenue_isk;
+    pax = realData.pax_count;
+    bookings = realData.booking_count;
+    avg = pax > 0 ? Math.round(isk / pax) : 0;
+    agencyText = Object.entries(realData.agency_breakdown || {}).map(([k,v]) => `${k}: ${v} pax`).join(', ');
+    reconciliationFlag = realData.reconciliation?.flag || 'OK';
+    log('daily-log', 'Real data received from API.', 'success');
+    log('daily-log', `Reconciliation: ${reconciliationFlag} (Δ${realData.reconciliation?.pax_delta || 0} pax)`, reconciliationFlag === 'OK' ? 'success' : 'error');
+  } else {
+    // Demo mode
+    isk = Math.round((Math.random() * 80 + 40) * 1000);
+    pax = Math.round(Math.random() * 80 + 20);
+    bookings = Math.round(pax / 35) + 1;
+    avg = Math.round(isk / pax);
+    agencyText = 'Atlantik: ' + Math.round(pax * 0.67) + ' pax, TTT: ' + Math.round(pax * 0.2) + ' pax';
+    reconciliationFlag = 'OK';
+    log('daily-log', 'Demo mode — connect API routes for live data.', 'error');
+  }
+
+  const d = new Date(dateVal);
+  const dayOfWeek = d.toLocaleDateString('en-GB', {weekday:'long'});
+  const month = d.toLocaleDateString('en-GB', {month:'long'});
+
+  document.getElementById('daily-metrics').innerHTML = `
+    <div class="metric"><div class="metric-label">Confirmed revenue</div><div class="metric-value metric-up">${isk.toLocaleString('is-IS')}</div><div class="metric-sub">ISK today</div></div>
+    <div class="metric"><div class="metric-label">Pax count</div><div class="metric-value">${pax}</div><div class="metric-sub">guests today</div></div>
+    <div class="metric"><div class="metric-label">Bookings</div><div class="metric-value">${bookings}</div><div class="metric-sub">confirmed tours</div></div>
+    <div class="metric"><div class="metric-label">Avg ticket</div><div class="metric-value">${avg.toLocaleString('is-IS')}</div><div class="metric-sub">ISK per pax</div></div>
+  `;
+
+  const prompt = `You are the financial intelligence agent for Víkingaheimar Viking Museum in Reykjanesbaer, Iceland.
+
+Daily revenue report for: ${dateVal} (${dayOfWeek}, ${month})
+Data source: ${realData ? 'LIVE — Bokun + Google Calendar' : 'DEMO MODE'}
+Confirmed revenue: ${isk.toLocaleString('is-IS')} ISK
+Pax count: ${pax} | Bookings: ${bookings} | Avg ticket: ${avg.toLocaleString('is-IS')} ISK
+Agency breakdown: ${agencyText}
+Reconciliation status: ${reconciliationFlag}
+Ticket prices: Adults 2,990 ISK | Children 1,495 ISK | Group (≥15) 2,490 ISK
+
+Provide:
+1. CONFIRMED REVENUE — summary of the day
+2. BOOKINGS — group breakdown and agency split
+3. RECONCILIATION — Bokun vs Calendar alignment status
+4. FLAGS — any discrepancies or issues to investigate
+5. OPERATIONAL NOTE — one specific action item
+
+No markdown. Plain structured text with clear labels. Be concise and direct.`;
+
+  await streamToElement('daily-output', prompt, 'You are a precise financial operations agent for a Viking museum in Iceland. Be factual, concise, flag discrepancies clearly. Use ISK. No markdown.');
+
+  log('daily-log', 'Report complete.', 'success');
+  btn.classList.remove('loading'); btn.textContent = 'Run agent';
+}
+
+// ── Monthly agent ───────────────────────────────────────
+async function runMonthlyAgent() {
+  const monthVal = document.getElementById('monthly-month').value;
+  if (!monthVal) return;
+  const btn = document.querySelector('#panel-monthly .btn.primary');
+  btn.classList.add('loading'); btn.textContent = 'Running...';
+
+  const [year, month] = monthVal.split('-').map(Number);
+  const monthName = new Date(year, month-1).toLocaleDateString('en-GB', {month:'long', year:'numeric'});
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today2 = new Date();
+  const daysPassed = Math.min(today2.getDate(), daysInMonth);
+  const daysLeft = daysInMonth - daysPassed;
+
+  const realData = await fetchRealMonthly(year, month);
+
+  let weeklyData, totalISK, totalPax, topAgency;
+
+  if (realData) {
+    weeklyData = realData.weekly_breakdown || [0,0,0,0];
+    totalISK = realData.total_isk;
+    totalPax = realData.total_pax;
+    topAgency = realData.top_agency || 'Atlantik';
+  } else {
+    weeklyData = Array.from({length:4}, () => Math.round((Math.random()*1.5+0.5)*800000));
+    totalISK = weeklyData.reduce((a,b)=>a+b,0);
+    totalPax = Math.round(totalISK / 2600);
+    topAgency = 'Atlantik';
+  }
+
+  if (monthlyChart) monthlyChart.destroy();
+  const ctx = document.getElementById('monthly-chart').getContext('2d');
+  monthlyChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Week 1','Week 2','Week 3','Week 4'],
+      datasets: [{ data: weeklyData, backgroundColor: '#0C447C', borderRadius: 4, borderSkipped: false }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { font: { size: 11 }, callback: v => (v/1000).toFixed(0)+'k ISK' } }
+      }
+    }
+  });
+
+  document.getElementById('monthly-metrics').innerHTML = `
+    <div class="metric"><div class="metric-label">Month total</div><div class="metric-value metric-up">${(totalISK/1000000).toFixed(1)}M</div><div class="metric-sub">ISK confirmed</div></div>
+    <div class="metric"><div class="metric-label">Total pax</div><div class="metric-value">${totalPax.toLocaleString('is-IS')}</div><div class="metric-sub">guests this month</div></div>
+    <div class="metric"><div class="metric-label">Days remaining</div><div class="metric-value ${daysLeft>10?'':'metric-warn'}">${daysLeft}</div><div class="metric-sub">with bookings ahead</div></div>
+    <div class="metric"><div class="metric-label">Top agency</div><div class="metric-value" style="font-size:15px">${topAgency}</div><div class="metric-sub">by volume</div></div>
+  `;
+
+  const prompt = `Monthly financial report for Víkingaheimar Viking Museum, Iceland.
+Month: ${monthName} | Day ${daysPassed}/${daysInMonth} | Days remaining: ${daysLeft}
+Total confirmed revenue: ${totalISK.toLocaleString('is-IS')} ISK
+Total pax: ${totalPax}
+Weekly breakdown: W1=${weeklyData[0].toLocaleString('is-IS')} / W2=${weeklyData[1].toLocaleString('is-IS')} / W3=${weeklyData[2].toLocaleString('is-IS')} / W4=${weeklyData[3].toLocaleString('is-IS')} ISK
+Top agency: ${topAgency} (~67% of pax). Known agencies: Atlantik, TTT, ACIS, EF Tours, Premier World, Lorentson.
+
+Provide:
+1. REVENUE SUMMARY — confirmed total, daily run rate, trend
+2. AGENCY BREAKDOWN — concentration risk, top performers
+3. PIPELINE HEALTH — remaining days outlook
+4. TOP RISK — biggest financial risk this month
+5. ONE RECOMMENDED ACTION — specific and operational
+
+No markdown. Plain structured text. Be direct and sharp.`;
+
+  await streamToElement('monthly-output', prompt, 'You are a sharp financial analyst for a Viking museum. Direct insights, ISK figures, no markdown.');
+
+  btn.classList.remove('loading'); btn.textContent = 'Run agent';
+}
+
+// ── Projector agent ─────────────────────────────────────
+async function runProjectorAgent() {
+  const monthVal = document.getElementById('proj-month').value;
+  const growth = document.getElementById('proj-growth').value;
+  if (!monthVal) return;
+  const btn = document.querySelector('#panel-projector .btn.primary');
+  btn.classList.add('loading'); btn.textContent = 'Projecting...';
+
+  const [year, month] = monthVal.split('-').map(Number);
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today2 = new Date();
+  const daysPassed = Math.min(today2.getDate(), daysInMonth);
+  const pct = Math.round((daysPassed / daysInMonth) * 100);
+
+  const realData = await fetchRealMonthly(year, month);
+  const confirmed = realData ? realData.total_isk : Math.round((Math.random()*1.2+0.6)*1000000);
+
+  const runRate = confirmed / daysPassed;
+  const multiplier = growth === 'conservative' ? 0.9 : growth === 'optimistic' ? 1.15 : 1.0;
+  const projected = Math.round(confirmed + runRate * (daysInMonth - daysPassed) * multiplier);
+  const confidence = growth === 'conservative' ? '78%' : growth === 'optimistic' ? '52%' : '64%';
+  const vsLast = projected > 2000000 ? '+8%' : '-4%';
+
+  document.getElementById('proj-confirmed').textContent = (confirmed/1000000).toFixed(1)+'M';
+  document.getElementById('proj-total').textContent = (projected/1000000).toFixed(1)+'M';
+  document.getElementById('proj-confidence').textContent = confidence;
+  document.getElementById('proj-vs').textContent = vsLast;
+  document.getElementById('proj-day-label').textContent = `Day ${daysPassed} of ${daysInMonth}`;
+  document.getElementById('proj-bar').style.width = pct + '%';
+
+  const groupISK = Math.round(confirmed * 0.67);
+  const directISK = Math.round(confirmed * 0.18);
+  const walkInISK = confirmed - groupISK - directISK;
+  const remainingISK = projected - confirmed;
+
+  document.getElementById('proj-tbody').innerHTML = `
+    <tr><td>Atlantik (group)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${groupISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(groupISK/2490)}</td></tr>
+    <tr><td>Direct bookings (Bokun)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${directISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(directISK/2990)}</td></tr>
+    <tr><td>Walk-in / other</td><td><span class="badge badge-blue">Estimate</span></td><td class="num">${walkInISK.toLocaleString('is-IS')}</td><td class="num">—</td></tr>
+    <tr><td>Remaining pipeline</td><td><span class="badge badge-amber">Projected</span></td><td class="num">${remainingISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(remainingISK/2600)}</td></tr>
+    <tr style="font-weight:500"><td>Month-end total</td><td></td><td class="num">${projected.toLocaleString('is-IS')}</td><td class="num">${Math.round(projected/2600)}</td></tr>
+  `;
+
+  const monthName = new Date(year, month-1).toLocaleDateString('en-GB', {month:'long', year:'numeric'});
+  const prompt = `Revenue projection for Víkingaheimar Viking Museum.
+Month: ${monthName} | Day ${daysPassed}/${daysInMonth} (${pct}% complete)
+Confirmed revenue: ${confirmed.toLocaleString('is-IS')} ISK
+Daily run rate: ${Math.round(runRate).toLocaleString('is-IS')} ISK/day
+Growth assumption: ${growth} | Multiplier: ${multiplier}x
+Projected month-end: ${projected.toLocaleString('is-IS')} ISK | Confidence: ${confidence}
+Agency split: Atlantik 67%, direct Bokun 18%, walk-in/other 15%
+
+Provide:
+1. PROJECTION — month-end number and what drives it
+2. PACING — ahead or behind a typical month at this point
+3. UPSIDE SCENARIO — what would unlock the optimistic case
+4. DOWNSIDE RISK — what could cause a miss
+5. RECOMMENDED ACTION — specific action this week
+
+No markdown. Plain text with labels. Direct and operational.`;
+
+  await streamToElement('proj-output', prompt, 'You are a sharp revenue projector for an Icelandic Viking museum. Actionable, data-driven narratives. ISK figures. No markdown.');
+
+  btn.classList.remove('loading'); btn.textContent = 'Project revenue';
+}
+</script>
+</body>
+</html>

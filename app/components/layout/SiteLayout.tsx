@@ -15,9 +15,10 @@ interface SiteLayoutProps {
 export default function SiteLayout({ children }: SiteLayoutProps) {
   const pathname = usePathname() ?? "";
   const isControlRoom = pathname === "/control-room" || pathname.startsWith("/control-room/");
+  const isRevenue = pathname === "/revenue" || pathname.startsWith("/revenue/");
   const isHome = pathname === "/";
 
-  if (isControlRoom) {
+  if (isControlRoom || isRevenue) {
     return <>{children}</>;
   }
 
