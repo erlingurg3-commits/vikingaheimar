@@ -33,7 +33,7 @@ const info = [
   { label: "Hours (Summer)", value: "09:00–17:00" },
   { label: "Hours (Winter)", value: "10:00–16:00" },
   { label: "Children under 12", value: "FREE of charge in the company of adults" },
-  { label: "Seniors / Students", value: "10% online discount applied — valid documentation required" },
+  { label: "Seniors / Students / Disabled", value: "10% online discount applied — valid documentation required" },
   { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 10 min from Keflavík Airport" },
   { label: "Parking", value: "Free on site" },
 ];
@@ -42,7 +42,7 @@ const info = [
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display text-xl font-semibold text-neutral-900 pb-2 border-b-2 border-heritage-amber inline-block mb-5">
+    <h2 className="font-display text-[8px] font-semibold text-neutral-900 pb-0.5 border-b border-heritage-amber inline-block mb-1.5">
       {children}
     </h2>
   );
@@ -88,7 +88,7 @@ export default function BookingPage() {
         </header>
 
         {/* Two-column layout: booking widget left, map + overlay right */}
-        <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-11 gap-10 lg:gap-12 items-start">
+        <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-11 gap-10 lg:gap-12 items-start lg:items-stretch">
 
           {/* ── Left column: booking widget only (6/11 ≈ 55%) ── */}
           <div className="lg:col-span-6 order-2 lg:order-1">
@@ -115,7 +115,8 @@ export default function BookingPage() {
           </div>
 
           {/* ── Right column: map + info ── */}
-          <div className="lg:col-span-5 order-1 lg:order-2 relative lg:sticky lg:top-16">
+          <div className="lg:col-span-5 order-1 lg:order-2">
+           <div className="relative lg:sticky lg:top-20">
 
             {/* Map background */}
             <div className="relative z-0">
@@ -124,7 +125,7 @@ export default function BookingPage() {
 
             {/* Info sections overlaid on map — desktop */}
             <div className="hidden lg:block absolute inset-0 z-10 pointer-events-none">
-              <div className="max-w-[420px] pl-8 pt-8 space-y-6 pointer-events-auto">
+              <div className="max-w-[420px] pl-8 pt-8 space-y-4 pointer-events-auto">
                 {/* What's Included */}
                 <section aria-labelledby="included-heading">
                   <SectionHeading>
@@ -197,6 +198,7 @@ export default function BookingPage() {
                 <CheckList items={accessibilityItems} />
               </section>
             </div>
+           </div>
           </div>
 
         </div>

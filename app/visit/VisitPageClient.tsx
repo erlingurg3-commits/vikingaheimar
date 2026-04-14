@@ -236,12 +236,14 @@ const transportCards: {
   {
     title: "By Bus",
     headline: "Route 55 from KEF",
-    body: "Straetó bus route 55 connects the airport to Reykjanesbær. Stop at Víkingabraut, 2-minute walk.",
+    body: "Strætó bus route 55 connects the airport to Reykjanesbær. Stop at Stekkjargata, short walk to the museum. Tap for routes & timetables.",
+    href: "https://straeto.is/en",
   },
   {
     title: "By Taxi",
     headline: "10 minutes, direct",
-    body: "Taxis queue outside KEF arrivals. Approximate fare 3,500–4,500 ISK one way.",
+    body: "Taxis queue outside KEF arrivals. Approximate fare 3,500–4,500 ISK one way. Tap to book with Hreyfill.",
+    href: "https://www.hreyfill.is/en/",
   },
 ];
 

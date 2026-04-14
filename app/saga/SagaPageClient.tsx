@@ -1,9 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
+
+type Cue = { start: number; end: number; text: string };
+
+function parseSrtTime(t: string): number {
+  const [hh, mm, rest] = t.split(":");
+  const [ss, ms] = rest.split(",");
+  return (
+    parseInt(hh, 10) * 3600 +
+    parseInt(mm, 10) * 60 +
+    parseInt(ss, 10) +
+    parseInt(ms, 10) / 1000
+  );
+}
+
+function parseSrt(src: string): Cue[] {
+  const blocks = src.replace(/\r/g, "").trim().split(/\n\n+/);
+  const cues: Cue[] = [];
+  for (const block of blocks) {
+    const lines = block.split("\n");
+    const timingLine = lines.find((l) => l.includes("-->"));
+    if (!timingLine) continue;
+    const [a, b] = timingLine.split("-->").map((s) => s.trim());
+    const textLines = lines.slice(lines.indexOf(timingLine) + 1);
+    cues.push({
+      start: parseSrtTime(a),
+      end: parseSrtTime(b),
+      text: textLines.join(" ").trim(),
+    });
+  }
+  return cues;
+}
 
 const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
 
@@ -40,9 +71,26 @@ const VOYAGE_WAYPOINTS = [
 
 export default function SagaPageClient() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [cues, setCues] = useState<Cue[]>([]);
+  const [activeCue, setActiveCue] = useState<string>("");
+  const [ccOn, setCcOn] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/subtitles.srt")
+      .then((r) => (r.ok ? r.text() : ""))
+      .then((txt) => {
+        if (!cancelled && txt) setCues(parseSrt(txt));
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const { ref: ctaRef, isVisible: ctaVisible } =
     useScrollReveal<HTMLDivElement>();
@@ -134,7 +182,7 @@ export default function SagaPageClient() {
               lineHeight: 1.6,
             }}
           >
-            Iceland to New York. No GPS. No engine. Just wind.
+            Sailed from Iceland to New York in the year 2000.
           </p>
 
           {/* Pulsing anchor arrow */}
@@ -222,10 +270,12 @@ export default function SagaPageClient() {
 
                 {/* Inner border */}
                 <div
+                  ref={videoContainerRef}
                   style={{
                     position: "relative",
                     border: "1px solid #c8874a",
                     overflow: "hidden",
+                    backgroundColor: "#000",
                   }}
                 >
                   <video
@@ -237,7 +287,13 @@ export default function SagaPageClient() {
                     onEnded={() => { setPlaying(false); setProgress(0); }}
                     onTimeUpdate={() => {
                       const v = videoRef.current;
-                      if (v && v.duration) setProgress(v.currentTime / v.duration);
+                      if (!v) return;
+                      if (v.duration) setProgress(v.currentTime / v.duration);
+                      // Lead cues by a small offset so subtitles feel in sync
+                      // rather than trailing the narration.
+                      const t = v.currentTime + 1.0;
+                      const cue = cues.find((c) => t >= c.start && t <= c.end);
+                      setActiveCue(cue ? cue.text : "");
                     }}
                     style={{
                       width: "100%",
@@ -247,6 +303,40 @@ export default function SagaPageClient() {
                       backgroundColor: "#000",
                     }}
                   />
+
+                  {/* Subtitle overlay */}
+                  {ccOn && activeCue && playing && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        bottom: playing ? 56 : 24,
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: "0 16px",
+                        pointerEvents: "none",
+                        zIndex: 2,
+                      }}
+                    >
+                      <span
+                        style={{
+                          display: "inline-block",
+                          maxWidth: "92%",
+                          padding: "8px 14px",
+                          backgroundColor: "rgba(13,12,10,0.78)",
+                          color: "#f0ece4",
+                          fontSize: "clamp(14px, 1.6vw, 18px)",
+                          lineHeight: 1.45,
+                          textAlign: "center",
+                          borderRadius: 4,
+                          textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                        }}
+                      >
+                        {activeCue}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Custom play button overlay — shown when paused */}
                   {!playing && (
@@ -370,6 +460,30 @@ export default function SagaPageClient() {
                         />
                       </div>
 
+                      {/* CC toggle button */}
+                      {cues.length > 0 && (
+                        <button
+                          onClick={() => setCcOn((v) => !v)}
+                          aria-label={ccOn ? "Hide subtitles" : "Show subtitles"}
+                          aria-pressed={ccOn}
+                          style={{
+                            background: "none",
+                            border: `1px solid ${ccOn ? "#c8874a" : "rgba(255,255,255,0.45)"}`,
+                            color: ccOn ? "#c8874a" : "rgba(255,255,255,0.85)",
+                            cursor: "pointer",
+                            padding: "2px 6px",
+                            borderRadius: 3,
+                            fontSize: 10,
+                            fontWeight: 700,
+                            letterSpacing: "0.08em",
+                            flexShrink: 0,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          CC
+                        </button>
+                      )}
+
                       {/* Mute / Unmute button */}
                       <button
                         onClick={() => {
@@ -403,6 +517,37 @@ export default function SagaPageClient() {
                             <path d="M14.5 3.5a8 8 0 0 1 0 11" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
                           </svg>
                         )}
+                      </button>
+
+                      {/* Fullscreen button */}
+                      <button
+                        onClick={() => {
+                          const el = videoContainerRef.current;
+                          if (!el) return;
+                          if (document.fullscreenElement) {
+                            document.exitFullscreen?.();
+                          } else {
+                            el.requestFullscreen?.();
+                          }
+                        }}
+                        aria-label="Toggle fullscreen"
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: 4,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M2 6V2h4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M14 6V2h-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M2 10v4h4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <path d="M14 10v4h-4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                       </button>
                     </div>
                   )}

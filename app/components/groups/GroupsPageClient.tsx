@@ -3,6 +3,14 @@
 export default function GroupsPageClient() {
   return (
     <main className="groups-page">
+      {/* ── Decorative oversized logo ── */}
+      <img
+        src="/logo.png"
+        alt=""
+        aria-hidden="true"
+        className="bg-logo"
+      />
+
       {/* ── Hero ── */}
       <section className="groups-hero">
         <p className="eyebrow">Group &amp; Private Events</p>
@@ -76,6 +84,38 @@ export default function GroupsPageClient() {
           font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
           font-weight: 300;
           min-height: 100vh;
+          position: relative;
+          overflow: hidden;
+        }
+
+        /* Oversized decorative logo — top-right, bleeds off the page.
+           Clip-path trims the "VIKING WORLD" wordmark off the source PNG. */
+        .bg-logo {
+          position: absolute;
+          top: -14vw;
+          right: -18vw;
+          width: 75vw;
+          max-width: 1400px;
+          height: auto;
+          opacity: 0.06;
+          pointer-events: none;
+          user-select: none;
+          z-index: 0;
+          clip-path: inset(0 0 28% 0);
+        }
+        @media (max-width: 768px) {
+          .bg-logo {
+            top: -18vw;
+            right: -25vw;
+            width: 110vw;
+            opacity: 0.05;
+          }
+        }
+
+        .groups-page > section,
+        .groups-page > div {
+          position: relative;
+          z-index: 1;
         }
 
         /* Hero */

@@ -51,7 +51,9 @@
       "Bash(echo \"EXIT:$?\")",
       "Bash(tasklist)",
       "Bash(netstat -ano)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(gh api:*)",
+      "Bash(grep -rn -i \"tonne\\\\|\\\\\\\\bton\\\\\\\\b\\\\|ton \" app/components/home/ app/page.tsx)"
     ]
   }
 }

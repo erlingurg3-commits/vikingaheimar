@@ -324,7 +324,7 @@ export default function IslendingurBlueprint() {
 
   // Stats — begin counting as hull draws, finish when ship completes (~5400ms)
   const lengthVal = useCountUp(23.5, 1, 5000, 400, drawn);
-  const weightVal = useCountUp(25, 0, 4700, 700, drawn);
+  const weightVal = useCountUp(18, 0, 4700, 700, drawn);
   const nailsVal  = useCountUp(5000, 0, 4400, 1000, drawn);
   const crewVal   = useCountUp(9, 0, 4100, 1300, drawn);
 

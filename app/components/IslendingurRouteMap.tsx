@@ -13,23 +13,35 @@ import { useEffect, useRef, useCallback } from "react";
  * to avoid React re-renders on every scroll frame.
  */
 
-const WAYPOINTS = [
-  { x: 480, y: 100, label: "Reykjavík", anchor: "start" as const, dx: 10, dy: -12 },
-  { x: 260, y: 320, label: "Grænland", anchor: "end" as const, dx: -10, dy: 18 },
-  { x: 340, y: 620, label: "L'Anse aux Meadows", anchor: "start" as const, dx: 10, dy: 16 },
-  { x: 240, y: 940, label: "New York", anchor: "end" as const, dx: -10, dy: 5 },
+const WAYPOINTS: {
+  x: number;
+  y: number;
+  label: string;
+  sublabel?: string;
+  anchor: "start" | "end";
+  dx: number;
+  dy: number;
+}[] = [
+  { x: 429, y: 79, label: "Reykjavík", anchor: "end", dx: -8, dy: 4 },
+  { x: 260, y: 320, label: "Grænland", sublabel: "Brattahlíð", anchor: "start", dx: 10, dy: 5 },
+  { x: 340, y: 620, label: "L'Anse aux Meadows", anchor: "start", dx: 10, dy: -6 },
+  { x: 240, y: 940, label: "New York", anchor: "end", dx: -10, dy: 5 },
 ];
 
 const ROUTE_PATH =
-  "M 480,100 C 430,160 300,220 260,320 C 220,420 310,520 340,620 C 370,720 300,840 240,940";
+  "M 429,79 C 400,160 290,220 260,320 C 220,420 310,520 340,620 C 370,720 300,840 240,940";
 
 const ROUTE_LENGTH = 1050;
 const WP_THRESHOLDS = [0, 0.25, 0.55, 0.85];
+// Compress the voyage so the ship arrives in New York well before the page ends.
+// At this fraction of page scroll, progress along the route = 1 (ship docked).
+const VOYAGE_COMPLETE_AT = 0.80;
 
 export default function IslendingurRouteMap() {
   const pathRef = useRef<SVGPathElement>(null);
   const tracedPathRef = useRef<SVGPathElement>(null);
   const shipRef = useRef<SVGGElement>(null);
+  const statueRef = useRef<SVGGElement>(null);
   const wpGroupRefs = useRef<(SVGGElement | null)[]>([]);
   const wpDotRefs = useRef<(SVGCircleElement | null)[]>([]);
   const wpRingRefs = useRef<(SVGCircleElement | null)[]>([]);
@@ -37,7 +49,9 @@ export default function IslendingurRouteMap() {
 
   const updateFromScroll = useCallback(() => {
     const docH = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = docH <= 0 ? 0 : Math.max(0, Math.min(1, window.scrollY / docH));
+    const rawProgress = docH <= 0 ? 0 : Math.max(0, Math.min(1, window.scrollY / docH));
+    // Remap scroll so the voyage finishes at VOYAGE_COMPLETE_AT instead of 1.0
+    const progress = Math.min(rawProgress / VOYAGE_COMPLETE_AT, 1);
 
     // Update traced path dash offset
     if (tracedPathRef.current) {
@@ -56,6 +70,14 @@ export default function IslendingurRouteMap() {
         `translate(${point.x}, ${point.y}) rotate(${angle})`,
       );
       shipRef.current.style.opacity = progress < 0.98 ? "1" : "0";
+    }
+
+    // Fade in the Statue of Liberty as the ship reaches New York
+    if (statueRef.current) {
+      const nyThreshold = WP_THRESHOLDS[3]; // 0.85
+      // 0 below threshold → 1 when progress reaches 1 (fully docked)
+      const fade = Math.max(0, Math.min(1, (progress - nyThreshold) / (1 - nyThreshold)));
+      statueRef.current.style.opacity = String(fade);
     }
 
     // Update waypoint visibility
@@ -95,6 +117,16 @@ export default function IslendingurRouteMap() {
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          {/* Recolour any image's alpha silhouette in amber (#c8874a) */}
+          <filter id="rm-amber-tint">
+            <feFlood floodColor="#c8874a" result="flood" />
+            <feComposite in="flood" in2="SourceAlpha" operator="in" />
+          </filter>
+          {/* Same trick, but in the cream coastline tone */}
+          <filter id="rm-coast-tint">
+            <feFlood floodColor="#e8e2d8" result="flood" />
+            <feComposite in="flood" in2="SourceAlpha" operator="in" />
+          </filter>
         </defs>
 
         {/* ── Subtle latitude lines ── */}
@@ -113,67 +145,44 @@ export default function IslendingurRouteMap() {
             <path d="M485.2,34.3 L535.9,20.2 L519,29.1 L508,45.9 L530.5,53.5 L531,64.9 L523.5,77.1 L546.9,75 L550.8,84.5 L542.5,94.6 L558.9,88.4 L588.3,99.8 L578.3,114.9 L587.1,122.3 L581,129.9 L591.5,136.2 L589.3,144.4 L575.7,148.4 L575.7,160.4 L565.5,171.5 L547.2,171.2 L544.7,190.3 L534.2,201.6 L469.7,223.7 L426.4,252.4 L363.4,266.5 L356.4,282.9 L318.6,294.8 L235.8,281 L220,268.9 L227,261.7 L224.3,258 L211.6,264.2 L187.2,245.6 L104.3,255.9 L101.7,232.3 L112,240.8 L129.2,236.4 L168,205 L136.4,211 L144.6,203.9 L139.2,201.9 L141.9,192.5 L161.2,182.2 L133.6,190.8 L121.9,182.4 L126,172.9 L114.3,166.6 L67.1,163.9 L41.8,171.8 L30.7,160.3 L97.1,143.4 L145.1,143.2 L151.1,130.4 L137.1,136.1 L112,129.5 L147.6,106.4 L90.9,94.1 L37.5,110.1 L6.7,99.2 L18.8,90.9 L39.8,98 L27.2,76 L52.7,85 L70.4,78.5 L41.1,69.3 L57.6,66.5 L44.1,53.8 L62.4,53.1 L53.6,45.3 L61.5,38.7 L82.4,47.4 L84.7,57 L103.9,53 L106.3,67.6 L115.6,63.8 L115.4,48.9 L88.5,35.7 L113.3,30.8 L79.4,24.1 L91.6,14.7 L116.5,15.7 L171.1,53 L165.2,58.4 L176.3,65 L172.8,79.2 L157.6,80.9 L173.3,94.3 L169.7,103.9 L180.5,108.9 L185.9,123.1 L203.3,88.9 L222.1,95 L227.3,81.3 L227.3,52.3 L235.3,46.1 L273.8,76.8 L279.5,48.4 L308.3,38.4 L346,79.9 L348.3,71.1 L337.7,40.9 L358.6,42.2 L377.7,58.7 L398.9,36.7 L415.8,43.8 L434.7,37.3 L437.8,29.7 L431.7,14.1 L447.4,7.1 L461.5,7.9 L485.2,34.3 Z" />
           </g>
 
-          {/* Greenland — traced from Printable Greenland Template */}
-          <g id="greenland" transform="translate(40, 15) scale(0.65)">
-            <path d="
-              M 100,30
-              C 108,22 118,16 130,18
-              C 138,14 148,10 160,12
-              C 168,8 176,10 184,8
-              C 196,6 208,8 218,12
-              C 228,8 238,14 248,20
-              C 256,16 266,20 272,28
-              C 280,24 288,30 286,40
-              C 292,36 298,44 292,54
-              C 298,50 304,60 296,70
-              C 302,66 308,76 300,86
-              C 306,82 312,94 304,106
-              C 310,102 316,114 308,126
-              C 314,122 320,136 312,148
-              C 318,144 322,158 314,170
-              C 318,168 322,182 314,194
-              C 318,192 320,206 312,218
-              C 308,230 302,242 296,254
-              C 300,250 298,262 290,274
-              C 286,284 280,296 272,308
-              C 266,318 258,328 248,338
-              C 238,348 228,358 216,366
-              C 206,374 196,380 184,384
-              C 174,386 166,382 160,374
-              C 154,364 150,352 146,338
-              C 142,322 138,304 134,284
-              C 130,264 126,244 124,224
-              C 120,204 116,184 114,164
-              C 110,148 106,134 104,118
-              C 100,102 96,84 96,66
-              C 96,50 98,38 100,30
-              Z
-            "
-            fill="#e8e2d8"
-            stroke="#c8b898"
-            strokeWidth="1.5"
-            opacity="0.85"
-            />
-          </g>
+          {/* Greenland — real silhouette from /greenland.png, tinted cream.
+             Positioned so the southern tip lands on the Grænland waypoint (260, 320). */}
+          <image
+            href="/greenland.png"
+            x={180}
+            y={145}
+            width={160}
+            height={175}
+            preserveAspectRatio="xMidYMid meet"
+            opacity={0.75}
+            filter="url(#rm-coast-tint)"
+          />
 
-          {/* Labrador coast */}
-          <path d="M290,490 L298,478 L310,470 L325,468 L340,472 L350,482 L355,495 L352,510 L344,522 L332,530 L318,534 L305,530 L295,520 L290,508 L290,490 Z" />
+          {/* Eastern Canada — real silhouette from /canada.png, tinted cream.
+             Positioned so the L'Anse aux Meadows mark aligns with the waypoint (340, 620). */}
+          <image
+            href="/canada.png"
+            x={155}
+            y={475}
+            width={260}
+            height={248}
+            preserveAspectRatio="xMidYMid meet"
+            opacity={0.75}
+            filter="url(#rm-coast-tint)"
+          />
 
-          {/* Newfoundland — realistic simplified */}
-          <g transform="translate(280,555) scale(0.55)">
-            <path d="M45,5 L70,0 L95,5 L115,18 L128,35 L135,55 L132,78 L122,98 L108,112 L90,122 L72,128 L55,130 L38,125 L22,115 L12,100 L5,82 L2,62 L5,42 L12,25 L25,12 L45,5 Z" />
-          </g>
-
-          {/* Nova Scotia */}
-          <path d="M330,670 L345,662 L362,660 L376,666 L382,678 L378,690 L368,698 L354,702 L340,700 L330,692 L326,680 L330,670 Z" />
-
-          {/* US East Coast — realistic simplified */}
-          <g transform="translate(175,710) scale(1)">
-            <path d="M98,0 L108,5 L115,15 L118,28 L116,42 L112,55 L106,68 L98,82 L90,96 L84,110 L78,126 L74,142 L72,158 L74,174 L78,188 L85,200 L92,210 L96,222 L94,234 L86,242 L76,246 L66,242 L58,232 L52,218 L48,202 L46,186 L48,168 L52,150 L58,132 L64,115 L70,98 L76,82 L82,66 L86,50 L88,35 L90,20 L94,8 L98,0 Z" />
-          </g>
-
-          {/* Long Island / Cape Cod hint */}
-          <path d="M285,732 L298,728 L310,730 L316,738 L312,746 L300,748 L288,744 L285,732 Z" />
+          {/* New York State — real silhouette from /new-york.png, tinted cream.
+             Positioned so NYC (bottom-right tip) aligns with the waypoint (240, 940). */}
+          <image
+            href="/new-york.png"
+            x={118}
+            y={824}
+            width={160}
+            height={124}
+            preserveAspectRatio="xMidYMid meet"
+            opacity={0.75}
+            filter="url(#rm-coast-tint)"
+          />
         </g>
 
         {/* ── Full route (ghost path, always visible) ── */}
@@ -242,10 +251,38 @@ export default function IslendingurRouteMap() {
               letterSpacing="0.03em"
               style={{ opacity: 0.2, transition: "opacity 0.6s ease" }}
             >
-              {wp.label}
+              <tspan x={wp.x + wp.dx}>{wp.label}</tspan>
+              {wp.sublabel && (
+                <tspan
+                  x={wp.x + wp.dx}
+                  dy="11"
+                  fontSize="8"
+                  fontStyle="italic"
+                  fill="#9a938a"
+                >
+                  {wp.sublabel}
+                </tspan>
+              )}
             </text>
           </g>
         ))}
+
+        {/* ── Statue of Liberty — fades in at New York ── */}
+        <g
+          ref={statueRef}
+          style={{ opacity: 0, transition: "opacity 0.5s ease" }}
+        >
+          <image
+            href="/statue-of-liberty.png"
+            x={260}
+            y={875}
+            width={60}
+            height={60}
+            preserveAspectRatio="xMidYMax meet"
+            opacity={0.45}
+            filter="url(#rm-amber-tint)"
+          />
+        </g>
 
         {/* ── Sailing ship ── */}
         <g
