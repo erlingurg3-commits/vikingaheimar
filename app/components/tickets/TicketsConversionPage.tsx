@@ -252,7 +252,7 @@ export default function TicketsConversionPage() {
         <Container size="xl" className="max-w-[780px] space-y-3">
           <div className="space-y-1.5 text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#6b6b6b]">Book Direct = Best Price</p>
-            <h1 className="font-display text-[28px] font-semibold leading-tight md:text-[48px]">Tickets &amp; Admission</h1>
+            <h1 className="font-display text-[24px] font-normal leading-tight md:text-[42px]">Tickets &amp; Admission</h1>
             <p className="text-sm text-[#6b6b6b]">Choose date, time, and tickets quickly.</p>
           </div>
           <div className="flex items-center gap-2" aria-label="Booking progress">
@@ -284,7 +284,7 @@ export default function TicketsConversionPage() {
             <section aria-labelledby="visit-schedule-heading" className="rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-4 md:p-5">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <div>
-                  <h2 id="visit-schedule-heading" className="font-display text-xl font-light md:text-2xl">
+                  <h2 id="visit-schedule-heading" className="font-display text-xl font-normal md:text-2xl">
                     {chooseStage === "date" && "Choose date"}
                     {chooseStage === "time" && "Choose arrival time"}
                     {chooseStage === "tickets" && "Choose tickets"}
@@ -359,7 +359,7 @@ export default function TicketsConversionPage() {
                 <div
                   className="origin-top transition-all duration-500 mt-3 max-h-[420px] opacity-100"
                 >
-                  <h3 className="font-display text-xl font-light">Choose arrival time</h3>
+                  <h3 className="font-display text-xl font-normal">Choose arrival time</h3>
                   <p className="mt-1 text-sm text-[#6b6b6b]">Pick one available time slot below.</p>
                   {capacityLoading ? (
                     <div className="mt-3 grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5" aria-label="Loading available times">
@@ -414,7 +414,7 @@ export default function TicketsConversionPage() {
                   aria-labelledby="ticket-options-heading"
                   className="space-y-3 transition-all duration-300"
                 >
-                  <h2 id="ticket-options-heading" className="font-display text-xl font-light md:text-2xl">Choose tickets</h2>
+                  <h2 id="ticket-options-heading" className="font-display text-xl font-normal md:text-2xl">Choose tickets</h2>
                   <button
                     type="button"
                     onClick={() => setSelectedTimeSlot("")}
@@ -427,7 +427,7 @@ export default function TicketsConversionPage() {
                       <article key={option.name} className="p-3">
                         <div className="flex items-center justify-between gap-3">
                           <div>
-                            <h3 className="font-display text-lg font-light">{option.name}</h3>
+                            <h3 className="font-display text-lg font-normal">{option.name}</h3>
                             <p className="text-sm font-semibold">{option.price}</p>
                             <p className="text-xs text-[#6b6b6b]">{option.audience ?? " "}</p>
                             {option.complimentaryNote && <p className="text-xs text-[#6b6b6b]">{option.complimentaryNote}</p>}
@@ -463,7 +463,7 @@ export default function TicketsConversionPage() {
 
           <aside className="hidden lg:block sticky top-20 h-fit rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-lg font-light">Booking summary</h3>
+              <h3 className="font-display text-lg font-normal">Booking summary</h3>
               <p className="text-sm font-semibold">ISK {totalSelectedPrice.toLocaleString()}</p>
             </div>
             <div className="mt-3 space-y-3 text-sm text-[#6b6b6b]">

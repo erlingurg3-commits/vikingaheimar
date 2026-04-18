@@ -6,8 +6,8 @@ export default function CinematicStatement() {
       style={{ backgroundColor: "#0f0f0f", color: "#ffffff" }}
     >
       <h2
-        className="font-display font-semibold text-center leading-[1.15] tracking-[-0.01em]"
-        style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)" }}
+        className="font-display font-normal text-center leading-[1.15] tracking-[-0.01em]"
+        style={{ fontSize: "clamp(1.75rem, 4.3vw, 3.8rem)" }}
       >
         <span className="block whitespace-nowrap">Enter the Viking World.</span>
         <span className="block whitespace-nowrap">Where exploration began.</span>

@@ -10,6 +10,7 @@ import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import NorthernLights from "@/app/components/effects/NorthernLights";
 import OceanSoundToggle from "@/app/components/effects/OceanSoundToggle";
 import IslendingurBlueprint from "@/app/components/home/IslendingurBlueprint";
+import HeroButton from "@/app/components/ui/HeroButton";
 
 const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
 
@@ -110,8 +111,8 @@ export default function HomePageClient() {
             className="hero-fade-2"
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
-              fontSize: "clamp(36px, 4.5vw, 64px)",
+              fontWeight: 400,
+              fontSize: "clamp(32px, 4vw, 56px)",
               lineHeight: 1.0,
               letterSpacing: "-0.02em",
               color: "white",
@@ -127,8 +128,8 @@ export default function HomePageClient() {
             className="font-display hero-fade-3"
             style={{
               marginTop: "24px",
-              fontSize: "clamp(14px, 1.4vw, 18px)",
-              fontWeight: 300,
+              fontSize: "clamp(13px, 1.2vw, 16px)",
+              fontWeight: 400,
               color: "rgba(255,255,255,0.65)",
               maxWidth: "480px",
               lineHeight: 1.7,
@@ -138,39 +139,13 @@ export default function HomePageClient() {
           </p>
 
           {/* CTA button — hero-fade-4: 800ms delay 1000ms */}
-          <a
-            href="/booking"
-            onClick={() => trackBookTicketsClick({ source: "homepage-hero" })}
-            className="font-text hero-fade-4"
-            style={{
-              marginTop: "40px",
-              display: "inline-flex",
-              alignItems: "center",
-              background: "#c8874a",
-              color: "#ffffff",
-              padding: "18px 44px",
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              border: "none",
-              borderRadius: 2,
-              cursor: "pointer",
-              textDecoration: "none",
-              transition: "background 250ms, transform 250ms",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#b5763d";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#c8874a";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            BOOK TICKETS
-            <span style={{ marginLeft: 8, fontSize: 14 }}>→</span>
-          </a>
+          <div className="hero-fade-4" style={{ marginTop: "40px" }}>
+            <HeroButton
+              href="/booking"
+              label="BOOK TICKETS"
+              onClick={() => trackBookTicketsClick({ source: "homepage-hero" })}
+            />
+          </div>
 
           {/* Scroll indicator — hero-fade-5: 600ms delay 1400ms */}
           <div
@@ -246,8 +221,8 @@ export default function HomePageClient() {
           <h2
             className="font-display"
             style={{
-              fontSize: "clamp(36px, 4.5vw, 60px)",
-              fontWeight: 300,
+              fontSize: "clamp(32px, 4vw, 52px)",
+              fontWeight: 400,
               color: "#1a1a1a",
               lineHeight: 1.1,
               maxWidth: 720,
@@ -366,8 +341,8 @@ export default function HomePageClient() {
               <h3
                 className="font-display"
                 style={{
-                  fontSize: "clamp(28px, 3vw, 42px)",
-                  fontWeight: 300,
+                  fontSize: "clamp(24px, 2.6vw, 36px)",
+                  fontWeight: 400,
                   color: "#ffffff",
                   lineHeight: 1.1,
                   marginBottom: 12,
@@ -465,8 +440,8 @@ export default function HomePageClient() {
               <h3
                 className="font-display"
                 style={{
-                  fontSize: "clamp(28px, 3vw, 42px)",
-                  fontWeight: 300,
+                  fontSize: "clamp(24px, 2.6vw, 36px)",
+                  fontWeight: 400,
                   color: "#ffffff",
                   lineHeight: 1.1,
                   marginBottom: 12,
@@ -604,7 +579,7 @@ export default function HomePageClient() {
                 <h3
                   className="font-display"
                   style={{
-                    fontSize: "clamp(22px, 2.5vw, 30px)",
+                    fontSize: "clamp(19px, 2.2vw, 26px)",
                     fontWeight: 400,
                     color: "#1a1a1a",
                     marginBottom: 20,
@@ -632,7 +607,7 @@ export default function HomePageClient() {
                 <h3
                   className="font-display"
                   style={{
-                    fontSize: "clamp(22px, 2.5vw, 30px)",
+                    fontSize: "clamp(19px, 2.2vw, 26px)",
                     fontWeight: 400,
                     color: "#1a1a1a",
                     marginBottom: 20,
@@ -660,7 +635,7 @@ export default function HomePageClient() {
                 <h3
                   className="font-display"
                   style={{
-                    fontSize: "clamp(22px, 2.5vw, 30px)",
+                    fontSize: "clamp(19px, 2.2vw, 26px)",
                     fontWeight: 400,
                     color: "#1a1a1a",
                     marginBottom: 20,
@@ -722,7 +697,7 @@ export default function HomePageClient() {
                 className="font-display"
                 style={{
                   fontSize: 28,
-                  fontWeight: 300,
+                  fontWeight: 400,
                   color: "#1a1a1a",
                   marginBottom: 12,
                 }}
@@ -769,7 +744,7 @@ export default function HomePageClient() {
                 className="font-display"
                 style={{
                   fontSize: 28,
-                  fontWeight: 300,
+                  fontWeight: 400,
                   color: "#1a1a1a",
                   marginBottom: 12,
                 }}
@@ -840,7 +815,7 @@ export default function HomePageClient() {
                 className="font-display"
                 style={{
                   fontSize: 28,
-                  fontWeight: 300,
+                  fontWeight: 400,
                   color: "#1a1a1a",
                   marginBottom: 12,
                 }}
@@ -918,8 +893,8 @@ export default function HomePageClient() {
           <h2
             className="font-display"
             style={{
-              fontSize: "clamp(52px, 7vw, 96px)",
-              fontWeight: 300,
+              fontSize: "clamp(46px, 6vw, 84px)",
+              fontWeight: 400,
               lineHeight: 0.95,
               letterSpacing: "-0.02em",
               color: "#ffffff",
@@ -934,8 +909,8 @@ export default function HomePageClient() {
           <p
             className="font-display"
             style={{
-              fontSize: "clamp(17px, 2vw, 22px)",
-              fontWeight: 300,
+              fontSize: "clamp(15px, 1.8vw, 19px)",
+              fontWeight: 400,
               color: "rgba(255,255,255,0.50)",
               lineHeight: 1.6,
               ...reveal(ctaVisible, 200),
@@ -956,67 +931,20 @@ export default function HomePageClient() {
             }}
           >
             {/* Primary — BOOK TICKETS */}
-            <a
+            <HeroButton
               href="/booking"
+              label="BOOK TICKETS"
               onClick={() =>
                 trackBookTicketsClick({ source: "homepage-final-cta" })
               }
-              className="font-text"
-              style={{
-                background: "#c8874a",
-                color: "#ffffff",
-                padding: "18px 48px",
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                borderRadius: 2,
-                border: "none",
-                textDecoration: "none",
-                transition: "background 250ms, transform 250ms",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#b5763d";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#c8874a";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              BOOK TICKETS
-            </a>
+            />
 
             {/* Secondary — GROUPS */}
-            <Link
+            <HeroButton
               href={ROUTES.groups}
-              className="font-text"
-              style={{
-                background: "transparent",
-                color: "rgba(255,255,255,0.65)",
-                padding: "18px 48px",
-                border: "1px solid rgba(255,255,255,0.20)",
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                borderRadius: 2,
-                textDecoration: "none",
-                transition: "all 250ms",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "#ffffff";
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.45)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "rgba(255,255,255,0.65)";
-                e.currentTarget.style.borderColor = "rgba(255,255,255,0.20)";
-              }}
-            >
-              GROUPS
-            </Link>
+              label="GROUPS"
+              variant="frost"
+            />
           </div>
         </div>
       </section>

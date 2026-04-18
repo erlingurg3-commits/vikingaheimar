@@ -161,7 +161,7 @@ function FactSection({
             className="font-display"
             style={{
               fontSize: "clamp(28px, 3.5vw, 48px)",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 1.15,
               color: "#ffffff",
               marginBottom: 20,
@@ -230,7 +230,7 @@ function FactSection({
             aria-hidden="true"
             style={{
               fontSize: "clamp(100px, 14vw, 200px)",
-              fontWeight: 300,
+              fontWeight: 400,
               color: "rgba(200,135,74,0.06)",
               lineHeight: 1,
               userSelect: "none",
@@ -263,7 +263,7 @@ function WorldReachMap() {
           className="font-display"
           style={{
             fontSize: "clamp(36px, 5vw, 64px)",
-            fontWeight: 300,
+            fontWeight: 400,
             color: "#ffffff",
             textAlign: "center",
             marginBottom: 16,
@@ -423,7 +423,7 @@ function HeroHeadline() {
       className="font-display"
       style={{
         fontSize: "clamp(40px, 6vw, 80px)",
-        fontWeight: 300,
+        fontWeight: 400,
         lineHeight: 1.1,
         letterSpacing: "-0.02em",
         color: "#ffffff",
@@ -657,7 +657,7 @@ export default function VikingsPageClient() {
             className="font-display"
             style={{
               fontSize: "clamp(42px, 6vw, 80px)",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 0.95,
               letterSpacing: "-0.02em",
               color: "#ffffff",

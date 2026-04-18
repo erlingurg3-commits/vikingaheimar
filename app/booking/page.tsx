@@ -42,7 +42,7 @@ const info = [
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display text-[8px] font-semibold text-neutral-900 pb-0.5 border-b border-heritage-amber inline-block mb-1.5">
+    <h2 className="font-display text-[8px] font-normal text-neutral-900 pb-0.5 border-b border-heritage-amber inline-block mb-1.5">
       {children}
     </h2>
   );
@@ -82,7 +82,7 @@ export default function BookingPage() {
               className="h-24 w-auto"
             />
           </div>
-          <h1 className="font-display text-[clamp(32px,4vw,48px)] font-light text-neutral-900 leading-tight">
+          <h1 className="font-display text-[clamp(28px,3.5vw,42px)] font-normal text-neutral-900 leading-tight">
             Book Your Visit
           </h1>
         </header>

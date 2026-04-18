@@ -656,7 +656,7 @@ function FactPanel({
             aria-hidden="true"
             style={{
               fontSize: "clamp(40px, 5vw, 64px)",
-              fontWeight: 300,
+              fontWeight: 400,
               color: "rgba(200,135,74,0.07)",
               lineHeight: 1,
               display: "block",
@@ -686,7 +686,7 @@ function FactPanel({
             className="font-display"
             style={{
               fontSize: "clamp(18px, 2.2vw, 32px)",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 1.2,
               color: "#ffffff",
               marginBottom: 10,

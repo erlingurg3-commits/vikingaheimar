@@ -1064,7 +1064,7 @@ export default function VikingArsenal() {
           className="font-display"
           style={{
             fontSize: "clamp(32px, 4.5vw, 56px)",
-            fontWeight: 300,
+            fontWeight: 400,
             color: "#ffffff",
             lineHeight: 1.1,
             marginBottom: 16,

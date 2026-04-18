@@ -404,7 +404,7 @@ export default function IslendingurBlueprint() {
                 className="font-display"
                 style={{
                   fontSize: "clamp(30px, 5vw, 50px)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   color: "#1a1a1a",
                   lineHeight: 1.1,
                   marginBottom: 8,
@@ -434,7 +434,7 @@ export default function IslendingurBlueprint() {
           style={{
             fontSize: "clamp(15px, 1.6vw, 18px)",
             fontStyle: "italic",
-            fontWeight: 300,
+            fontWeight: 400,
             lineHeight: 1.8,
             color: INK(0.40),
             maxWidth: 520,

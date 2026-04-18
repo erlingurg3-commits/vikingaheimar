@@ -1,6 +1,14 @@
 /* Import design system tokens and global styles */
 @import "../styles/design-tokens.css";
 
+/* Norse — runic display font by Joel Carrouche */
+@font-face {
+  font-family: 'Norse';
+  src: url('/fonts/Norse.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+
 /* Prevent stray horizontal overflow on mobile without breaking sticky or browser zoom.
    - overflow-x: clip keeps descendant position: sticky working (unlike overflow: hidden)
    - No max-width: 100vw — that clips content when the browser is zoomed. */
@@ -35,12 +43,12 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: var(--font-size-6xl);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 h2 {
   font-size: var(--font-size-5xl);
-  font-weight: 300;
+  font-weight: 400;
 }
 
 h3 {
@@ -55,12 +63,12 @@ h4 {
 
 h5 {
   font-size: var(--font-size-2xl);
-  font-weight: 500;
+  font-weight: 400;
 }
 
 h6 {
   font-size: var(--font-size-xl);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 p {

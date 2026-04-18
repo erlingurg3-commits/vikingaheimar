@@ -96,12 +96,12 @@ const config: Config = {
         'sm': ['14px', { lineHeight: '1.5' }],
         'base': ['16px', { lineHeight: '1.5' }],
         'lg': ['18px', { lineHeight: '1.5' }],
-        'xl': ['20px', { lineHeight: '1.2' }],
-        '2xl': ['24px', { lineHeight: '1.2' }],
-        '3xl': ['28px', { lineHeight: '1.2' }],
-        '4xl': ['32px', { lineHeight: '1.2' }],
-        '5xl': ['40px', { lineHeight: '1.2' }],
-        '6xl': ['56px', { lineHeight: '1.2' }],
+        'xl': ['18px', { lineHeight: '1.2' }],
+        '2xl': ['21px', { lineHeight: '1.2' }],
+        '3xl': ['24px', { lineHeight: '1.2' }],
+        '4xl': ['28px', { lineHeight: '1.2' }],
+        '5xl': ['34px', { lineHeight: '1.2' }],
+        '6xl': ['48px', { lineHeight: '1.2' }],
       },
 
       fontWeight: {

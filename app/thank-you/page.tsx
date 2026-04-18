@@ -63,7 +63,7 @@ export default function ThankYouPage() {
     <main className="min-h-screen w-full bg-[#f7f6f2] text-[#111111]">
       <section className="pt-24 pb-12 md:pt-32 md:pb-20">
         <Container size="xl" className="max-w-[820px] space-y-8 text-center">
-          <h1 className="font-display text-[36px] font-semibold leading-tight md:text-[56px]">Booking Confirmed</h1>
+          <h1 className="font-display text-[32px] font-normal leading-tight md:text-[48px]">Booking Confirmed</h1>
           <BookingProgress currentStep="confirm" />
 
           <div className="booking-success-pop rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-6 md:p-8 text-left">

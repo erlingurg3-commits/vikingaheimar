@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import NorthernLights from "@/app/components/effects/NorthernLights";
+import HeroButton from "@/app/components/ui/HeroButton";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
@@ -63,7 +64,7 @@ function HeroSection() {
             className="hero-fade-2 mt-5"
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
+              fontWeight: 400,
               fontSize: "clamp(36px, 6vw, 64px)",
               lineHeight: 1.08,
               color: "#ffffff",
@@ -83,19 +84,7 @@ function HeroSection() {
 
           {/* CTA */}
           <div className="hero-fade-4 mt-8">
-            <Link
-              href="/booking"
-              className="inline-block rounded-sm px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-colors"
-              style={{ backgroundColor: "#c8874a" }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#b5763d")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "#c8874a")
-              }
-            >
-              Book Tickets
-            </Link>
+            <HeroButton href="/booking" label="BOOK TICKETS" />
           </div>
 
           {/* Scroll indicator */}
@@ -136,7 +125,7 @@ function AtAGlanceSection() {
 
   const h3Style: React.CSSProperties = {
     fontFamily: "var(--font-display)",
-    fontWeight: 300,
+    fontWeight: 400,
     fontSize: "22px",
     lineHeight: 1.3,
     color: "#1a1a1a",
@@ -312,7 +301,7 @@ function GettingHereSection() {
                 className="mt-3"
                 style={{
                   fontFamily: "var(--font-display)",
-                  fontWeight: 300,
+                  fontWeight: 400,
                   fontSize: "22px",
                   lineHeight: 1.3,
                   color: "#1a1a1a",
@@ -407,7 +396,7 @@ function LayoverSection() {
                     <p
                       style={{
                         fontFamily: "var(--font-display)",
-                        fontWeight: 300,
+                        fontWeight: 400,
                         fontSize: "22px",
                         lineHeight: 1.3,
                         color: "#1a1a1a",
@@ -463,7 +452,7 @@ function LayoverSection() {
           <p
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
+              fontWeight: 400,
               fontStyle: "italic",
               fontSize: "clamp(18px, 2.5vw, 24px)",
               lineHeight: 1.5,
@@ -531,7 +520,7 @@ function FinalCtaSection() {
               className="mt-5"
               style={{
                 fontFamily: "var(--font-display)",
-                fontWeight: 300,
+                fontWeight: 400,
                 fontSize: "clamp(40px, 6vw, 72px)",
                 lineHeight: 1.08,
                 color: "#ffffff",
@@ -561,19 +550,7 @@ function FinalCtaSection() {
               className="mt-10 flex flex-wrap items-center justify-center gap-4"
               style={reveal(v4, 360)}
             >
-              <Link
-                href="/booking"
-                className="inline-block rounded-sm px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-white transition-colors"
-                style={{ backgroundColor: "#c8874a" }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#b5763d")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#c8874a")
-                }
-              >
-                Book Tickets
-              </Link>
+              <HeroButton href="/booking" label="BOOK TICKETS" />
 
               <Link
                 href="/groups"

@@ -362,7 +362,7 @@ export default function Gunnbjorn() {
               fontSize: "2rem",
               color: "#e8dcc8",
               lineHeight: 1.2,
-              fontWeight: 300,
+              fontWeight: 400,
               marginBottom: 18,
             }}
           >
@@ -638,7 +638,7 @@ export default function Gunnbjorn() {
         .gb-cursor { display: inline-block; margin-left: 1px; animation: gbCursorBlink 600ms step-end infinite; color: #d4a843; }
         .gb-rune {
           position: absolute;
-          font-family: var(--font-display, 'Cinzel', serif);
+          font-family: var(--font-display, 'Norse', serif);
           font-size: 4rem;
           color: #c8c0b0;
           opacity: 0.06;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Container from "@/app/components/primitives/Container";
 import Button from "@/app/components/primitives/Button";
+import HeroButton from "@/app/components/ui/HeroButton";
 import { SectionTitle, Body, BodySmall } from "@/app/components/primitives/Typography";
 import { Divider } from "@/app/components/primitives/Badge";
 import { ROUTES } from "@/lib/site-routes";
@@ -50,15 +51,7 @@ export default function ExperiencePage() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          <Link href={ROUTES.tickets}>
-            <Button
-              variant="primary"
-              size="lg"
-              className="!bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
-            >
-              Book Tickets
-            </Button>
-          </Link>
+          <HeroButton href={ROUTES.tickets} label="BOOK TICKETS" />
           <Link href={ROUTES.visit}>
             <Button variant="secondary" size="lg">Plan Visit</Button>
           </Link>

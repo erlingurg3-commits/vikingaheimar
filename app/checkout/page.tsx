@@ -191,7 +191,7 @@ export default function CheckoutPage() {
       <section className="pt-24 pb-10 md:pt-32 md:pb-16">
         <Container size="xl" className="max-w-[1020px] space-y-6">
           <header className="space-y-3 text-center">
-            <h1 className="font-display text-[36px] font-semibold leading-tight md:text-[56px]">Checkout</h1>
+            <h1 className="font-display text-[32px] font-normal leading-tight md:text-[48px]">Checkout</h1>
             <p className="text-base text-[#6b6b6b]">Guest checkout is default. No account required.</p>
           </header>
 
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
               {step === "details" ? (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-display text-3xl font-light">Step B — Details</h2>
+                    <h2 className="font-display text-3xl font-normal">Step B — Details</h2>
                     <p className="mt-1 text-sm text-[#6b6b6b]">Enter guest details to continue.</p>
                   </div>
 
@@ -304,7 +304,7 @@ export default function CheckoutPage() {
               ) : (
                 <div className="space-y-6">
                   <div>
-                    <h2 className="font-display text-3xl font-light">Step C — Confirm &amp; Pay</h2>
+                    <h2 className="font-display text-3xl font-normal">Step C — Confirm &amp; Pay</h2>
                     <p className="mt-1 text-sm text-[#6b6b6b]">Review your order details before booking.</p>
                   </div>
 
@@ -360,7 +360,7 @@ export default function CheckoutPage() {
             </section>
 
             <aside className="h-fit rounded-xl border border-[#d4d0c8] bg-[#f8f7f3] p-5">
-              <h3 className="font-display text-2xl font-light">Order Summary</h3>
+              <h3 className="font-display text-2xl font-normal">Order Summary</h3>
               <div className="mt-4 space-y-3 border-y border-[#dcd7cf] py-3 text-sm text-[#6b6b6b]">
                 <p><span className="mb-1 block text-[11px] uppercase tracking-[0.12em]">Date</span>{draft.visit_date}</p>
                 <p><span className="mb-1 block text-[11px] uppercase tracking-[0.12em]">Time</span>{draft.visit_time}</p>

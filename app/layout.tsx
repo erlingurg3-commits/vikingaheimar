@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Merriweather, Sora } from "next/font/google";
+import { Sora } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import SiteLayout from "./components/layout/SiteLayout";
@@ -10,14 +11,13 @@ const siteDescription =
   "Experience authentic Viking heritage in Reykjanesbær, Iceland. Explore ships, artifacts, and Norse storytelling.";
 
 /**
- * Display Font: Merriweather (premium serif)
- * Used for H1-H3, hero text, and cinematic titles
- * Professional, Nordic-heritage aesthetic
+ * Display Font: Norse by Joel Carrouche
+ * Single-weight runic display font for headings and cinematic titles
  */
-const merriweather = Merriweather({
+const norse = localFont({
+  src: "../public/fonts/Norse.otf",
   variable: "--font-display",
-  weight: ["300", "400", "700"],
-  subsets: ["latin", "latin-ext"],
+  weight: "400",
   display: "swap",
 });
 
@@ -99,7 +99,7 @@ export default function RootLayout({
   return (
     <html lang="is" className="scroll-smooth">
       <body
-        className={`${merriweather.variable} ${sora.variable} bg-base-charcoal text-off-white antialiased`}
+        className={`${norse.variable} ${sora.variable} bg-base-charcoal text-off-white antialiased`}
       >
         <script
           type="application/ld+json"

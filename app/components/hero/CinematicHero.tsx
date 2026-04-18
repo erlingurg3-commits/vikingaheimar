@@ -11,6 +11,7 @@ import { MapPin, Clock, Users } from "lucide-react";
 import { ROUTES } from "@/lib/site-routes";
 import { getBookTicketsLink } from "@/lib/ticketing";
 import { trackBookTicketsClick } from "@/lib/analytics";
+import HeroButton from "@/app/components/ui/HeroButton";
 
 interface CinematicHeroProps {
   /**
@@ -128,41 +129,18 @@ export default function CinematicHero({
             </Body>
 
             {/* CTA Group */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 items-start">
               {/* Primary CTA */}
-              {bookingLink.isExternal ? (
-                <a
-                  href={bookingLink.href}
-                  target={bookingLink.target}
-                  rel={bookingLink.rel}
-                  onClick={() =>
-                    trackBookTicketsClick({ source: "hero_primary", destination: "external" })
-                  }
-                >
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="rounded-lg !bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
-                  >
-                    {primaryCtaText}
-                  </Button>
-                </a>
-              ) : (
-                <Link
-                  href="/booking"
-                  onClick={() =>
-                    trackBookTicketsClick({ source: "hero_primary", destination: "internal" })
-                  }
-                >
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="rounded-lg !bg-[#f7f6f2] !text-[#111111] !border !border-[#d4d0c8] hover:!bg-[#ece8df] hover:!shadow-none"
-                  >
-                    {primaryCtaText}
-                  </Button>
-                </Link>
-              )}
+              <HeroButton
+                href={bookingLink.isExternal ? bookingLink.href : "/booking"}
+                label={primaryCtaText}
+                onClick={() =>
+                  trackBookTicketsClick({
+                    source: "hero_primary",
+                    destination: bookingLink.isExternal ? "external" : "internal",
+                  })
+                }
+              />
 
               {/* Secondary CTA */}
               <Link href={ROUTES.visit}>

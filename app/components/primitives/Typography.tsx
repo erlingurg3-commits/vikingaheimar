@@ -20,7 +20,7 @@ export const H1 = React.forwardRef<HTMLHeadingElement, TypographyProps>(
   ({ className = "", ...props }, ref) => (
     <h1
       ref={ref}
-      className={`font-display text-6xl font-light tracking-tight leading-tight text-off-white ${className}`}
+      className={`font-display text-6xl font-normal tracking-tight leading-tight text-off-white ${className}`}
       {...props}
     />
   )
@@ -31,7 +31,7 @@ export const H2 = React.forwardRef<HTMLHeadingElement, TypographyProps>(
   ({ className = "", ...props }, ref) => (
     <h2
       ref={ref}
-      className={`font-display text-5xl font-light tracking-tight leading-tight text-off-white ${className}`}
+      className={`font-display text-5xl font-normal tracking-tight leading-tight text-off-white ${className}`}
       {...props}
     />
   )
@@ -198,7 +198,7 @@ export const SectionTitle = React.forwardRef<HTMLDivElement, SectionTitleProps>(
         {overline && (
           <Overline className={alignClass}>{overline}</Overline>
         )}
-        <h2 className={`font-display text-4xl md:text-5xl font-light tracking-tight leading-tight text-off-white ${alignClass}`}>
+        <h2 className={`font-display text-4xl md:text-5xl font-normal tracking-tight leading-tight text-off-white ${alignClass}`}>
           {title}
         </h2>
         {subtitle && (

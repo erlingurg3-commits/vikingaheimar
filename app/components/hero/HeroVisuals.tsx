@@ -27,7 +27,7 @@ export function RunePattern() {
             x="10"
             y="40"
             fontSize="48"
-            fontFamily="Georgia, serif"
+            fontFamily="Norse, serif"
             fill="#4ea8de"
             opacity="0.3"
           >
@@ -39,7 +39,7 @@ export function RunePattern() {
             x="10"
             y="120"
             fontSize="48"
-            fontFamily="Georgia, serif"
+            fontFamily="Norse, serif"
             fill="#4ea8de"
             opacity="0.3"
           >
@@ -51,7 +51,7 @@ export function RunePattern() {
             x="110"
             y="80"
             fontSize="48"
-            fontFamily="Georgia, serif"
+            fontFamily="Norse, serif"
             fill="#4ea8de"
             opacity="0.3"
           >

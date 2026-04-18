@@ -53,7 +53,11 @@
       "Bash(netstat -ano)",
       "Bash(taskkill:*)",
       "Bash(gh api:*)",
-      "Bash(grep -rn -i \"tonne\\\\|\\\\\\\\bton\\\\\\\\b\\\\|ton \" app/components/home/ app/page.tsx)"
+      "Bash(grep -rn -i \"tonne\\\\|\\\\\\\\bton\\\\\\\\b\\\\|ton \" app/components/home/ app/page.tsx)",
+      "Bash(cat:*)",
+      "Bash(grep -rn -i \"cinzel\" --include=\"*.tsx\" --include=\"*.ts\" --include=\"*.css\" --include=\"*.js\" --include=\"*.json\" --include=\"*.svg\" app/ tailwind.config* components/)",
+      "Bash(mkdir -p public/fonts)",
+      "Bash(cp \"public/norse text/Norse-KaWl.otf\" public/fonts/Norse.otf)"
     ]
   }
 }

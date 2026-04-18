@@ -159,8 +159,8 @@ export default function SagaPageClient() {
             className="hero-fade-2"
             style={{
               fontFamily: "var(--font-display)",
-              fontWeight: 300,
-              fontSize: "clamp(48px, 7vw, 96px)",
+              fontWeight: 400,
+              fontSize: "clamp(42px, 6vw, 84px)",
               lineHeight: 0.95,
               letterSpacing: "-0.02em",
               color: "white",
@@ -176,7 +176,7 @@ export default function SagaPageClient() {
             style={{
               marginTop: "28px",
               fontSize: "clamp(15px, 1.6vw, 20px)",
-              fontWeight: 300,
+              fontWeight: 400,
               color: "rgba(255,255,255,0.60)",
               maxWidth: "520px",
               lineHeight: 1.6,
@@ -645,7 +645,7 @@ export default function SagaPageClient() {
                     className="font-display"
                     style={{
                       fontSize: "clamp(18px, 2vw, 24px)",
-                      fontWeight: 300,
+                      fontWeight: 400,
                       color: "#ffffff",
                       marginBottom: 6,
                       lineHeight: 1.2,
@@ -695,7 +695,7 @@ export default function SagaPageClient() {
             className="font-display"
             style={{
               fontSize: "clamp(48px, 7vw, 88px)",
-              fontWeight: 300,
+              fontWeight: 400,
               lineHeight: 0.95,
               letterSpacing: "-0.02em",
               color: "#ffffff",
@@ -710,7 +710,7 @@ export default function SagaPageClient() {
             style={{
               marginTop: 28,
               fontSize: "clamp(17px, 2vw, 22px)",
-              fontWeight: 300,
+              fontWeight: 400,
               color: "rgba(255,255,255,0.45)",
               lineHeight: 1.6,
               ...reveal(ctaVisible, 100),
