@@ -91,7 +91,7 @@ export default function BookingPage() {
         <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-11 gap-10 lg:gap-12 items-start lg:items-stretch">
 
           {/* ── Left column: booking widget only (6/11 ≈ 55%) ── */}
-          <div className="lg:col-span-6 order-2 lg:order-1">
+          <div className="lg:col-span-6 order-1 lg:order-1">
             {/* Bókun booking widget */}
             <div
               className="bokunWidget"
@@ -115,7 +115,7 @@ export default function BookingPage() {
           </div>
 
           {/* ── Right column: map + info ── */}
-          <div className="lg:col-span-5 order-1 lg:order-2">
+          <div className="lg:col-span-5 order-2 lg:order-2">
            <div className="relative lg:sticky lg:top-20">
 
             {/* Map background */}
