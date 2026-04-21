@@ -2,39 +2,15 @@
 
 /**
  * HeroVegvisir — large, translucent white Vegvísir compass stave
- * behind the hero text. The source PNG is black-on-white; CSS filter
- * inverts it to white so it glows softly against the dark hero.
- *
- * Entrance: "carved into existence" over 3s, then ultra-slow drift.
- * pointer-events: none — never blocks interaction.
+ * behind the hero text on the homepage. Static watermark, no rotation.
  */
 export default function HeroVegvisir() {
   return (
     <>
       <style>{`
-        @keyframes vegvisir-emerge {
-          0% {
-            opacity: 0;
-            transform: translateX(-50%) scale(0.85) rotate(-15deg);
-          }
-          50% {
-            opacity: 0.06;
-            transform: translateX(-50%) scale(0.95) rotate(-4deg);
-          }
-          100% {
-            opacity: 0.12;
-            transform: translateX(-50%) scale(1) rotate(0deg);
-          }
-        }
-
-        @keyframes vegvisir-drift {
-          from { transform: translateX(-50%) rotate(0deg); }
-          to   { transform: translateX(-50%) rotate(360deg); }
-        }
-
-        @keyframes vegvisir-breathe {
-          0%, 100% { opacity: 0.08; }
-          50%      { opacity: 0.14; }
+        @keyframes vegvisir-fadein {
+          from { opacity: 0; }
+          to   { opacity: 0.08; }
         }
 
         .vegvisir-stave {
@@ -46,24 +22,16 @@ export default function HeroVegvisir() {
           pointer-events: none;
           z-index: 1;
           object-fit: contain;
-
-          /* Invert black→white, then tint slightly warm */
+          transform: translateX(-50%);
           filter: invert(1) sepia(0.15) saturate(0.6) brightness(1.2);
-
           opacity: 0;
-          transform: translateX(-50%) scale(0.85) rotate(-15deg);
-
-          animation:
-            vegvisir-emerge 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
-            vegvisir-drift 120s linear 3s infinite,
-            vegvisir-breathe 10s ease-in-out 3s infinite;
+          animation: vegvisir-fadein 2.5s ease 0.4s forwards;
         }
 
         @media (prefers-reduced-motion: reduce) {
           .vegvisir-stave {
             animation: none;
-            opacity: 0.10;
-            transform: translateX(-50%) scale(1) rotate(0deg);
+            opacity: 0.08;
           }
         }
       `}</style>

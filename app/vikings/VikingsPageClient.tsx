@@ -481,26 +481,52 @@ export default function VikingsPageClient() {
           overflow: "hidden",
         }}
       >
-        {/* Decorative Vegvísir watermark */}
+        {/* Decorative Vegvísir watermark — carve-in + slow drift */}
+        <style>{`
+          @keyframes vk-vegvisir-emerge {
+            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85) rotate(-15deg); }
+            50%  { opacity: 0.04; transform: translate(-50%, -50%) scale(0.95) rotate(-4deg); }
+            100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+          }
+          @keyframes vk-vegvisir-drift {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to   { transform: translate(-50%, -50%) rotate(360deg); }
+          }
+          @keyframes vk-vegvisir-breathe {
+            0%, 100% { opacity: 0.04; }
+            50%      { opacity: 0.08; }
+          }
+          .vk-vegvisir {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 35vw;
+            max-width: 600px;
+            height: auto;
+            pointer-events: none;
+            user-select: none;
+            z-index: 0;
+            filter: invert(1) sepia(0.12) saturate(0.5) brightness(1.1);
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.85) rotate(-15deg);
+            animation:
+              vk-vegvisir-emerge 3s cubic-bezier(0.25,0.1,0.25,1) 0.4s forwards,
+              vk-vegvisir-drift 120s linear 3.4s infinite,
+              vk-vegvisir-breathe 10s ease-in-out 3.4s infinite;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .vk-vegvisir {
+              animation: none;
+              opacity: 0.06;
+              transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+          }
+        `}</style>
         <img
           src="/Vegvisir.svg.png"
           alt=""
           aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "50vw",
-            maxWidth: 900,
-            height: "auto",
-            opacity: heroReady ? 0.06 : 0,
-            transition: "opacity 2.5s ease 400ms",
-            pointerEvents: "none",
-            userSelect: "none",
-            zIndex: 0,
-            filter: "invert(1) sepia(0.12) saturate(0.5) brightness(1.1)",
-          }}
+          className="vk-vegvisir"
         />
 
         {/* Faint world map background */}

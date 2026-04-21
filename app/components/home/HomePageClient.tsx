@@ -11,7 +11,7 @@ import NorthernLights from "@/app/components/effects/NorthernLights";
 import OceanSoundToggle from "@/app/components/effects/OceanSoundToggle";
 import IslendingurBlueprint from "@/app/components/home/IslendingurBlueprint";
 import HeroButton from "@/app/components/ui/HeroButton";
-import HeroVegvisir from "@/app/components/effects/HeroVegvisir";
+
 
 const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
 
@@ -73,9 +73,6 @@ export default function HomePageClient() {
               "linear-gradient(to bottom, rgba(10,8,6,0) 0%, rgba(10,8,6,0.2) 40%, rgba(10,8,6,0.75) 75%, rgba(13,11,9,0.96) 100%)",
           }}
         />
-
-        {/* Layer 2b: Vegvísir compass stave watermark */}
-        <HeroVegvisir />
 
         {/* Layer 3: Content — anchored to bottom, sequential CSS reveal */}
         <div
