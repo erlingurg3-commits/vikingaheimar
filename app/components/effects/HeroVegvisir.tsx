@@ -1,17 +1,11 @@
 "use client";
 
 /**
- * HeroVegvisir — large, translucent Vegvisir compass stave that sits
- * behind the hero text as a subtle watermark.
+ * HeroVegvisir — large, translucent white Vegvísir compass stave
+ * behind the hero text. The source PNG is black-on-white; CSS filter
+ * inverts it to white so it glows softly against the dark hero.
  *
- * Uses the PNG at /Vegvisir.svg.png as a CSS mask-image so the black
- * stave shapes become visible and the white background is transparent.
- * The visible area is tinted heritage amber via a radial-gradient background.
- *
- * Entrance animation: the stave "carves into existence" over ~3 seconds,
- * then drifts in an ultra-slow infinite rotation with gentle opacity breathing.
- *
- * Respects prefers-reduced-motion: skips all animation, shows static.
+ * Entrance: "carved into existence" over 3s, then ultra-slow drift.
  * pointer-events: none — never blocks interaction.
  */
 export default function HeroVegvisir() {
@@ -21,34 +15,26 @@ export default function HeroVegvisir() {
         @keyframes vegvisir-emerge {
           0% {
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.85) rotate(-15deg);
+            transform: translateX(-50%) scale(0.85) rotate(-15deg);
           }
           50% {
             opacity: 0.06;
-            transform: translate(-50%, -50%) scale(0.95) rotate(-4deg);
+            transform: translateX(-50%) scale(0.95) rotate(-4deg);
           }
           100% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 0.12;
+            transform: translateX(-50%) scale(1) rotate(0deg);
           }
         }
 
         @keyframes vegvisir-drift {
-          0% {
-            transform: translate(-50%, -50%) rotate(0deg);
-          }
-          100% {
-            transform: translate(-50%, -50%) rotate(360deg);
-          }
+          from { transform: translateX(-50%) rotate(0deg); }
+          to   { transform: translateX(-50%) rotate(360deg); }
         }
 
         @keyframes vegvisir-breathe {
-          0%, 100% {
-            opacity: 0.05;
-          }
-          50% {
-            opacity: 0.09;
-          }
+          0%, 100% { opacity: 0.08; }
+          50%      { opacity: 0.14; }
         }
 
         .vegvisir-stave {
@@ -59,43 +45,36 @@ export default function HeroVegvisir() {
           height: 85vh;
           pointer-events: none;
           z-index: 1;
+          object-fit: contain;
 
-          mask-image: url('/Vegvisir.svg.png');
-          -webkit-mask-image: url('/Vegvisir.svg.png');
-          mask-size: contain;
-          -webkit-mask-size: contain;
-          mask-repeat: no-repeat;
-          -webkit-mask-repeat: no-repeat;
-          mask-position: center;
-          -webkit-mask-position: center;
+          /* Invert black→white, then tint slightly warm */
+          filter: invert(1) sepia(0.15) saturate(0.6) brightness(1.2);
 
-          background: radial-gradient(
-            circle at center,
-            rgba(212, 165, 116, 0.12) 0%,
-            rgba(212, 165, 116, 0.06) 50%,
-            transparent 80%
-          );
+          opacity: 0;
+          transform: translateX(-50%) scale(0.85) rotate(-15deg);
 
-          /* Phase 1+2: emerge over 3s, then hold final state */
           animation:
             vegvisir-emerge 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards,
             vegvisir-drift 120s linear 3s infinite,
             vegvisir-breathe 10s ease-in-out 3s infinite;
-
-          transform: translate(-50%, -50%) scale(0.85) rotate(-15deg);
-          opacity: 0;
         }
 
         @media (prefers-reduced-motion: reduce) {
           .vegvisir-stave {
             animation: none;
-            opacity: 0.07;
-            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 0.10;
+            transform: translateX(-50%) scale(1) rotate(0deg);
           }
         }
       `}</style>
 
-      <div className="vegvisir-stave" aria-hidden="true" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        className="vegvisir-stave"
+        src="/Vegvisir.svg.png"
+        alt=""
+        aria-hidden="true"
+      />
     </>
   );
 }

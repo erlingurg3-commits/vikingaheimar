@@ -481,6 +481,28 @@ export default function VikingsPageClient() {
           overflow: "hidden",
         }}
       >
+        {/* Decorative Vegvísir watermark */}
+        <img
+          src="/Vegvisir.svg.png"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "50vw",
+            maxWidth: 900,
+            height: "auto",
+            opacity: heroReady ? 0.06 : 0,
+            transition: "opacity 2.5s ease 400ms",
+            pointerEvents: "none",
+            userSelect: "none",
+            zIndex: 0,
+            filter: "invert(1) sepia(0.12) saturate(0.5) brightness(1.1)",
+          }}
+        />
+
         {/* Faint world map background */}
         <div
           aria-hidden="true"

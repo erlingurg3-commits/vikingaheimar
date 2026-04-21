@@ -57,7 +57,9 @@
       "Bash(cat:*)",
       "Bash(grep -rn -i \"cinzel\" --include=\"*.tsx\" --include=\"*.ts\" --include=\"*.css\" --include=\"*.js\" --include=\"*.json\" --include=\"*.svg\" app/ tailwind.config* components/)",
       "Bash(mkdir -p public/fonts)",
-      "Bash(cp \"public/norse text/Norse-KaWl.otf\" public/fonts/Norse.otf)"
+      "Bash(cp \"public/norse text/Norse-KaWl.otf\" public/fonts/Norse.otf)",
+      "Bash(npx vercel:*)",
+      "Bash(vercel env:*)"
     ]
   }
 }
