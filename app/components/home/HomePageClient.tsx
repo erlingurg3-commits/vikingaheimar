@@ -52,16 +52,43 @@ export default function HomePageClient() {
           backgroundColor: "#0d0c0a",
         }}
       >
-        {/* Layer 1: Ship image with slow Ken Burns */}
-        <Image
-          src="/ship.jpg"
-          alt="Interior bow of the Íslendingur Viking longship"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover animate-slowZoom scale-105"
-          style={{ objectPosition: "center 55%" }}
-        />
+        {/* Layer 1: Onboard video — autoplay, loop, muted, cross-fade on loop */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+          className="hero-video"
+          ref={(el) => {
+            if (!el) return;
+            const FADE = 1.5;
+            const onTime = () => {
+              const remaining = el.duration - el.currentTime;
+              if (remaining <= FADE) {
+                el.style.opacity = String(remaining / FADE);
+              } else if (el.currentTime <= FADE) {
+                el.style.opacity = String(Math.min(el.currentTime / FADE, 1));
+              } else {
+                el.style.opacity = "1";
+              }
+            };
+            el.addEventListener("timeupdate", onTime);
+            el.addEventListener("seeked", () => { el.style.opacity = "0"; });
+          }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center 55%",
+            opacity: 0,
+            transition: "opacity 0.3s ease",
+          }}
+        >
+          <source src="/onboard.mp4" type="video/mp4" />
+        </video>
 
         {/* Layer 2: Gradient overlay — near-transparent top, near-black bottom */}
         <div
