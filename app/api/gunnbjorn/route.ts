@@ -42,15 +42,24 @@ export async function POST(req: NextRequest) {
   ];
 
   try {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      console.error("[Gunnbjörn] ANTHROPIC_API_KEY is not set");
+      return NextResponse.json(
+        { answer: "The fire burns low. Ask again." },
+        { status: 200 },
+      );
+    }
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY!,
+        "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-opus-4-5",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 300,
         system: GUNNBJORN_SYSTEM_PROMPT,
         messages,
@@ -58,11 +67,21 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
+
+    if (data?.error) {
+      console.error("[Gunnbjörn] API error:", data.error.type, data.error.message);
+      return NextResponse.json(
+        { answer: "The fire burns low. Ask again." },
+        { status: 200 },
+      );
+    }
+
     const answer =
       data?.content?.[0]?.text ?? "The fire burns low. Ask again.";
 
     return NextResponse.json({ answer });
-  } catch {
+  } catch (err) {
+    console.error("[Gunnbjörn] Fetch failed:", err);
     return NextResponse.json(
       { answer: "The fire burns low. Ask again." },
       { status: 200 },

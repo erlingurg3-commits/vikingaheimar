@@ -133,9 +133,9 @@ export default function HeroButton({ href, label, onClick, variant = "amber" }: 
         <line x1="284" y1="66" x2="302" y2="66" className={`${cls}-accent`} />
       </svg>
 
-      <span className={`${cls}-rune ${cls}-rune-l`}>&#5798;</span>
+      <img src="/Vegvisir.svg.png" alt="" aria-hidden="true" className={`${cls}-rune ${cls}-rune-l`} />
       <span className={`${cls}-label`}>{label}</span>
-      <span className={`${cls}-rune ${cls}-rune-r`}>&#5798;</span>
+      <img src="/Vegvisir.svg.png" alt="" aria-hidden="true" className={`${cls}-rune ${cls}-rune-r`} />
 
       <style>{`
         .${cls} {
@@ -208,22 +208,24 @@ export default function HeroButton({ href, label, onClick, variant = "amber" }: 
         .${cls}-rune {
           position: relative;
           z-index: 2;
-          font-size: 16px;
-          color: ${p.runeIdle};
-          transition: color 0.4s ease, transform 0.4s ease;
-          line-height: 1;
+          width: 16px;
+          height: 16px;
+          object-fit: contain;
+          opacity: ${variant === "frost" ? "0.45" : "0.5"};
+          filter: ${variant === "frost" ? "invert(1) sepia(0.3) saturate(2) hue-rotate(170deg) brightness(1.4)" : "brightness(0.15)"};
+          transition: opacity 0.4s ease, transform 0.4s ease;
         }
         .${cls}-rune-l { margin-right: 10px; }
         .${cls}-rune-r { margin-left: 10px; }
 
         .${cls}:hover .${cls}-rune {
-          color: ${p.runeHover};
+          opacity: ${variant === "frost" ? "0.9" : "0.85"};
         }
         .${cls}:hover .${cls}-rune-l {
-          transform: scale(1.15) translateX(-3px);
+          transform: scale(1.2) translateX(-3px);
         }
         .${cls}:hover .${cls}-rune-r {
-          transform: scale(1.15) translateX(3px);
+          transform: scale(1.2) translateX(3px);
         }
 
         .${cls}:focus-visible {
@@ -235,9 +237,9 @@ export default function HeroButton({ href, label, onClick, variant = "amber" }: 
         @media (hover: none) {
           .${cls}-fill { fill: ${p.fillHover}; }
           .${cls}-stroke { opacity: 1; }
-          .${cls}-rune { color: ${p.runeHover}; }
-          .${cls}-rune-l { transform: scale(1.15) translateX(-3px); }
-          .${cls}-rune-r { transform: scale(1.15) translateX(3px); }
+          .${cls}-rune { opacity: ${variant === "frost" ? "0.9" : "0.85"}; }
+          .${cls}-rune-l { transform: scale(1.2) translateX(-3px); }
+          .${cls}-rune-r { transform: scale(1.2) translateX(3px); }
           .${cls}-glow { fill: ${p.glowHover}; opacity: 0.55; }
         }
       `}</style>

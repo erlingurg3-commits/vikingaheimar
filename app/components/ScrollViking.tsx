@@ -1075,26 +1075,66 @@ export default function ScrollViking() {
           }
           .sv-viking-col {
             flex: 0 0 auto !important;
-            max-height: 40dvh !important;
-            padding: 8px 16px 0 16px !important;
+            max-height: 35dvh !important;
+            padding: 4px 12px 0 12px !important;
+          }
+          .sv-viking-col svg {
+            max-height: 100% !important;
+            width: auto !important;
+            object-fit: contain;
           }
           .sv-fact-col {
             flex: 1 !important;
             min-height: 0;
           }
           .sv-fact-panel {
-            padding: 12px 20px 12px !important;
+            padding: 8px 16px 8px !important;
           }
           .sv-fact-body {
-            font-size: 13px !important;
+            font-size: 12px !important;
+            line-height: 1.55 !important;
             -webkit-line-clamp: 3 !important;
           }
           /* Hide all compressed prior facts on mobile */
           .sv-fact-content > div:first-child {
             display: none !important;
           }
+          .sv-controls {
+            gap: 8px !important;
+            padding-top: 6px !important;
+          }
+          .sv-dots {
+            gap: 6px !important;
+            padding: 4px 0 !important;
+          }
           .sv-next-btn {
-            height: 48px !important;
+            height: 44px !important;
+            font-size: 0.7rem !important;
+          }
+          .sv-start {
+            padding: 32px !important;
+            gap: 12px !important;
+          }
+          .sv-start-logo {
+            width: 120px !important;
+          }
+        }
+
+        /* ── Small phones (≤ 380px wide or ≤ 700px tall) ── */
+        @media (max-width: 380px), (max-height: 700px) {
+          .sv-viking-col {
+            max-height: 30dvh !important;
+            padding: 2px 8px 0 8px !important;
+          }
+          .sv-fact-panel {
+            padding: 6px 12px 6px !important;
+          }
+          .sv-fact-body {
+            font-size: 11px !important;
+            -webkit-line-clamp: 2 !important;
+          }
+          .sv-next-btn {
+            height: 40px !important;
           }
         }
 

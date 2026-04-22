@@ -8,6 +8,7 @@ import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 // import VikingArsenal from "@/app/components/VikingArsenal";
 import ScrollViking from "@/app/components/ScrollViking";
 import Gunnbjorn from "@/app/components/Gunnbjorn";
+import HeroButton from "@/app/components/ui/HeroButton";
 
 /* ── Scroll-reveal helper (same pattern as Saga page) ── */
 function reveal(visible: boolean, delay = 0): React.CSSProperties {
@@ -121,7 +122,7 @@ function FactSection({
     <section
       ref={ref}
       style={{
-        padding: "clamp(80px, 12vh, 140px) 0",
+        padding: "clamp(40px, 6vh, 72px) 0",
         borderTop: index > 0 ? "1px solid rgba(255,255,255,0.04)" : "none",
       }}
     >
@@ -133,7 +134,7 @@ function FactSection({
           display: "flex",
           flexDirection: isReversed ? "row-reverse" : "row",
           flexWrap: "wrap",
-          gap: "clamp(32px, 5vw, 80px)",
+          gap: "clamp(24px, 3vw, 48px)",
           alignItems: "center",
         }}
       >
@@ -253,7 +254,7 @@ function WorldReachMap() {
     <section
       ref={ref}
       style={{
-        padding: "clamp(80px, 12vh, 140px) 0",
+        padding: "clamp(40px, 6vh, 72px) 0",
         borderTop: "1px solid rgba(255,255,255,0.04)",
       }}
     >
@@ -471,22 +472,21 @@ export default function VikingsPageClient() {
         style={{
           position: "relative",
           width: "100%",
-          minHeight: "100vh",
+          minHeight: "80vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          padding: "120px 32px 80px",
+          padding: "80px 32px 48px",
           overflow: "hidden",
         }}
       >
         {/* Decorative Vegvísir watermark — carve-in + slow drift */}
         <style>{`
-          @keyframes vk-vegvisir-emerge {
-            0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85) rotate(-15deg); }
-            50%  { opacity: 0.04; transform: translate(-50%, -50%) scale(0.95) rotate(-4deg); }
-            100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+          @keyframes vk-vegvisir-fadein {
+            0%   { opacity: 0; }
+            100% { opacity: 0.06; }
           }
           @keyframes vk-vegvisir-drift {
             from { transform: translate(-50%, -50%) rotate(0deg); }
@@ -508,17 +508,17 @@ export default function VikingsPageClient() {
             z-index: 0;
             filter: invert(1) sepia(0.12) saturate(0.5) brightness(1.1);
             opacity: 0;
-            transform: translate(-50%, -50%) scale(0.85) rotate(-15deg);
+            transform: translate(-50%, -50%);
             animation:
-              vk-vegvisir-emerge 3s cubic-bezier(0.25,0.1,0.25,1) 0.4s forwards,
-              vk-vegvisir-drift 120s linear 3.4s infinite,
-              vk-vegvisir-breathe 10s ease-in-out 3.4s infinite;
+              vk-vegvisir-fadein 2.5s ease 0.4s forwards,
+              vk-vegvisir-drift 120s linear 0s infinite,
+              vk-vegvisir-breathe 10s ease-in-out 2.9s infinite;
           }
           @media (prefers-reduced-motion: reduce) {
             .vk-vegvisir {
               animation: none;
               opacity: 0.06;
-              transform: translate(-50%, -50%) scale(1) rotate(0deg);
+              transform: translate(-50%, -50%);
             }
           }
         `}</style>
@@ -689,7 +689,7 @@ export default function VikingsPageClient() {
       <section
         style={{
           borderTop: "1px solid rgba(255,255,255,0.06)",
-          padding: "clamp(100px, 14vh, 180px) 0",
+          padding: "clamp(48px, 7vh, 90px) 0",
         }}
       >
         <div
@@ -739,35 +739,7 @@ export default function VikingsPageClient() {
               ...reveal(ctaVisible, 250),
             }}
           >
-            <Link
-              href="/booking"
-              className="font-text"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                background: "#c8874a",
-                color: "#0d0c0a",
-                padding: "18px 44px",
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                borderRadius: 2,
-                border: "none",
-                textDecoration: "none",
-                transition: "background 250ms, transform 250ms",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#b5763d";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#c8874a";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Book Your Raid
-            </Link>
+            <HeroButton href="/booking" label="BOOK YOUR RAID" />
 
           </div>
         </div>

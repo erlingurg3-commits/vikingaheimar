@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
+import HeroButton from "@/app/components/ui/HeroButton";
 
 type Cue = { start: number; end: number; text: string };
 
@@ -725,37 +726,7 @@ export default function SagaPageClient() {
               ...reveal(ctaVisible, 250),
             }}
           >
-            <Link
-              href="/booking"
-              className="font-text"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                background: "#c8874a",
-                color: "#ffffff",
-                padding: "20px 56px",
-                fontSize: 12,
-                fontWeight: 600,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                borderRadius: 2,
-                border: "none",
-                textDecoration: "none",
-                transition: "background 250ms, transform 250ms",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#b5763d";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#c8874a";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              BOOK YOUR VISIT
-              <span style={{ marginLeft: 10, fontSize: 14 }}>&#8594;</span>
-            </Link>
+            <HeroButton href="/booking" label="BOOK YOUR VISIT" />
           </div>
         </div>
       </section>

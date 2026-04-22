@@ -552,24 +552,7 @@ function FinalCtaSection() {
             >
               <HeroButton href="/booking" label="BOOK TICKETS" />
 
-              <Link
-                href="/groups"
-                className="inline-block rounded-sm border px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors"
-                style={{
-                  borderColor: "rgba(255,255,255,0.25)",
-                  color: "rgba(255,255,255,0.70)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.50)";
-                  e.currentTarget.style.color = "#ffffff";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)";
-                  e.currentTarget.style.color = "rgba(255,255,255,0.70)";
-                }}
-              >
-                Group Bookings
-              </Link>
+              <HeroButton href="/groups" label="GROUP BOOKINGS" variant="frost" />
             </div>
           </div>
         </div>
