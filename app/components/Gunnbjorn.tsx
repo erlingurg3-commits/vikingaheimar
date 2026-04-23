@@ -215,10 +215,32 @@ type Message = {
   timestamp: Date;
 };
 
-const SUGGESTED = [
-  "What is the Íslendingur?",
-  "Did Vikings really reach America?",
-  "What should I not miss here?",
+const SUGGESTED_POOLS = [
+  [
+    "What is the Íslendingur?",
+    "Did Vikings really reach America?",
+    "What should I not miss here?",
+  ],
+  [
+    "Is there a gift shop?",
+    "How do I get there from the airport?",
+    "Did Vikings really have horned helmets?",
+  ],
+  [
+    "Where can I eat at the museum?",
+    "Is it wheelchair accessible?",
+    "How much does entry cost?",
+  ],
+  [
+    "Can I book a group visit?",
+    "Who built the Íslendingur?",
+    "What did Viking women do?",
+  ],
+  [
+    "What are the opening hours?",
+    "Tell me about the sagas.",
+    "Is there free parking?",
+  ],
 ];
 
 export default function Gunnbjorn() {
@@ -226,6 +248,7 @@ export default function Gunnbjorn() {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const [warriorState, setWarriorState] = useState<WarriorState>("idle");
+  const [suggestionRound, setSuggestionRound] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -257,6 +280,7 @@ export default function Gunnbjorn() {
     setInput("");
     setIsThinking(true);
     setWarriorState("thinking");
+    setSuggestionRound((r) => (r + 1) % SUGGESTED_POOLS.length);
 
     try {
       const res = await fetch("/api/gunnbjorn", {
@@ -582,10 +606,10 @@ export default function Gunnbjorn() {
             </form>
           </div>
 
-          {/* Suggested questions */}
-          {messages.length === 0 && (
+          {/* Suggested questions — cycle through pools */}
+          {!isThinking && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-              {SUGGESTED.map((q) => (
+              {SUGGESTED_POOLS[suggestionRound].map((q) => (
                 <button
                   key={q}
                   type="button"

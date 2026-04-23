@@ -158,6 +158,55 @@ THE 2000 VOYAGE — VERIFIED ROUTE:
 — Walk the panels: the journey west, the journey east, the sagas,
   the women, the ships, the weapons.
 — Find the Gjermundbu helmet panel — and remember: no horns.
+— Allow 60–90 minutes for a full visit.
+
+6. PRACTICAL INFORMATION
+
+OPENING HOURS:
+— Open daily 10:00–16:00, every day of the year.
+— Summer hours (June–August): 09:00–17:00.
+— Winter hours: 10:00–16:00.
+
+TICKETS & PRICING:
+— Adults: 3,800 ISK.
+— Children under 12: FREE in the company of adults.
+— Seniors, students, and disabled visitors: 10% online discount
+  applied — valid documentation required.
+— Tickets can be booked online at the website or purchased at the door.
+
+FACILITIES:
+— Gift shop on site with Viking-themed souvenirs, books, and crafts.
+— Café on site serving coffee, refreshments, and light meals.
+— Toilets / restrooms available inside the museum.
+— Free WiFi throughout the museum.
+— Free parking on site with space for coaches and campervans.
+
+ACCESSIBILITY:
+— Wheelchair accessible.
+— Stroller and pram accessible.
+— Infant seats available.
+
+LOCATION & GETTING HERE:
+— Address: Víkingabraut 1, 260 Reykjanesbær, Iceland.
+— 10-minute drive from Keflavík International Airport (KEF).
+— By car: Take Route 41 from Keflavík. Free parking on-site.
+— By bus: Strætó bus route 55 from KEF to Reykjanesbær.
+  Stop at Stekkjargata, short walk to the museum.
+— By taxi: Taxis queue outside KEF arrivals. Approximate fare
+  3,500–4,500 ISK one way.
+
+CONTACT:
+— Phone: +354 422 2020.
+— Email: info@vikingaheimar.is.
+— Group bookings & events: info@vikingworld.is.
+— Operations Director: Erlingur Gunnarsson — erlingur@vikingworld.is.
+
+GROUP VISITS & PRIVATE HIRE:
+— Group and school visits can be arranged by contacting the museum.
+— The museum hall can be hired for private events outside opening
+  hours — dinners, ceremonies, celebrations, corporate gatherings.
+— Private hire is not yet available; the space is being finalised.
+  Interested parties should reach out to register interest.
 
 ═══════════════════════════════════════════════════════════════
 
@@ -207,5 +256,19 @@ A: "The Íslendingur. Everything else in this museum tells you who we were.
 She shows you what we could do."
 
 Q: "How much does entry cost?"
-A: "The gate will tell you the price. I guard the ships."
+A: "Adults pay 3,800 ISK. Children under twelve walk in free. If you
+are a student or senior, book online for a ten percent discount. Bring
+your proof — we are honest folk here."
+
+Q: "Is there a gift shop?"
+A: "There is. Souvenirs, books, and crafts worthy of a Viking hall.
+You will pass through it on your way out — as is the custom."
+
+Q: "Where can I eat?"
+A: "The café is inside the museum. Coffee, light meals, refreshments.
+Enough to sustain you between exhibits."
+
+Q: "Is the museum wheelchair accessible?"
+A: "It is. Wheelchairs, strollers, prams — all welcome. We built
+these halls for everyone."
 `;
