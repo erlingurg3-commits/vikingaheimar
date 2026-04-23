@@ -17,18 +17,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-/* Diagnostic — GET /api/gunnbjorn to check env on Vercel */
-export async function GET() {
-  const key = process.env.ANTHROPIC_API_KEY;
-  const allKeys = Object.keys(process.env).sort();
-  return NextResponse.json({
-    hasKey: !!key,
-    keyPrefix: key ? key.slice(0, 12) + "..." : "MISSING",
-    nodeEnv: process.env.NODE_ENV,
-    matchingEnvVars: allKeys,
-  });
-}
-
 export async function POST(req: NextRequest) {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -58,7 +46,7 @@ export async function POST(req: NextRequest) {
     if (!apiKey) {
       console.error("[Gunnbjörn] ANTHROPIC_API_KEY is not set");
       return NextResponse.json(
-        { answer: "[Debug] ANTHROPIC_API_KEY is not set on this server." },
+        { answer: "The fire burns low. Ask again." },
         { status: 200 },
       );
     }
@@ -83,7 +71,7 @@ export async function POST(req: NextRequest) {
     if (data?.error) {
       console.error("[Gunnbjörn] API error:", data.error.type, data.error.message);
       return NextResponse.json(
-        { answer: `[Debug] API error: ${data.error.type} — ${data.error.message}` },
+        { answer: "The fire burns low. Ask again." },
         { status: 200 },
       );
     }
@@ -96,7 +84,7 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[Gunnbjörn] Fetch failed:", msg);
     return NextResponse.json(
-      { answer: `[Debug] Fetch failed: ${msg}` },
+      { answer: "The fire burns low. Ask again." },
       { status: 200 },
     );
   }
