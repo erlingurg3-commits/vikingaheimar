@@ -30,49 +30,49 @@ const FACTS: {
     tag: "NORTH AMERICA",
     hook: "Vikings reached North America 500 years before Columbus.",
     detail:
-      "Around 1000\u00a0AD, Leif Eriksson was blown off course sailing to Greenland and became probably the first European to set foot on American soil. He named his discovery V\u00ednland \u2014 \u2018Wineland\u2019 \u2014 for the vines and grapes he found there. The settlement he built, Leifsb\u00fa\u00f0ir, is believed to be L\u2019Anse aux Meadows in Newfoundland, now a UNESCO World Heritage Site.",
+      "Around 1000\u00a0AD, Leif Eriksson was blown off course sailing to Greenland and became probably the first European to set foot on American soil. He named his discovery Vínland — \u2018Wineland\u2019 — for the vines and grapes he found there. The settlement he built, Leifsbúðir, is believed to be L\u2019Anse aux Meadows in Newfoundland, now a UNESCO World Heritage Site.",
     connection:
-      "In 2000, the \u00cdslendingur \u2014 the replica Viking ship now docked at V\u00edkingaheimar \u2014 retraced Leif Eriksson\u2019s route from Iceland to New York. No GPS, no engine. Just wool sails and navigation by the stars.",
+      "In 2000, the Íslendingur — the replica Viking ship now docked at Víkingaheimar — retraced Leif Eriksson\u2019s route from Iceland to New York. No GPS, no engine. Just wool sails and navigation by the stars.",
   },
   {
     tag: "EAST TO CONSTANTINOPLE",
     hook: "While some Vikings sailed west, others reached Constantinople and became the Emperor\u2019s personal bodyguard.",
     detail:
-      "Swedish Vikings pushed east along the Baltic, founded Novgorod in the 9th century, captured Kiev, and travelled the river Dnieper all the way to Constantinople \u2014 which they called Miklagarður. In 839\u00a0AD, the Emperor founded the Varangian Guard, an elite force composed solely of Viking warriors.",
+      "Swedish Vikings pushed east along the Baltic, founded Novgorod in the 9th century, captured Kiev, and travelled the river Dnieper all the way to Constantinople — which they called Miklagarður. In 839\u00a0AD, the Emperor founded the Varangian Guard, an elite force composed solely of Viking warriors.",
     connection:
-      "The Varangian Guard endured for almost four centuries, finally dissolving after the Fourth Crusade in 1204 \u2014 proof that the Viking reach stretched far beyond Scandinavia.",
+      "The Varangian Guard endured for almost four centuries, finally dissolving after the Fourth Crusade in 1204 — proof that the Viking reach stretched far beyond Scandinavia.",
   },
   {
     tag: "THE SHIPS",
-    hook: "Viking ships could sail shallow rivers as easily as open oceans \u2014 and be dragged overland between waterways.",
+    hook: "Viking ships could sail shallow rivers as easily as open oceans — and be dragged overland between waterways.",
     detail:
       "Clinker-built with flexible hulls, their boards fastened with bindings and wooden nails so the hull could move with the sea. Powered by sail at speeds of 6 to 17\u00a0mph, they could aquaplane in strong wind, navigate shallow rivers for inland raids, and be drawn across land between rivers.",
     connection:
-      "The \u00cdslendingur at V\u00edkingaheimar is a direct replica of the Gokstad ship \u2014 23.5 metres long, 18 tonnes, held together by 5,000 hand-forged iron nails. She is docked here. You can board her.",
+      "The Íslendingur at Víkingaheimar is a direct replica of the Gokstad ship — 23.5 metres long, 18 tonnes, held together by 5,000 hand-forged iron nails. She is docked here. You can board her.",
   },
   {
     tag: "THE WOMEN",
-    hook: "Viking women made every sail that crossed the Atlantic \u2014 and then sailed under them to the New World.",
+    hook: "Viking women made every sail that crossed the Atlantic — and then sailed under them to the New World.",
     detail:
-      "Norse women cooked, spun, wove, sewed, and brewed \u2014 and crucially, they made the sails that powered every expedition. Gudrid Thorbjornsdottir travelled to Vinland with her husband Thorfinn Karlsefni. Her descendants included several Icelandic bishops.",
+      "Norse women cooked, spun, wove, sewed, and brewed — and crucially, they made the sails that powered every expedition. Gudrid Thorbjornsdottir travelled to Vinland with her husband Thorfinn Karlsefni. Her descendants included several Icelandic bishops.",
     connection:
-      "Axes have been found in female Viking grave sites \u2014 a reminder that women in Norse society were far more than the stereotypes suggest.",
+      "Axes have been found in female Viking grave sites — a reminder that women in Norse society were far more than the stereotypes suggest.",
   },
   {
     tag: "ICELAND",
-    hook: "Iceland has no prehistory \u2014 it was a blank page until the Vikings chose to write on it.",
+    hook: "Iceland has no prehistory — it was a blank page until the Vikings chose to write on it.",
     detail:
-      "In 874\u00a0AD, Ing\u00f3lfur Arnarson became Iceland\u2019s first permanent Nordic settler, naming his homestead Reykjav\u00edk. Over 400 settlers followed, mostly from Norway. By 930\u00a0AD they had founded the Althing at Thingvellir \u2014 a parliament with legislative and judicial power.",
+      "In 874\u00a0AD, Ingólfur Arnarson became Iceland\u2019s first permanent Nordic settler, naming his homestead Reykjavík. Over 400 settlers followed, mostly from Norway. By 930\u00a0AD they had founded the Althing at Thingvellir — a parliament with legislative and judicial power.",
     connection:
-      "Right here on the Reykjanes peninsula, the Vogur settlement near Hafnir preserves an 18-metre Viking longhouse. At nearby Hafurbjarnasta\u00f0ir, a chieftain was buried with his sword, axe, dog and horse.",
+      "Right here on the Reykjanes peninsula, the Vogur settlement near Hafnir preserves an 18-metre Viking longhouse. At nearby Hafurbjarnastaðir, a chieftain was buried with his sword, axe, dog and horse.",
   },
   {
     tag: "THE SAGAS",
-    hook: "The Vikings didn\u2019t just conquer \u2014 they wrote it all down, and Europe had no idea for 600 years.",
+    hook: "The Vikings didn\u2019t just conquer — they wrote it all down, and Europe had no idea for 600 years.",
     detail:
-      "Between the 12th and 14th centuries, Iceland produced a unique outpouring of literary creativity: Nj\u00e1l\u2019s Saga, Snorri Sturluson\u2019s Heimskringla, the heroic poems of the Edda, and Erik the Red\u2019s Saga. While European manuscripts were in Latin, Icelandic sagas preserved tales of everyday people in their own language.",
+      "Between the 12th and 14th centuries, Iceland produced a unique outpouring of literary creativity: Njál\u2019s Saga, Snorri Sturluson\u2019s Heimskringla, the heroic poems of the Edda, and Erik the Red\u2019s Saga. While European manuscripts were in Latin, Icelandic sagas preserved tales of everyday people in their own language.",
     connection:
-      "These sagas remained completely unknown in Europe until the 17th century \u2014 centuries of extraordinary storytelling hidden in plain sight on a remote island in the North Atlantic.",
+      "These sagas remained completely unknown in Europe until the 17th century — centuries of extraordinary storytelling hidden in plain sight on a remote island in the North Atlantic.",
   },
 ];
 
@@ -726,7 +726,7 @@ export default function VikingsPageClient() {
               ...reveal(ctaVisible, 100),
             }}
           >
-            V\u00edkingaheimar. Njar\u00f0v\u00edk, Iceland. Open year-round.
+            Víkingaheimar. Njarðvík, Iceland. Open year-round.
           </p>
 
           <div
