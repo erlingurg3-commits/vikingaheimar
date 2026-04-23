@@ -175,7 +175,26 @@ export default function HomePageClient() {
             />
           </div>
 
-          {/* Scroll indicator — hero-fade-5: 600ms delay 1400ms */}
+          {/* Gunnbjörn link — hero-fade-5: subtle, minimal */}
+          <Link
+            href="/vikings#gunnbjorn"
+            className="font-display hero-fade-5"
+            style={{
+              marginTop: "20px",
+              fontSize: 11,
+              fontWeight: 400,
+              letterSpacing: "0.14em",
+              color: "rgba(255,255,255,0.35)",
+              textDecoration: "none",
+              transition: "color 300ms",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "rgba(200,135,74,0.8)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
+          >
+            Have a question? Ask Gunnbjörn ᛫
+          </Link>
+
+          {/* Scroll indicator — hero-fade-6: 600ms delay 1400ms */}
           <div
             className="hero-fade-5"
             style={{
