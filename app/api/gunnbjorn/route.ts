@@ -20,10 +20,14 @@ function checkRateLimit(ip: string): boolean {
 /* Diagnostic — GET /api/gunnbjorn to check env on Vercel */
 export async function GET() {
   const key = process.env.ANTHROPIC_API_KEY;
+  const allKeys = Object.keys(process.env)
+    .filter((k) => k.includes("ANTHRO") || k.includes("API") || k.includes("KEY"))
+    .sort();
   return NextResponse.json({
     hasKey: !!key,
     keyPrefix: key ? key.slice(0, 12) + "..." : "MISSING",
     nodeEnv: process.env.NODE_ENV,
+    matchingEnvVars: allKeys,
   });
 }
 
