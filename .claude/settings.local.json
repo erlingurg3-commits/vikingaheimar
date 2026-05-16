@@ -59,7 +59,14 @@
       "Bash(mkdir -p public/fonts)",
       "Bash(cp \"public/norse text/Norse-KaWl.otf\" public/fonts/Norse.otf)",
       "Bash(npx vercel:*)",
-      "Bash(vercel env:*)"
+      "Bash(vercel env:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(git push:*)",
+      "PowerShell(taskkill /PID 14168 /F)",
+      "PowerShell(cd c:\\\\Users\\\\erlin\\\\vikingaheimar; npm run lint 2>&1 | Where-Object { $_ -match \"error|warning|\\\\.tsx|\\\\.ts\" } | Out-String)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)"
     ]
   }
 }

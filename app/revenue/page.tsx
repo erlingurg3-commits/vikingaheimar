@@ -124,11 +124,17 @@ function formatISK(n: number): string {
 
 function shortDate(iso: string): string {
   const d = new Date(iso + "T00:00:00Z");
-  return d.toLocaleDateString("is-IS", { month: "short", day: "numeric", timeZone: "UTC" });
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 }
 
 function isoToday(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+function addDaysToIso(iso: string, days: number): string {
+  const d = new Date(iso + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
 }
 
 function isoWeekStart(): string {
@@ -139,25 +145,78 @@ function isoWeekStart(): string {
   return d.toISOString().slice(0, 10);
 }
 
+function isoWeekEnd(): string {
+  return addDaysToIso(isoWeekStart(), 6);
+}
+
+function isoNextWeekStart(): string {
+  return addDaysToIso(isoWeekStart(), 7);
+}
+
+function isoNextWeekEnd(): string {
+  return addDaysToIso(isoWeekStart(), 13);
+}
+
 function isoMonthStart(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
 }
 
-type Preset = "today" | "week" | "month" | "custom";
+function isoMonthEnd(): string {
+  const d = new Date();
+  const last = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return last.toISOString().slice(0, 10);
+}
 
-const PRESETS: { label: string; key: Preset; active: string; idle: string }[] = [
-  { label: "Today",      key: "today",  active: "bg-sky-500 border-sky-500 text-white",     idle: "border-sky-500/30 text-sky-400 hover:bg-sky-500/15" },
-  { label: "This Week",  key: "week",   active: "bg-emerald-500 border-emerald-500 text-white", idle: "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/15" },
-  { label: "This Month", key: "month",  active: "bg-violet-500 border-violet-500 text-white",  idle: "border-violet-500/30 text-violet-400 hover:bg-violet-500/15" },
-  { label: "Custom",     key: "custom", active: "bg-amber-500 border-amber-500 text-white",   idle: "border-amber-500/30 text-amber-400 hover:bg-amber-500/15" },
+function isoNextMonthStart(): string {
+  const d = new Date();
+  const y = d.getMonth() === 11 ? d.getFullYear() + 1 : d.getFullYear();
+  const m = (d.getMonth() + 2) > 12 ? 1 : d.getMonth() + 2;
+  return `${y}-${String(m).padStart(2, "0")}-01`;
+}
+
+function isoNextMonthEnd(): string {
+  const s = isoNextMonthStart();
+  const [y, m] = s.split("-").map(Number);
+  const last = new Date(y, m, 0);
+  return last.toISOString().slice(0, 10);
+}
+
+function fmtRange(from: string, to: string): string {
+  const fmt = (iso: string) => {
+    const d = new Date(iso + "T12:00:00Z");
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  };
+  return from === to ? fmt(from) : `${fmt(from)} – ${fmt(to)}`;
+}
+
+type Preset = "today" | "week" | "next-week" | "month" | "next-month" | "custom";
+
+const PRESET_COLORS: Record<Preset, { accent: string; glow: string }> = {
+  "today":      { accent: "#0ea5e9", glow: "rgba(14,165,233,0.12)"  },
+  "week":       { accent: "#10b981", glow: "rgba(16,185,129,0.12)"  },
+  "next-week":  { accent: "#06b6d4", glow: "rgba(6,182,212,0.12)"   },
+  "month":      { accent: "#8b5cf6", glow: "rgba(139,92,246,0.12)"  },
+  "next-month": { accent: "#ec4899", glow: "rgba(236,72,153,0.12)"  },
+  "custom":     { accent: "#f59e0b", glow: "rgba(245,158,11,0.12)"  },
+};
+
+const PRESETS: { label: string; key: Preset }[] = [
+  { label: "Today",      key: "today"      },
+  { label: "This Week",  key: "week"       },
+  { label: "Next Week",  key: "next-week"  },
+  { label: "This Month", key: "month"      },
+  { label: "Next Month", key: "next-month" },
+  { label: "Custom",     key: "custom"     },
 ];
 
 function presetRange(preset: Preset, customFrom: string, customTo: string): { from: string; to: string } {
   const t = isoToday();
-  if (preset === "today") return { from: t, to: t };
-  if (preset === "week") return { from: isoWeekStart(), to: t };
-  if (preset === "month") return { from: isoMonthStart(), to: t };
+  if (preset === "today")      return { from: t, to: t };
+  if (preset === "week")       return { from: isoWeekStart(), to: isoWeekEnd() };
+  if (preset === "next-week")  return { from: isoNextWeekStart(), to: isoNextWeekEnd() };
+  if (preset === "month")      return { from: isoMonthStart(), to: isoMonthEnd() };
+  if (preset === "next-month") return { from: isoNextMonthStart(), to: isoNextMonthEnd() };
   return { from: customFrom, to: customTo };
 }
 
@@ -600,55 +659,77 @@ export default function RevenuePage() {
       <div className="max-w-screen-xl mx-auto px-4 py-6 space-y-6">
         <AdminNavBar />
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Page header */}
+        <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-off-white">Revenue Intelligence</h1>
-            <p className="text-sm text-neutral-400 mt-0.5">
-              {from === to ? from : `${from} to ${to}`}
+            <p className="text-sm text-neutral-500 mt-1">
+              {from === to ? from : `${from} → ${to}`}
             </p>
           </div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex gap-2">
-              {PRESETS.map((p) => (
-                <button
-                  key={p.key}
-                  onClick={() => setPreset(p.key)}
-                  className={[
-                    "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border bg-transparent",
-                    preset === p.key ? p.active : p.idle,
-                  ].join(" ")}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-            {preset === "custom" && (
-              <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  value={customFrom}
-                  onChange={(e) => setCustomFrom(e.target.value)}
-                  className="rounded-lg border border-white/10 bg-gray-900 px-3 py-1.5 text-sm text-off-white"
-                />
-                <span className="text-neutral-500">to</span>
-                <input
-                  type="date"
-                  value={customTo}
-                  onChange={(e) => setCustomTo(e.target.value)}
-                  className="rounded-lg border border-white/10 bg-gray-900 px-3 py-1.5 text-sm text-off-white"
-                />
-              </div>
-            )}
-            <button
-              onClick={fetchData}
-              disabled={loading}
-              className="p-2 rounded-xl border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
-              title="Refresh"
-            >
-              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-            </button>
-          </div>
+          <button
+            onClick={fetchData}
+            disabled={loading}
+            className="p-2.5 rounded-xl border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50 shrink-0"
+            title="Refresh"
+          >
+            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+          </button>
         </div>
+
+        {/* Period selector */}
+        <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
+          {PRESETS.map((p) => {
+            const c = PRESET_COLORS[p.key];
+            const isActive = preset === p.key;
+            const { from: pFrom, to: pTo } = presetRange(p.key, customFrom, customTo);
+            const dateLabel = p.key === "custom" && !isActive
+              ? "pick dates"
+              : fmtRange(pFrom, pTo);
+            return (
+              <button
+                key={p.key}
+                onClick={() => setPreset(p.key)}
+                style={{
+                  borderTop: `3px solid ${isActive ? c.accent : "rgba(255,255,255,0.07)"}`,
+                  background: isActive ? c.glow : "rgba(255,255,255,0.02)",
+                  borderLeft: "1px solid rgba(255,255,255,0.07)",
+                  borderRight: "1px solid rgba(255,255,255,0.07)",
+                  borderBottom: "1px solid rgba(255,255,255,0.07)",
+                }}
+                className="rounded-b-xl rounded-t-sm pt-4 pb-3 px-4 text-left transition-all hover:bg-white/5"
+              >
+                <p className="text-[12px] font-semibold leading-tight" style={{ color: isActive ? c.accent : "rgba(255,255,255,0.45)" }}>
+                  {p.label}
+                </p>
+                <p className="text-[11px] mt-1.5 leading-tight font-mono" style={{ color: isActive ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.18)" }}>
+                  {dateLabel}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Custom date pickers — shown inline below when custom is active */}
+        {preset === "custom" && (
+          <div className="flex items-center gap-3 -mt-2">
+            <input
+              type="date"
+              value={customFrom}
+              onChange={(e) => setCustomFrom(e.target.value)}
+              style={{ colorScheme: "dark" }}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-off-white outline-none focus:border-amber-400/50"
+            />
+            <span className="text-neutral-600">→</span>
+            <input
+              type="date"
+              value={customTo}
+              onChange={(e) => setCustomTo(e.target.value)}
+              style={{ colorScheme: "dark" }}
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-off-white outline-none focus:border-amber-400/50"
+            />
+          </div>
+        )}
 
         {error && (
           <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -741,7 +822,7 @@ export default function RevenuePage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/5">
-                  <th className="text-left px-6 py-3 text-neutral-500 font-medium">Date</th>
+                  <th className="text-left px-6 py-3 text-neutral-500 font-medium">Day</th>
                   <th className="text-right px-4 py-3 text-blue-400 font-medium">Bokun</th>
                   <th className="text-right px-4 py-3 text-violet-400 font-medium">Teya</th>
                   <th className="text-right px-4 py-3 text-amber-400 font-medium">Calendar</th>
@@ -776,7 +857,12 @@ export default function RevenuePage() {
                           row.bokun_detail.length > 0 ? "border-b border-white/[0.03]" : "border-b border-white/5",
                         ].join(" ")}
                       >
-                        <td className="px-6 py-2.5 text-neutral-300 font-mono text-xs">{row.date}</td>
+                        <td className="px-6 py-2.5">
+                          <span className="block text-[11px] font-semibold text-neutral-400 uppercase tracking-wide">
+                            {new Date(row.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" })}
+                          </span>
+                          <span className="block text-xs font-mono text-neutral-600 mt-0.5">{row.date}</span>
+                        </td>
                         <td className="px-4 py-2.5 text-right tabular-nums text-blue-300">
                           {row.bokun > 0 ? formatISK(row.bokun) : <span className="text-neutral-700">-</span>}
                         </td>
