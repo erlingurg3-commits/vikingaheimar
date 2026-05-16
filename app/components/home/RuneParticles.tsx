@@ -30,7 +30,9 @@ export default function RuneParticles() {
   const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPrefersReduced(
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );

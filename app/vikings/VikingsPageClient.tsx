@@ -98,6 +98,8 @@ const MAP_DESTINATIONS: {
   { id: "sicily", label: "Sicily", fact: "Norman-Viking expansion into the Mediterranean", cx: 430, cy: 195 },
 ];
 
+const DEST_ANIMATION_DELAYS = MAP_DESTINATIONS.map(() => `${Math.random() * 2}s`);
+
 const ROUTE_PATHS = [
   // West: Scandinavia → Iceland → Greenland → Vinland
   "M410,125 C390,128 370,132 355,138 C330,130 310,120 290,115 C260,130 230,160 215,175",
@@ -347,7 +349,7 @@ function WorldReachMap() {
             ))}
 
             {/* Destination dots */}
-            {MAP_DESTINATIONS.map((dest) => (
+            {MAP_DESTINATIONS.map((dest, i) => (
               <g key={dest.id}>
                 <circle
                   className={isVisible ? "dot-pulse" : ""}
@@ -356,7 +358,7 @@ function WorldReachMap() {
                   r={3}
                   fill="#c8874a"
                   style={{
-                    animationDelay: `${Math.random() * 2}s`,
+                    animationDelay: DEST_ANIMATION_DELAYS[i],
                     cursor: "pointer",
                     transition: "r 200ms",
                   }}

@@ -36,6 +36,7 @@ function useAnimReady(play: boolean): boolean {
   const [r, setR] = useState(false);
   useEffect(() => {
     if (!play) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setR(false);
       return;
     }

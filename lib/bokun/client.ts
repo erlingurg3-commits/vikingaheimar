@@ -197,13 +197,15 @@ export async function searchProductBookings(opts: {
 
 /**
  * Fetch ALL bookings in a date range, paginating automatically.
+ * startDate/endDate filter by booking CREATION date (Bokun behaviour).
  * Respects the 400 req/min rate limit by yielding between pages.
  */
 export async function fetchAllBookings(
   startDate: { year: number; month: number; day: number },
   endDate: { year: number; month: number; day: number },
-  pageSize = 50
+  options: { pageSize?: number; statuses?: string[] } = {}
 ): Promise<BokunBooking[]> {
+  const { pageSize = 50, statuses } = options;
   const all: BokunBooking[] = [];
   let page = 1;
 
@@ -213,6 +215,7 @@ export async function fetchAllBookings(
       endDate,
       page,
       pageSize,
+      ...(statuses ? { statuses } : {}),
     });
     all.push(...result.results);
 
@@ -222,6 +225,46 @@ export async function fetchAllBookings(
     page++;
   }
   return all;
+}
+
+/**
+ * Fetch all confirmed bookings whose VISIT DATE falls on targetDate (YYYY-MM-DD, Reykjavik TZ).
+ * Bokun's search filters by creation date, so we search a 400-day lookback window
+ * (no booking is made more than ~13 months before the visit) and filter client-side.
+ */
+export async function fetchBookingsByVisitDate(
+  targetDate: string
+): Promise<BokunBooking[]> {
+  const visitDay = new Date(`${targetDate}T12:00:00Z`);
+
+  const lookback = new Date(visitDay);
+  lookback.setUTCDate(lookback.getUTCDate() - 400);
+
+  const from = {
+    year:  lookback.getUTCFullYear(),
+    month: lookback.getUTCMonth() + 1,
+    day:   lookback.getUTCDate(),
+  };
+  const to = {
+    year:  visitDay.getUTCFullYear(),
+    month: visitDay.getUTCMonth() + 1,
+    day:   visitDay.getUTCDate(),
+  };
+
+  const all = await fetchAllBookings(from, to, {
+    pageSize: 100,
+    statuses: ["CONFIRMED"],
+  });
+
+  // Filter to bookings whose visit date matches targetDate in Reykjavik timezone
+  return all.filter((b) => {
+    const ms = b.startDate ?? b.startDateTime;
+    if (!ms) return false;
+    const d = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Atlantic/Reykjavik",
+    }).format(new Date(ms));
+    return d === targetDate;
+  });
 }
 
 /** Get booking by confirmation code */

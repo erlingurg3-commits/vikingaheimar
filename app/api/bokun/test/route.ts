@@ -14,7 +14,7 @@ export async function GET() {
     // Fetch recent bookings sample + upcoming availability
     const [bookings, availability] = await Promise.all([
       searchProductBookings({ page: 1, pageSize: 5 }),
-      getUpcomingAvailability(775694, 7),
+      getUpcomingAvailability(775694, 60),
     ]);
 
     // Summarize

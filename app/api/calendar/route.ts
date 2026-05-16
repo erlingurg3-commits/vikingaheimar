@@ -112,16 +112,18 @@ export async function GET(req: NextRequest) {
   const hasServiceAccount = Boolean(
     process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL && process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
   );
+  if (!hasServiceAccount) {
+    console.warn("[/api/calendar] Service account env vars missing — skipping to MCP");
+  }
   if (hasServiceAccount) {
     try {
       const events = await listCalendarEvents(CALENDAR_ID, timeMin, timeMax);
       return NextResponse.json(events);
     } catch (err) {
-      console.warn(
-        "[/api/calendar] Direct Google API failed:",
-        err instanceof Error ? err.message : err,
-      );
-      // Fall through to MCP
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn("[/api/calendar] Direct Google API failed:", msg);
+      // Return the real error instead of silently falling to MCP in local dev
+      return NextResponse.json({ error: `Google service account failed: ${msg}` }, { status: 502 });
     }
   }
 

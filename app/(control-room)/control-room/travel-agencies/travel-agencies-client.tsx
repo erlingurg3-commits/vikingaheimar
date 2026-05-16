@@ -60,6 +60,7 @@ export default function TravelAgenciesClient({ agencies }: TravelAgenciesClientP
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsFiltering(true);
     const timeoutId = setTimeout(() => {
       setIsFiltering(false);

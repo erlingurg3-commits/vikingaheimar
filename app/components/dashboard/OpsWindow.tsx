@@ -51,6 +51,15 @@ type DaySummary = {
   pax: number;
   bookings: number;
   isToday: boolean;
+  demandLevel: string | null;
+  cruisePax: number;
+};
+
+type DemandDay = {
+  date: string;
+  score_level: string;
+  score: number;
+  cruise_pax: number;
 };
 
 type OpsTab = "today" | "week";
@@ -172,11 +181,12 @@ const SERVICE_STYLES: Record<string, { bg: string; text: string; label: string }
 
 // ── Component ────────────────────────────────────────────────
 
-export default function OpsWindow() {
+export default function OpsWindow({ periodFrom, periodTo }: { periodFrom?: string; periodTo?: string }) {
   const [tab, setTab] = useState<OpsTab>("today");
   const [todayBookings, setTodayBookings] = useState<ParsedBooking[]>([]);
   const [weekDays, setWeekDays] = useState<DaySummary[]>([]);
   const [status, setStatus] = useState<"loading" | "live" | "stale" | "error">("loading");
+  const [demandByDate, setDemandByDate] = useState<Map<string, DemandDay>>(new Map());
   const refreshRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const staleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -195,9 +205,14 @@ export default function OpsWindow() {
       });
 
       // Fetch calendar events and Bókun data in parallel
-      const [calRes, bokunRes] = await Promise.all([
+      const demandFrom = periodFrom ?? icelandDate(days[0]);
+      const demandTo = periodTo ?? icelandDate(days[days.length - 1]);
+      const [calRes, bokunRes, demandRes] = await Promise.all([
         fetch(`/api/calendar?${params}`).catch(() => null),
         fetch("/api/bokun/test").catch(() => null),
+        fetch(
+          `/api/control-room/demand-calendar?from=${demandFrom}&to=${demandTo}`
+        ).catch(() => null),
       ]);
 
       const events: CalendarEvent[] =
@@ -205,8 +220,8 @@ export default function OpsWindow() {
       const validEvents = Array.isArray(events) ? events : [];
 
       // Parse all Bókun bookings keyed by visit date
-      let bokunByDate = new Map<string, BokunRecentBooking[]>();
-      let bokunAvailByDate = new Map<string, number>();
+      const bokunByDate = new Map<string, BokunRecentBooking[]>();
+      const bokunAvailByDate = new Map<string, number>();
       if (bokunRes?.ok) {
         try {
           const bokunData = await bokunRes.json();
@@ -237,6 +252,15 @@ export default function OpsWindow() {
           /* ignore */
         }
       }
+
+      const newDemandMap = new Map<string, DemandDay>();
+      if (demandRes?.ok) {
+        try {
+          const demandData: DemandDay[] = await demandRes.json();
+          for (const d of demandData) newDemandMap.set(d.date, d);
+        } catch { /* ignore */ }
+      }
+      setDemandByDate(newDemandMap);
 
       // Build today's detailed bookings (merged)
       const calToday = validEvents
@@ -292,6 +316,8 @@ export default function OpsWindow() {
         // Fall back to availability aggregated count if no individual bookings
         const bokunPaxFinal = bknPax || (bokunAvailByDate.get(ds) ?? 0);
 
+        const demand = newDemandMap.get(ds);
+
         return {
           date: d,
           dateStr: ds,
@@ -304,6 +330,8 @@ export default function OpsWindow() {
           pax: bokunPaxFinal + groupPax,
           bookings: dayBokun.length + dayCalEvents.length,
           isToday: ds === todayStr,
+          demandLevel: demand?.score_level ?? null,
+          cruisePax: demand?.cruise_pax ?? 0,
         };
       });
       setWeekDays(daySummaries);
@@ -314,9 +342,10 @@ export default function OpsWindow() {
     } catch {
       setStatus("error");
     }
-  }, []);
+  }, [periodFrom, periodTo]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
     refreshRef.current = setInterval(fetchData, 60_000);
     return () => {
@@ -439,10 +468,25 @@ export default function OpsWindow() {
                   <span className="text-[10px] font-semibold text-gray-400 w-[90px] flex-shrink-0">
                     {d.label}
                   </span>
+                  {d.demandLevel && (
+                    <span className={`text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded flex-shrink-0 ${
+                      d.demandLevel === 'PEAK'
+                        ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    }`}>
+                      {d.demandLevel}
+                    </span>
+                  )}
                   <div className="flex-1 h-2 rounded-full bg-white/[0.03] overflow-hidden">
                     {d.pax > 0 && (
                       <div
-                        className="h-full rounded-full bg-emerald-500/40 transition-all"
+                        className={`h-full rounded-full transition-all ${
+                          d.demandLevel === 'PEAK'
+                            ? 'bg-red-500/50'
+                            : d.demandLevel === 'HIGH'
+                            ? 'bg-amber-500/50'
+                            : 'bg-emerald-500/40'
+                        }`}
                         style={{ width: `${(d.pax / maxDayPax) * 100}%` }}
                       />
                     )}
@@ -452,7 +496,7 @@ export default function OpsWindow() {
                   </span>
                 </div>
                 {/* Source breakdown */}
-                {(d.bokunCount > 0 || d.groupCount > 0) && (
+                {(d.bokunCount > 0 || d.groupCount > 0 || d.cruisePax > 0) && (
                   <div className="mt-1 ml-[102px] space-y-0.5">
                     {d.bokunCount > 0 && (
                       <div className="flex items-center gap-1.5">
@@ -475,6 +519,12 @@ export default function OpsWindow() {
                         </span>
                       </div>
                     ))}
+                    {d.cruisePax > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-blue-400/90 bg-blue-500/10 px-1 py-px rounded">CRUISE</span>
+                        <span className="text-[9px] text-gray-400">{d.cruisePax} pax expected</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

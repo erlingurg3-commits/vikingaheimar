@@ -4,6 +4,14 @@ const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
 
 let cachedClient: calendar_v3.Calendar | null = null;
 
+function normalizePrivateKey(raw: string): string {
+  return raw
+    .trim()
+    .replace(/^["']|["']$/g, "")   // strip accidental surrounding quotes
+    .replace(/\\n/g, "\n")          // literal \n → real newlines
+    .replace(/\r/g, "");            // strip carriage returns
+}
+
 function getCalendarClient(): calendar_v3.Calendar {
   if (cachedClient) return cachedClient;
 
@@ -18,7 +26,7 @@ function getCalendarClient(): calendar_v3.Calendar {
 
   const auth = new google.auth.JWT({
     email,
-    key: key.replace(/\\n/g, "\n"),
+    key: normalizePrivateKey(key),
     scopes: SCOPES,
   });
 

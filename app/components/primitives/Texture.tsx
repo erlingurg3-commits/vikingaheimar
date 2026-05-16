@@ -98,7 +98,7 @@ export const Texture = React.forwardRef<HTMLDivElement, TextureProps>(
         style={{
           ...textureStyles[type],
           opacity,
-          mixBlendMode: blendMode as any,
+          mixBlendMode: blendMode as React.CSSProperties["mixBlendMode"],
           ...style,
         }}
         aria-hidden="true"

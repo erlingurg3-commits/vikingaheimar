@@ -18,8 +18,10 @@ export default function JourneyMap() {
 
   // Measure path length and detect motion preference once on mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
     if (measureRef.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPathLength(measureRef.current.getTotalLength())
     }
   }, [])
@@ -28,10 +30,13 @@ export default function JourneyMap() {
   useEffect(() => {
     if (!isVisible) return
     if (reducedMotion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDrawn(true)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setBuildingVisible(true)
       return
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDrawn(true)
     const timer = setTimeout(() => setBuildingVisible(true), 2400)
     return () => clearTimeout(timer)

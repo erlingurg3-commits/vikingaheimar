@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Archived components — not in active app
+    "_archived/**",
+    // Supabase Deno edge functions — different TS/runtime environment
+    "supabase/**",
   ]),
 ]);
 

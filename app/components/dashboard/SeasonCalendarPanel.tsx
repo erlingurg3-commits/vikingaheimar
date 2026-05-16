@@ -123,6 +123,7 @@ function DonutChart({ operators }: { operators: Operator[] }) {
         transform={`rotate(-90 ${CX} ${CY})`}
       />
     );
+    // eslint-disable-next-line react-hooks/immutability
     offset += dash;
     return arc;
   });

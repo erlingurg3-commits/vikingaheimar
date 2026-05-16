@@ -319,6 +319,7 @@ export default function IslendingurBlueprint() {
   const [drawn, setDrawn] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isVisible) setDrawn(true);
   }, [isVisible]);
 

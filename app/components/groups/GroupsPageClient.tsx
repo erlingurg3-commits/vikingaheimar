@@ -1,6 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import GjaldskraModal from "./GjaldskraModal";
+import GjaldskraLoginModal from "./GjaldskraLoginModal";
+// import GjaldskraSection from "./GjaldskraSection";
+
 export default function GroupsPageClient() {
+  // null = closed, "login" = login prompt, "open" = rate card visible
+  const [gjaldskraState, setGjaldskraState] = useState<null | "login" | "open">(null);
   return (
     <main className="groups-page">
       {/* ── Decorative oversized logo ── */}
@@ -41,6 +48,42 @@ export default function GroupsPageClient() {
               to register your interest.
             </p>
           </div>
+
+          <button
+            onClick={() => setGjaldskraState("login")}
+            className="gjaldskra-btn"
+            style={{
+              marginTop: "28px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "transparent",
+              border: "0.5px solid rgba(201, 176, 122, 0.5)",
+              color: "#c9b07a",
+              fontFamily: "var(--font-dm-sans, 'DM Sans', sans-serif)",
+              fontSize: "11px",
+              fontWeight: 400,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              padding: "13px 28px",
+              borderRadius: "2px",
+              cursor: "pointer",
+              transition: "background 0.2s, color 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "rgba(201, 176, 122, 0.1)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#e0ca96";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+              (e.currentTarget as HTMLButtonElement).style.color = "#c9b07a";
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style={{ opacity: 0.75 }}>
+              <path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4zm1 3h6v1H5V5zm0 3h6v1H5V8zm0 3h4v1H5v-1z"/>
+            </svg>
+            Gjaldskrá
+          </button>
         </div>
 
         {/* Direct contacts */}
@@ -69,6 +112,17 @@ export default function GroupsPageClient() {
           </div>
         </div>
       </div>
+
+      {/* ── Gjaldskrá login + rate card ── */}
+      {gjaldskraState === "login" && (
+        <GjaldskraLoginModal
+          onSuccess={() => setGjaldskraState("open")}
+          onClose={() => setGjaldskraState(null)}
+        />
+      )}
+      {gjaldskraState === "open" && (
+        <GjaldskraModal onClose={() => setGjaldskraState(null)} />
+      )}
 
       {/* ── Footer bar ── */}
       <div className="groups-footer">

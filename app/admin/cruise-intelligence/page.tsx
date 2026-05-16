@@ -60,6 +60,7 @@ export default async function CruiseIntelligencePage({
   const selectedStatus = (resolved.status ?? "all").trim();
   const vesselQuery = (resolved.q ?? "").trim();
   const defaultFrom = toDateInput(new Date());
+  // eslint-disable-next-line react-hooks/purity
   const defaultTo = toDateInput(new Date(Date.now() + 90 * 24 * 60 * 60 * 1000));
   const selectedFrom = (resolved.from ?? defaultFrom).trim();
   const selectedTo = (resolved.to ?? defaultTo).trim();

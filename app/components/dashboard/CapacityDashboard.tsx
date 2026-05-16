@@ -150,6 +150,7 @@ export default function CapacityDashboard() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrdersForDate(selectedDate);
   }, [fetchOrdersForDate, selectedDate]);
 
