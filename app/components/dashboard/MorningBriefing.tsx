@@ -135,13 +135,38 @@ const TYPE_PILL: Record<string, string> = {
 // ─── Period config ────────────────────────────────────────────────────────────
 
 const PERIOD_LABELS: Record<PeriodKey, string> = {
-  TODAY: "Today",
-  THIS_WEEK: "This Week",
-  NEXT_14: "Next 14 Days",
+  TODAY:      "Today",
+  THIS_WEEK:  "This Week",
+  NEXT_14:    "Next 14 Days",
   THIS_MONTH: "This Month",
-  NEXT_30: "Next 30 Days",
-  CUSTOM: "Custom",
+  NEXT_30:    "Next 30 Days",
+  CUSTOM:     "Custom",
 };
+
+function fmtShort(dateStr: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric", month: "short", timeZone: "Atlantic/Reykjavik",
+  }).format(new Date(`${dateStr}T12:00:00Z`));
+}
+
+function periodSubLabel(
+  key: PeriodKey,
+  today: string,
+  customFrom: string,
+  customTo: string
+): string {
+  switch (key) {
+    case "TODAY":      return fmtShort(today);
+    case "THIS_WEEK":  return `${fmtShort(today)} – ${fmtShort(addDays(today, 6))}`;
+    case "NEXT_14":    return `${fmtShort(today)} – ${fmtShort(addDays(today, 13))}`;
+    case "THIS_MONTH": return `${fmtShort(today)} – ${fmtShort(lastDayOfMonth(today))}`;
+    case "NEXT_30":    return `${fmtShort(today)} – ${fmtShort(addDays(today, 29))}`;
+    case "CUSTOM":
+      return customFrom && customTo
+        ? `${fmtShort(customFrom)} – ${fmtShort(customTo)}`
+        : "pick dates";
+  }
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -268,19 +293,24 @@ export default function MorningBriefing() {
     <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }} className="space-y-5 text-zinc-100">
 
       {/* A. Period tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 mb-1 pb-3 border-b border-white/10">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pb-5 border-b border-white/10">
         {(Object.keys(PERIOD_LABELS) as PeriodKey[]).map((key) => (
           <button
             key={key}
             onClick={() => setPeriod(key)}
             style={{ fontFamily: "inherit" }}
-            className={`px-3 py-1.5 rounded-md text-[13px] transition-colors whitespace-nowrap ${
+            className={`flex flex-col items-start px-4 py-4 rounded-xl text-left transition-all border ${
               period === key
-                ? "bg-white/10 text-white font-medium"
-                : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
+                ? "bg-white/10 border-white/25"
+                : "bg-white/[0.02] border-white/[0.07] hover:bg-white/[0.05] hover:border-white/15"
             }`}
           >
-            {PERIOD_LABELS[key]}
+            <span className={`block text-[13px] font-semibold leading-tight ${period === key ? "text-white" : "text-zinc-400"}`}>
+              {PERIOD_LABELS[key]}
+            </span>
+            <span className={`block text-[11px] leading-tight mt-2 ${period === key ? "text-cyan-400" : "text-zinc-600"}`}>
+              {periodSubLabel(key, today, customFrom, customTo)}
+            </span>
           </button>
         ))}
 

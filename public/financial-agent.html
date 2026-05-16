@@ -35,10 +35,11 @@
     .header-left p { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3B6D11; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
-    .tab { font-size: 13px; padding: 8px 14px; cursor: pointer; border: none; background: transparent; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; }
-    .tab.active { color: var(--color-text-primary); border-bottom: 2px solid var(--color-text-primary); font-weight: 500; }
-    .tab:hover:not(.active) { color: var(--color-text-primary); }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .tab { font-size: 13px; padding: 16px 20px; cursor: pointer; border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; background: var(--color-background-secondary); color: var(--color-text-secondary); font-weight: 400; transition: all 0.15s; text-align: center; }
+    .tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); font-weight: 500; }
+    .tab:hover:not(.active) { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+    @media (max-width: 600px) { .tabs { grid-template-columns: repeat(2, 1fr); } }
     .panel { display: none; }
     .panel.active { display: block; }
     .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
