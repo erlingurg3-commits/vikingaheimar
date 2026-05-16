@@ -85,16 +85,32 @@ export async function GET(req: Request) {
 
   const rows = kpiRows as ForecastMonthlyRow[];
 
-  // ── 3. Live actuals from Bokun (via actual_sales_monthly) ─────
-  const { data: monthlySales } = await supabaseAdmin
-    .from("actual_sales_monthly")
-    .select("year, month, revenue_total, pax_total, channel, product_type, last_aggregated")
-    .eq("year", year)
-    .is("channel", null)
-    .is("product_type", null)
-    .order("month");
+  // ── 3. Live actuals — aggregate directly from actual_sales_daily ─────────
+  // This is always current (no separate aggregation step needed).
+  const { data: dailyRows } = await supabaseAdmin
+    .from("actual_sales_daily")
+    .select("visit_date, revenue_amount, pax")
+    .gte("visit_date", `${year}-01-01`)
+    .lte("visit_date", `${year}-12-31`);
 
-  // Also get channel breakdown for this year
+  // Roll up by month
+  const byMonth: Record<number, { revenue: number; pax: number; latestDate: string }> = {};
+  for (const row of dailyRows ?? []) {
+    const d = row.visit_date as string;
+    const m = parseInt(d.slice(5, 7), 10);
+    if (!byMonth[m]) byMonth[m] = { revenue: 0, pax: 0, latestDate: d };
+    byMonth[m].revenue += Number(row.revenue_amount) || 0;
+    byMonth[m].pax     += Number(row.pax) || 0;
+    if (d > byMonth[m].latestDate) byMonth[m].latestDate = d;
+  }
+
+  const liveActuals = Object.entries(byMonth).map(([m, v]) => ({
+    month:         parseInt(m, 10),
+    revenue_total: v.revenue,
+    pax_total:     v.pax,
+  }));
+
+  // Channel breakdown still from actual_sales_monthly (best-effort, may lag)
   const { data: channelRows } = await supabaseAdmin
     .from("actual_sales_monthly")
     .select("month, channel, revenue_total, pax_total")
@@ -102,29 +118,17 @@ export async function GET(req: Request) {
     .not("channel", "is", null)
     .order("month");
 
-  const liveActuals = (monthlySales ?? []).map((r) => ({
-    month: r.month,
-    revenue_total: Number(r.revenue_total),
-    pax_total: Number(r.pax_total),
-  }));
-
-  // Count daily bookings for totals
-  const { count: totalBookings } = await supabaseAdmin
-    .from("actual_sales_daily")
-    .select("id", { count: "exact", head: true })
-    .gte("visit_date", `${year}-01-01`)
-    .lte("visit_date", `${year}-12-31`);
-
-  const totalRevISK = liveActuals.reduce((s, r) => s + r.revenue_total, 0);
-  const totalPax = liveActuals.reduce((s, r) => s + r.pax_total, 0);
-  const lastAgg = monthlySales?.[0]?.last_aggregated ?? null;
+  const totalRevISK    = liveActuals.reduce((s, r) => s + r.revenue_total, 0);
+  const totalPax       = liveActuals.reduce((s, r) => s + r.pax_total, 0);
+  const totalBookings  = (dailyRows ?? []).length;
+  const latestDate     = Object.values(byMonth).map((v) => v.latestDate).sort().at(-1) ?? null;
 
   const LIVE_TOTALS = {
-    totalBookings: totalBookings ?? 0,
+    totalBookings,
     totalPax,
     totalRevenueISK: totalRevISK,
-    lastUpdated: lastAgg ? new Date(lastAgg).toISOString().slice(0, 10) : null,
-    dataSource: "Bokun booking engine — live sync",
+    lastUpdated: latestDate,
+    dataSource: "Bokun booking engine — live (daily roll-up)",
   };
 
   // ── 4. Compute ────────────────────────────────────────────────

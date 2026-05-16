@@ -1,6 +1,35 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+// ── Projected 2026 group pax ──────────────────────────────────────────────────
+const PROJECTED_PAX: Record<string, { bf: number; ent: number }> = {
+  "2026-01": { bf: 81,  ent: 33    },
+  "2026-02": { bf: 178, ent: 103   },
+  "2026-03": { bf: 396, ent: 97    },
+  "2026-04": { bf: 260, ent: 374   },
+  "2026-05": { bf: 451, ent: 1725  },
+  "2026-06": { bf: 736, ent: 3297  },
+  "2026-07": { bf: 558, ent: 3579  },
+  "2026-08": { bf: 371, ent: 2747  },
+  "2026-09": { bf: 183, ent: 12173 },
+  "2026-10": { bf: 266, ent: 366   },
+  "2026-11": { bf: 35,  ent: 0     },
+  "2026-12": { bf: 0,   ent: 0     },
+};
+
+const MONTH_KEYS = [
+  "2026-01","2026-02","2026-03","2026-04","2026-05","2026-06",
+  "2026-07","2026-08","2026-09","2026-10","2026-11","2026-12",
+];
+const MONTH_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+interface MonthlyPaxResponse {
+  cal: Record<string, { bf: number; ent: number }>;
+  bokun: Record<string, number>;
+  bokunLastSync: string | null;
+  calEventCount: number;
+}
 import type { ForecastPayload, ForecastComparison } from "@/lib/forecast/types";
 import { formatISK } from "@/lib/forecast/types";
 import {
@@ -188,11 +217,22 @@ export default function ForecastsPage() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [overrides, setOverrides] = useState<OverrideMap>({});
   const [overridesLoaded, setOverridesLoaded] = useState(false);
+  const [monthlyPax, setMonthlyPax] = useState<MonthlyPaxResponse | null>(null);
+  const [paxLoading, setPaxLoading] = useState(true);
 
   // Load overrides from localStorage on mount
   useEffect(() => {
     setOverrides(loadOverrides());
     setOverridesLoaded(true);
+  }, []);
+
+  // Fetch live pax breakdown
+  useEffect(() => {
+    fetch("/api/control-room/monthly-pax")
+      .then((r) => r.json())
+      .then(setMonthlyPax)
+      .catch(() => {})
+      .finally(() => setPaxLoading(false));
   }, []);
 
   // Fetch API data
@@ -347,6 +387,143 @@ export default function ForecastsPage() {
               onEditRevenue={handleEditRevenue}
               onEditPax={handleEditPax}
             />
+          </Section>
+
+          <Section
+            title="Pax by Month"
+            sub="calendar groups (BF / ENT) + Bokun individual · actual vs projected"
+          >
+            <div className="overflow-x-auto rounded-xl border border-zinc-800/60">
+              <table className="w-full min-w-[700px] text-xs">
+                <thead>
+                  <tr className="border-b border-zinc-800/80 bg-[#0a1520]/90">
+                    <th className="px-3 py-3 text-left text-[10px] uppercase tracking-widest text-zinc-600 w-16">Month</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-amber-600">BF Actual</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-zinc-600">BF Target</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-sky-600">ENT Actual</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-zinc-600">ENT Target</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-blue-600">Bokun</th>
+                    <th className="px-3 py-3 text-right text-[10px] uppercase tracking-widest text-zinc-500">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paxLoading ? (
+                    Array.from({ length: 12 }).map((_, i) => (
+                      <tr key={i} className="border-b border-zinc-800/40">
+                        {Array.from({ length: 7 }).map((_, j) => (
+                          <td key={j} className="px-3 py-2.5">
+                            <div className="h-3 rounded bg-zinc-800/40 animate-pulse" />
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
+                    <>
+                      {MONTH_KEYS.map((mk, i) => {
+                        const cal = monthlyPax?.cal[mk] ?? { bf: 0, ent: 0 };
+                        const bokPax = monthlyPax?.bokun[mk] ?? 0;
+                        const proj = PROJECTED_PAX[mk];
+                        const total = cal.bf + cal.ent + bokPax;
+                        const isCurr = (i + 1) === currentMonth;
+
+                        const bfDiff = proj.bf > 0 ? cal.bf - proj.bf : null;
+                        const entDiff = proj.ent > 0 ? cal.ent - proj.ent : null;
+
+                        return (
+                          <tr
+                            key={mk}
+                            className={`group/row border-b border-zinc-800/40 transition-colors duration-150 ${
+                              isCurr ? "bg-cyan-900/10 border-l-2 border-l-cyan-500/50" : "hover:bg-zinc-900/30"
+                            }`}
+                          >
+                            <td className="px-3 py-2.5 font-medium text-zinc-200">
+                              {MONTH_SHORT[i]}
+                              {isCurr && <span className="ml-1.5 text-[9px] text-cyan-400 uppercase tracking-wide">now</span>}
+                            </td>
+
+                            {/* BF actual */}
+                            <td className="px-3 py-2.5 text-right tabular-nums">
+                              <span className={cal.bf > 0 ? "text-amber-300" : "text-zinc-700"}>
+                                {cal.bf > 0 ? cal.bf.toLocaleString() : "—"}
+                              </span>
+                              {bfDiff !== null && cal.bf > 0 && (
+                                <span className={`ml-1.5 text-[9px] ${bfDiff >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                  {bfDiff >= 0 ? "▲" : "▼"}{Math.abs(bfDiff).toLocaleString()}
+                                </span>
+                              )}
+                            </td>
+
+                            {/* BF target */}
+                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-600">
+                              {proj.bf > 0 ? proj.bf.toLocaleString() : "—"}
+                            </td>
+
+                            {/* ENT actual */}
+                            <td className="px-3 py-2.5 text-right tabular-nums">
+                              <span className={cal.ent > 0 ? "text-sky-300" : "text-zinc-700"}>
+                                {cal.ent > 0 ? cal.ent.toLocaleString() : "—"}
+                              </span>
+                              {entDiff !== null && cal.ent > 0 && (
+                                <span className={`ml-1.5 text-[9px] ${entDiff >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                                  {entDiff >= 0 ? "▲" : "▼"}{Math.abs(entDiff).toLocaleString()}
+                                </span>
+                              )}
+                            </td>
+
+                            {/* ENT target */}
+                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-600">
+                              {proj.ent > 0 ? proj.ent.toLocaleString() : "—"}
+                            </td>
+
+                            {/* Bokun */}
+                            <td className="px-3 py-2.5 text-right tabular-nums text-blue-300">
+                              {bokPax > 0 ? bokPax.toLocaleString() : <span className="text-zinc-700">—</span>}
+                            </td>
+
+                            {/* Total */}
+                            <td className="px-3 py-2.5 text-right tabular-nums font-medium text-zinc-200">
+                              {total > 0 ? total.toLocaleString() : <span className="text-zinc-700">—</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      {/* Totals */}
+                      {(() => {
+                        const t = { bf: 0, ent: 0, bok: 0, pbf: 0, pent: 0 };
+                        for (const mk of MONTH_KEYS) {
+                          const c = monthlyPax?.cal[mk] ?? { bf: 0, ent: 0 };
+                          const p = PROJECTED_PAX[mk];
+                          t.bf += c.bf; t.ent += c.ent;
+                          t.bok += monthlyPax?.bokun[mk] ?? 0;
+                          t.pbf += p.bf; t.pent += p.ent;
+                        }
+                        return (
+                          <tr className="border-t border-zinc-700/60 bg-zinc-900/30 font-medium">
+                            <td className="px-3 py-2.5 text-zinc-300">Total</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-amber-300">{t.bf.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-500">{t.pbf.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-sky-300">{t.ent.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-500">{t.pent.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-blue-300">{t.bok.toLocaleString()}</td>
+                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-100">{(t.bf + t.ent + t.bok).toLocaleString()}</td>
+                          </tr>
+                        );
+                      })()}
+
+                      {/* Bokun sync note */}
+                      {monthlyPax?.bokunLastSync && (
+                        <tr>
+                          <td colSpan={7} className="px-3 py-2 text-[10px] text-zinc-700">
+                            Bokun data last synced: {monthlyPax.bokunLastSync} · Calendar: {monthlyPax.calEventCount} events live
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </Section>
 
           <Section

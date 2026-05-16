@@ -582,6 +582,45 @@ function BookingDetailModal({
   );
 }
 
+// ─── 2026 projected group pax (calendar bookings) ────────────────────────────
+const PROJECTED_2026: Record<string, { bf: number; ent: number }> = {
+  Jan: { bf: 81,  ent: 33    },
+  Feb: { bf: 178, ent: 103   },
+  Mar: { bf: 396, ent: 97    },
+  Apr: { bf: 260, ent: 374   },
+  May: { bf: 451, ent: 1725  },
+  Jun: { bf: 736, ent: 3297  },
+  Jul: { bf: 558, ent: 3579  },
+  Aug: { bf: 371, ent: 2747  },
+  Sep: { bf: 183, ent: 12173 },
+  Oct: { bf: 266, ent: 366   },
+  Nov: { bf: 35,  ent: 0     },
+  Dec: { bf: 0,   ent: 0     },
+};
+
+const MONTHS_2026 = [
+  { key: "2026-01", label: "Jan" }, { key: "2026-02", label: "Feb" },
+  { key: "2026-03", label: "Mar" }, { key: "2026-04", label: "Apr" },
+  { key: "2026-05", label: "May" }, { key: "2026-06", label: "Jun" },
+  { key: "2026-07", label: "Jul" }, { key: "2026-08", label: "Aug" },
+  { key: "2026-09", label: "Sep" }, { key: "2026-10", label: "Oct" },
+  { key: "2026-11", label: "Nov" }, { key: "2026-12", label: "Dec" },
+];
+
+interface MonthlyActual {
+  calBf: number;
+  calEnt: number;
+  bokunPax: number;
+}
+
+function paxDelta(actual: number, projected: number) {
+  if (projected === 0 && actual === 0) return null;
+  const diff = actual - projected;
+  if (diff === 0) return null;
+  const pct = projected > 0 ? Math.round((diff / projected) * 100) : null;
+  return { diff, pct, over: diff > 0 };
+}
+
 function Detail({ label, value, highlight }: { label: string; value: string | null; highlight?: boolean }) {
   if (!value) return <div className="text-xs text-neutral-700">{label}: —</div>;
   return (
@@ -605,8 +644,34 @@ export default function RevenuePage() {
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [bookingModal, setBookingModal] = useState<{ date: string; bookingRef: string | null; channel: string } | null>(null);
   const [calModal, setCalModal] = useState<CalendarDetail | null>(null);
+  const [monthlyActual, setMonthlyActual] = useState<Record<string, MonthlyActual>>({});
+  const [monthlyLoading, setMonthlyLoading] = useState(true);
 
   const { from, to } = presetRange(preset, customFrom, customTo);
+
+  // Fetch full-year data once on mount for the monthly overview
+  useEffect(() => {
+    fetch("/api/revenue/summary?from=2026-01-01&to=2026-12-31")
+      .then((r) => r.json())
+      .then((d: SummaryResponse) => {
+        const agg: Record<string, MonthlyActual> = {};
+        for (const day of d.daily ?? []) {
+          const mk = day.date.slice(0, 7);
+          if (!agg[mk]) agg[mk] = { calBf: 0, calEnt: 0, bokunPax: 0 };
+          for (const ev of day.calendar_detail ?? []) {
+            const isBf = /breakfast|morgunverð|morgunmat/i.test(ev.title + " " + ev.description);
+            if (isBf) agg[mk].calBf += ev.pax;
+            else agg[mk].calEnt += ev.pax;
+          }
+          for (const b of day.bokun_detail ?? []) {
+            agg[mk].bokunPax += b.pax;
+          }
+        }
+        setMonthlyActual(agg);
+      })
+      .catch(() => {})
+      .finally(() => setMonthlyLoading(false));
+  }, []);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -814,6 +879,133 @@ export default function RevenuePage() {
           )}
         </div>
 
+        {/* ── Monthly Overview ──────────────────────────────────────────── */}
+        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/60 to-black/60 backdrop-blur-xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-medium text-off-white">Monthly Overview — 2026</h2>
+              <p className="text-xs text-neutral-500 mt-0.5">Actual vs projected · groups + Bokun</p>
+            </div>
+            <div className="flex items-center gap-4 text-[11px] text-neutral-600">
+              <span><span className="text-emerald-400">▲</span> above target</span>
+              <span><span className="text-red-400">▼</span> below target</span>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/5">
+                  <th className="text-left px-6 py-3 text-neutral-500 font-medium text-xs uppercase tracking-wider">Month</th>
+                  <th className="text-right px-4 py-3 text-amber-400 font-medium text-xs uppercase tracking-wider">BF Actual</th>
+                  <th className="text-right px-4 py-3 text-neutral-500 font-medium text-xs uppercase tracking-wider">BF Target</th>
+                  <th className="text-right px-4 py-3 text-sky-400 font-medium text-xs uppercase tracking-wider">ENT Actual</th>
+                  <th className="text-right px-4 py-3 text-neutral-500 font-medium text-xs uppercase tracking-wider">ENT Target</th>
+                  <th className="text-right px-4 py-3 text-blue-400 font-medium text-xs uppercase tracking-wider">Bokun</th>
+                  <th className="text-right px-6 py-3 text-neutral-300 font-medium text-xs uppercase tracking-wider">Total Pax</th>
+                </tr>
+              </thead>
+              <tbody>
+                {monthlyLoading ? (
+                  Array.from({ length: 12 }).map((_, i) => (
+                    <tr key={i} className="border-b border-white/5">
+                      {Array.from({ length: 7 }).map((_, j) => (
+                        <td key={j} className="px-4 py-3">
+                          <div className="h-4 rounded bg-white/5 animate-pulse" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <>
+                    {MONTHS_2026.map(({ key, label }) => {
+                      const act = monthlyActual[key] ?? { calBf: 0, calEnt: 0, bokunPax: 0 };
+                      const proj = PROJECTED_2026[label];
+                      const bfDelta = paxDelta(act.calBf, proj.bf);
+                      const entDelta = paxDelta(act.calEnt, proj.ent);
+                      const total = act.calBf + act.calEnt + act.bokunPax;
+                      const isEmpty = total === 0 && proj.bf === 0 && proj.ent === 0;
+                      return (
+                        <tr key={key} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                          <td className="px-6 py-3 font-medium text-neutral-300">{label} 2026</td>
+
+                          {/* BF actual + delta */}
+                          <td className="px-4 py-3 text-right tabular-nums">
+                            <span className={act.calBf > 0 ? "text-amber-300" : "text-neutral-700"}>
+                              {act.calBf > 0 ? act.calBf.toLocaleString() : "—"}
+                            </span>
+                            {bfDelta && (
+                              <span className={`ml-2 text-[10px] font-medium ${bfDelta.over ? "text-emerald-400" : "text-red-400"}`}>
+                                {bfDelta.over ? "▲" : "▼"}{bfDelta.pct != null ? `${Math.abs(bfDelta.pct)}%` : ""}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* BF projected */}
+                          <td className="px-4 py-3 text-right tabular-nums text-neutral-600">
+                            {proj.bf > 0 ? proj.bf.toLocaleString() : "—"}
+                          </td>
+
+                          {/* ENT actual + delta */}
+                          <td className="px-4 py-3 text-right tabular-nums">
+                            <span className={act.calEnt > 0 ? "text-sky-300" : "text-neutral-700"}>
+                              {act.calEnt > 0 ? act.calEnt.toLocaleString() : "—"}
+                            </span>
+                            {entDelta && (
+                              <span className={`ml-2 text-[10px] font-medium ${entDelta.over ? "text-emerald-400" : "text-red-400"}`}>
+                                {entDelta.over ? "▲" : "▼"}{entDelta.pct != null ? `${Math.abs(entDelta.pct)}%` : ""}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* ENT projected */}
+                          <td className="px-4 py-3 text-right tabular-nums text-neutral-600">
+                            {proj.ent > 0 ? proj.ent.toLocaleString() : "—"}
+                          </td>
+
+                          {/* Bokun */}
+                          <td className="px-4 py-3 text-right tabular-nums text-blue-300">
+                            {act.bokunPax > 0 ? act.bokunPax.toLocaleString() : <span className="text-neutral-700">—</span>}
+                          </td>
+
+                          {/* Total */}
+                          <td className="px-6 py-3 text-right tabular-nums font-medium">
+                            {isEmpty ? <span className="text-neutral-700">—</span> : <span className="text-off-white">{total.toLocaleString()}</span>}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {/* Totals row */}
+                    {(() => {
+                      const totAct = { calBf: 0, calEnt: 0, bokunPax: 0 };
+                      const totProj = { bf: 0, ent: 0 };
+                      for (const { key, label } of MONTHS_2026) {
+                        const a = monthlyActual[key] ?? { calBf: 0, calEnt: 0, bokunPax: 0 };
+                        const p = PROJECTED_2026[label];
+                        totAct.calBf += a.calBf; totAct.calEnt += a.calEnt; totAct.bokunPax += a.bokunPax;
+                        totProj.bf += p.bf; totProj.ent += p.ent;
+                      }
+                      const grandTotal = totAct.calBf + totAct.calEnt + totAct.bokunPax;
+                      return (
+                        <tr className="border-t border-white/10 bg-white/[0.02]">
+                          <td className="px-6 py-3 font-semibold text-neutral-300">Total</td>
+                          <td className="px-4 py-3 text-right tabular-nums font-semibold text-amber-300">{totAct.calBf.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right tabular-nums text-neutral-500">{totProj.bf.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right tabular-nums font-semibold text-sky-300">{totAct.calEnt.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right tabular-nums text-neutral-500">{totProj.ent.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right tabular-nums font-semibold text-blue-300">{totAct.bokunPax.toLocaleString()}</td>
+                          <td className="px-6 py-3 text-right tabular-nums font-bold text-off-white">{grandTotal.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })()}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ── Daily Breakdown ───────────────────────────────────────────── */}
         <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/60 to-black/60 backdrop-blur-xl overflow-hidden">
           <div className="px-6 py-4 border-b border-white/10">
             <h2 className="text-sm font-medium text-neutral-400">Daily Breakdown</h2>
