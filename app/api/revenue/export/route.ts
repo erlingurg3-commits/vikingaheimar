@@ -26,22 +26,24 @@ export async function GET(req: NextRequest) {
 
   // Fetch all data sources in parallel
   const [teyaResult, bokunRows, calendarEvents] = await Promise.all([
-    supabaseAdmin
-      .from("teya_settlements")
-      .select("*")
-      .gte("settlement_date", from)
-      .lte("settlement_date", to)
-      .order("settlement_date")
-      .then(({ data }) => data ?? [])
+    Promise.resolve(
+      supabaseAdmin
+        .from("teya_settlements")
+        .select("*")
+        .gte("settlement_date", from)
+        .lte("settlement_date", to)
+        .order("settlement_date")
+    ).then(({ data }) => data ?? [])
       .catch(() => []),
 
-    supabaseAdmin
-      .from("actual_sales_daily")
-      .select("visit_date, revenue_amount, pax, channel, product_type, booking_reference")
-      .gte("visit_date", from)
-      .lte("visit_date", to)
-      .order("visit_date")
-      .then(({ data }) => data ?? [])
+    Promise.resolve(
+      supabaseAdmin
+        .from("actual_sales_daily")
+        .select("visit_date, revenue_amount, pax, channel, product_type, booking_reference")
+        .gte("visit_date", from)
+        .lte("visit_date", to)
+        .order("visit_date")
+    ).then(({ data }) => data ?? [])
       .catch(() => []),
 
     listCalendarEvents(
