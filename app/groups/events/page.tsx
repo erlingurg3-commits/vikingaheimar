@@ -1,3 +1,4 @@
+'use client';
 import Link from "next/link";
 import { events } from "@/lib/events";
 import type { Metadata } from "next";

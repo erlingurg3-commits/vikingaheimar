@@ -1,3 +1,4 @@
+'use client';
 import { notFound } from "next/navigation";
 import { getEventBySlug, events } from "@/lib/events";
 import type { Metadata } from "next";
