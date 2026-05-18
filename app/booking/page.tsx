@@ -87,38 +87,29 @@ export default function BookingPage() {
           </h1>
         </header>
 
-        {/* ── Mobile: map behind widget ── */}
-        <div className="lg:hidden relative mx-auto max-w-6xl">
-          {/* Map layer — sits behind */}
-          <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
-            <RouteMapLoader />
+        {/* ── Mobile: widget + info, no map ── */}
+        <div className="lg:hidden mx-auto max-w-6xl space-y-8">
+          <div
+            className="bokunWidget"
+            data-src="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
+            role="region"
+            aria-label="Booking calendar widget"
+          >
+            <noscript>
+              <p className="text-neutral-600 text-sm">
+                JavaScript is required to load the booking calendar. Please
+                enable JavaScript or{" "}
+                <a
+                  href="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
+                  className="underline text-heritage-amber"
+                >
+                  book directly on our partner site
+                </a>.
+              </p>
+            </noscript>
           </div>
 
-          {/* Bókun widget — transparent, on top */}
-          <div className="relative z-10">
-            <div
-              className="bokunWidget booking-widget-mobile"
-              data-src="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
-              role="region"
-              aria-label="Booking calendar widget"
-            >
-              <noscript>
-                <p className="text-neutral-600 text-sm">
-                  JavaScript is required to load the booking calendar. Please
-                  enable JavaScript or{" "}
-                  <a
-                    href="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
-                    className="underline text-heritage-amber"
-                  >
-                    book directly on our partner site
-                  </a>.
-                </p>
-              </noscript>
-            </div>
-          </div>
-
-          {/* Info sections below widget */}
-          <div className="relative z-10 space-y-12 mt-8">
+          <div className="space-y-12">
             <section aria-labelledby="included-heading-m">
               <SectionHeading>
                 <span id="included-heading-m">What&apos;s Included</span>
