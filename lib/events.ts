@@ -23,14 +23,13 @@ export type VikingEvent = {
 };
 
 export const events: VikingEvent[] = [
-  // Example — uncomment and populate once the SVG is ready:
-  // {
-  //   slug: "total-eclipse",
-  //   title: "Total Eclipse",
-  //   tagline: "An ancient sky meets the Viking shore",
-  //   svgPath: "/events/total-eclipse.svg",
-  //   date: "2026 · August",
-  // },
+  {
+    slug: "almyrkvi",
+    title: "Almyrkvi",
+    tagline: "The great darkness — a total solar eclipse over the Viking shore",
+    svgPath: "/events/almyrkvi.svg",
+    date: "12 August · 2026",
+  },
 ];
 
 /** Returns undefined when no event matches the slug. */

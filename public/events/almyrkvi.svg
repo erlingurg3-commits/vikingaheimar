@@ -1,0 +1,303 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+
+    <!-- Space background -->
+    <radialGradient id="bg" cx="50%" cy="40%" r="65%">
+      <stop offset="0%"   stop-color="#0e0a1c"/>
+      <stop offset="100%" stop-color="#010103"/>
+    </radialGradient>
+
+    <!-- Outer corona halo -->
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#c97828" stop-opacity="0"/>
+      <stop offset="28%"  stop-color="#c97828" stop-opacity="0"/>
+      <stop offset="38%"  stop-color="#d4a030" stop-opacity="0.10"/>
+      <stop offset="50%"  stop-color="#e8b844" stop-opacity="0.30"/>
+      <stop offset="62%"  stop-color="#c97828" stop-opacity="0.18"/>
+      <stop offset="80%"  stop-color="#7a3c08" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Inner corona ring (bright white-gold ring) -->
+    <radialGradient id="ring" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#000000" stop-opacity="0"/>
+      <stop offset="76%"  stop-color="#000000" stop-opacity="0"/>
+      <stop offset="82%"  stop-color="#fff8e0" stop-opacity="0.98"/>
+      <stop offset="87%"  stop-color="#f5cc60" stop-opacity="0.72"/>
+      <stop offset="93%"  stop-color="#c97828" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cyan chromosphere ring -->
+    <radialGradient id="chromo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#00c8ff" stop-opacity="0"/>
+      <stop offset="75%"  stop-color="#00c8ff" stop-opacity="0"/>
+      <stop offset="79%"  stop-color="#00c8ff" stop-opacity="0.22"/>
+      <stop offset="83%"  stop-color="#00c8ff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#00c8ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Moon surface -->
+    <radialGradient id="moon" cx="46%" cy="42%" r="58%">
+      <stop offset="0%"   stop-color="#030308"/>
+      <stop offset="100%" stop-color="#050408"/>
+    </radialGradient>
+
+    <!-- Filters -->
+    <filter id="gBig" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="38"/>
+    </filter>
+    <filter id="gMed" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="16"/>
+    </filter>
+    <filter id="gSm" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <filter id="gTiny" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1.4"/>
+    </filter>
+
+    <clipPath id="bounds">
+      <rect width="800" height="600"/>
+    </clipPath>
+
+  </defs>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- BACKGROUND                                  -->
+  <!-- ─────────────────────────────────────────── -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- STAR FIELD                                  -->
+  <!-- ─────────────────────────────────────────── -->
+  <g fill="#ffffff">
+    <!-- Top band -->
+    <circle cx="32"  cy="22"  r="0.7" opacity="0.52"/>
+    <circle cx="78"  cy="48"  r="0.5" opacity="0.36"/>
+    <circle cx="115" cy="18"  r="1.0" opacity="0.62"/>
+    <circle cx="145" cy="38"  r="0.5" opacity="0.40"/>
+    <circle cx="172" cy="8"   r="0.7" opacity="0.46"/>
+    <circle cx="198" cy="55"  r="1.2" opacity="0.66"/>
+    <circle cx="225" cy="28"  r="0.5" opacity="0.32"/>
+    <circle cx="258" cy="14"  r="0.8" opacity="0.52"/>
+    <circle cx="282" cy="44"  r="0.5" opacity="0.38"/>
+    <circle cx="318" cy="22"  r="0.6" opacity="0.44"/>
+    <circle cx="340" cy="56"  r="0.9" opacity="0.56"/>
+    <circle cx="368" cy="10"  r="0.5" opacity="0.33"/>
+    <circle cx="415" cy="18"  r="0.7" opacity="0.46"/>
+    <circle cx="448" cy="48"  r="0.5" opacity="0.36"/>
+    <circle cx="472" cy="12"  r="1.0" opacity="0.60"/>
+    <circle cx="498" cy="38"  r="0.5" opacity="0.31"/>
+    <circle cx="525" cy="25"  r="0.8" opacity="0.52"/>
+    <circle cx="552" cy="54"  r="0.5" opacity="0.38"/>
+    <circle cx="578" cy="15"  r="0.6" opacity="0.45"/>
+    <circle cx="612" cy="36"  r="1.1" opacity="0.63"/>
+    <circle cx="638" cy="8"   r="0.5" opacity="0.34"/>
+    <circle cx="662" cy="46"  r="0.7" opacity="0.48"/>
+    <circle cx="692" cy="22"  r="0.5" opacity="0.37"/>
+    <circle cx="718" cy="56"  r="0.9" opacity="0.55"/>
+    <circle cx="745" cy="15"  r="0.5" opacity="0.33"/>
+    <circle cx="770" cy="38"  r="1.0" opacity="0.61"/>
+    <circle cx="792" cy="28"  r="0.6" opacity="0.43"/>
+    <!-- Left strip -->
+    <circle cx="18"  cy="85"  r="0.7" opacity="0.46"/>
+    <circle cx="45"  cy="115" r="1.2" opacity="0.66"/>
+    <circle cx="68"  cy="148" r="0.5" opacity="0.33"/>
+    <circle cx="28"  cy="182" r="0.8" opacity="0.52"/>
+    <circle cx="55"  cy="218" r="0.5" opacity="0.38"/>
+    <circle cx="22"  cy="262" r="0.6" opacity="0.42"/>
+    <circle cx="75"  cy="298" r="0.9" opacity="0.53"/>
+    <circle cx="40"  cy="338" r="0.5" opacity="0.31"/>
+    <circle cx="18"  cy="375" r="1.0" opacity="0.59"/>
+    <circle cx="62"  cy="412" r="0.5" opacity="0.37"/>
+    <circle cx="35"  cy="448" r="0.7" opacity="0.47"/>
+    <circle cx="15"  cy="490" r="0.5" opacity="0.34"/>
+    <circle cx="58"  cy="525" r="1.1" opacity="0.61"/>
+    <circle cx="32"  cy="562" r="0.5" opacity="0.36"/>
+    <circle cx="78"  cy="582" r="0.7" opacity="0.43"/>
+    <!-- Right strip -->
+    <circle cx="722" cy="82"  r="0.7" opacity="0.46"/>
+    <circle cx="748" cy="118" r="0.5" opacity="0.36"/>
+    <circle cx="775" cy="150" r="1.0" opacity="0.59"/>
+    <circle cx="792" cy="185" r="0.5" opacity="0.33"/>
+    <circle cx="735" cy="222" r="0.8" opacity="0.51"/>
+    <circle cx="762" cy="258" r="0.5" opacity="0.38"/>
+    <circle cx="785" cy="295" r="0.6" opacity="0.44"/>
+    <circle cx="748" cy="332" r="0.9" opacity="0.53"/>
+    <circle cx="722" cy="368" r="0.5" opacity="0.31"/>
+    <circle cx="778" cy="405" r="1.0" opacity="0.58"/>
+    <circle cx="745" cy="442" r="0.5" opacity="0.36"/>
+    <circle cx="792" cy="475" r="0.7" opacity="0.47"/>
+    <circle cx="758" cy="512" r="0.5" opacity="0.33"/>
+    <circle cx="728" cy="548" r="1.1" opacity="0.63"/>
+    <circle cx="775" cy="580" r="0.5" opacity="0.37"/>
+    <!-- Bottom band -->
+    <circle cx="95"  cy="550" r="0.8" opacity="0.49"/>
+    <circle cx="130" cy="575" r="0.5" opacity="0.34"/>
+    <circle cx="165" cy="560" r="0.7" opacity="0.45"/>
+    <circle cx="200" cy="582" r="0.5" opacity="0.31"/>
+    <circle cx="238" cy="570" r="0.9" opacity="0.53"/>
+    <circle cx="275" cy="580" r="0.5" opacity="0.37"/>
+    <circle cx="315" cy="558" r="0.6" opacity="0.41"/>
+    <circle cx="352" cy="578" r="1.0" opacity="0.56"/>
+    <circle cx="390" cy="568" r="0.5" opacity="0.33"/>
+    <circle cx="428" cy="574" r="0.7" opacity="0.45"/>
+    <circle cx="462" cy="560" r="0.5" opacity="0.36"/>
+    <circle cx="498" cy="580" r="0.8" opacity="0.51"/>
+    <circle cx="535" cy="565" r="0.5" opacity="0.34"/>
+    <circle cx="572" cy="575" r="0.6" opacity="0.43"/>
+    <circle cx="608" cy="554" r="1.0" opacity="0.59"/>
+    <circle cx="645" cy="572" r="0.5" opacity="0.36"/>
+    <circle cx="680" cy="560" r="0.7" opacity="0.46"/>
+    <!-- Bright feature stars -->
+    <circle cx="92"  cy="75"  r="1.6" opacity="0.74"/>
+    <circle cx="688" cy="108" r="1.5" opacity="0.70"/>
+    <circle cx="155" cy="448" r="1.4" opacity="0.66"/>
+    <circle cx="650" cy="425" r="1.5" opacity="0.71"/>
+    <circle cx="55"  cy="290" r="1.3" opacity="0.63"/>
+    <circle cx="748" cy="278" r="1.4" opacity="0.67"/>
+    <circle cx="175" cy="130" r="1.2" opacity="0.60"/>
+    <circle cx="628" cy="145" r="1.3" opacity="0.64"/>
+  </g>
+  <!-- Soft glow on bright stars -->
+  <g filter="url(#gTiny)" fill="white" opacity="0.45">
+    <circle cx="92"  cy="75"  r="3.5"/>
+    <circle cx="688" cy="108" r="3.0"/>
+    <circle cx="155" cy="448" r="2.8"/>
+    <circle cx="650" cy="425" r="3.2"/>
+  </g>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- ECLIPSE   center (400, 235)                 -->
+  <!-- Moon r=100  Inner corona visible from r=100 -->
+  <!-- ─────────────────────────────────────────── -->
+
+  <!-- Layer 1 — Huge diffuse atmospheric glow -->
+  <circle cx="400" cy="235" r="310" fill="url(#halo)" filter="url(#gBig)" clip-path="url(#bounds)"/>
+
+  <!-- Layer 2 — Mid corona glow -->
+  <circle cx="400" cy="235" r="225" fill="url(#halo)" filter="url(#gMed)"/>
+
+  <!-- Layer 3 — Corona rays: major (8×) -->
+  <!-- Ray pointing up: base width 12px at r=108, tip at r=265                   -->
+  <!-- Base points: (394,127) and (406,127)  →  center - 108 = 235-108=127       -->
+  <!-- Tip point:   (400,-30)                →  235 - 265 = -30                  -->
+  <g clip-path="url(#bounds)" opacity="1">
+    <!-- Blurred soft rays behind sharp rays -->
+    <g filter="url(#gMed)" opacity="0.55">
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(0,   400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(45,  400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(90,  400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(135, 400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(180, 400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(225, 400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(270, 400, 235)"/>
+      <polygon points="395,127 400,-30 405,127" fill="#e8cc68" transform="rotate(315, 400, 235)"/>
+    </g>
+    <!-- Sharp rays overlaid -->
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(0,   400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(45,  400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(90,  400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(135, 400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(180, 400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(225, 400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(270, 400, 235)"/>
+    <polygon points="395,127 400,-30 405,127" fill="#e8cc68" opacity="0.14" transform="rotate(315, 400, 235)"/>
+    <!-- Minor rays (narrower, shorter, at 22.5° offsets) -->
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(22.5,  400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(67.5,  400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(112.5, 400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(157.5, 400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(202.5, 400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(247.5, 400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(292.5, 400, 235)"/>
+    <polygon points="397,130 400,15 403,130" fill="#e8cc68" opacity="0.07" transform="rotate(337.5, 400, 235)"/>
+  </g>
+
+  <!-- Layer 4 — Inner corona ring (bright) -->
+  <circle cx="400" cy="235" r="130" fill="url(#ring)"/>
+  <!-- Soft bloom on the ring -->
+  <circle cx="400" cy="235" r="130" fill="url(#ring)" filter="url(#gSm)" opacity="0.65"/>
+
+  <!-- Layer 5 — Cyan chromosphere -->
+  <circle cx="400" cy="235" r="130" fill="url(#chromo)"/>
+
+  <!-- Layer 6 — Moon disk -->
+  <circle cx="400" cy="235" r="100" fill="url(#moon)"/>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- DECORATIVE RINGS & TICK MARKS               -->
+  <!-- ─────────────────────────────────────────── -->
+
+  <!-- Ring at r=158 -->
+  <circle cx="400" cy="235" r="158" fill="none" stroke="#c9b07a" stroke-width="0.5" opacity="0.18"/>
+  <!-- Ring at r=215 -->
+  <circle cx="400" cy="235" r="215" fill="none" stroke="#c9b07a" stroke-width="0.3" opacity="0.09"/>
+
+  <!-- Cardinal tick marks on r=158 ring -->
+  <g stroke="#c9b07a" stroke-width="1.0" opacity="0.42">
+    <!-- North (top):   (400, 235-158) = (400,  77) -->
+    <line x1="400" y1="77"  x2="400" y2="86"/>
+    <!-- East  (right): (400+158, 235) = (558, 235) -->
+    <line x1="558" y1="235" x2="549" y2="235"/>
+    <!-- South (bot):   (400, 235+158) = (400, 393) -->
+    <line x1="400" y1="393" x2="400" y2="384"/>
+    <!-- West  (left):  (400-158, 235) = (242, 235) -->
+    <line x1="242" y1="235" x2="251" y2="235"/>
+  </g>
+  <!-- Intercardinal tick marks (lighter) -->
+  <!-- 45°:  sin45*158=111.7 → (511.7, 123.3)  -->
+  <!-- 135°: (511.7, 346.7)  -->
+  <!-- 225°: (288.3, 346.7)  -->
+  <!-- 315°: (288.3, 123.3)  -->
+  <g stroke="#c9b07a" stroke-width="0.6" opacity="0.22">
+    <line x1="512" y1="123" x2="507" y2="128"/>
+    <line x1="512" y1="347" x2="507" y2="342"/>
+    <line x1="288" y1="347" x2="293" y2="342"/>
+    <line x1="288" y1="123" x2="293" y2="128"/>
+  </g>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- TYPOGRAPHY                                  -->
+  <!-- ─────────────────────────────────────────── -->
+
+  <!-- Thin rule above text block -->
+  <line x1="345" y1="428" x2="455" y2="428" stroke="#8a7a5a" stroke-width="0.4" opacity="0.45"/>
+
+  <!-- Location label -->
+  <text
+    x="400" y="447"
+    text-anchor="middle"
+    font-family="'DM Sans','Helvetica Neue',Arial,sans-serif"
+    font-size="9" font-weight="400" letter-spacing="4.5"
+    fill="#8a7a5a">VÍKINGAHEIMAR · REYKJANES</text>
+
+  <!-- Main title: Almyrkvi -->
+  <text
+    x="400" y="508"
+    text-anchor="middle"
+    font-family="'Cormorant Garamond','Garamond','Times New Roman',Georgia,serif"
+    font-size="70" font-weight="300"
+    fill="#f0ece4">Almyrkvi</text>
+
+  <!-- Date -->
+  <text
+    x="400" y="534"
+    text-anchor="middle"
+    font-family="'DM Sans','Helvetica Neue',Arial,sans-serif"
+    font-size="9" font-weight="400" letter-spacing="4.5"
+    fill="#8a7a5a">12 AUGUST · 2026</text>
+
+  <!-- Subtitle -->
+  <text
+    x="400" y="558"
+    text-anchor="middle"
+    font-family="'DM Sans','Helvetica Neue',Arial,sans-serif"
+    font-size="9" font-weight="400" letter-spacing="5"
+    fill="rgba(240,236,228,0.2)">TOTAL SOLAR ECLIPSE</text>
+
+  <!-- Thin rule below -->
+  <line x1="362" y1="570" x2="438" y2="570" stroke="#8a7a5a" stroke-width="0.4" opacity="0.28"/>
+
+</svg>
