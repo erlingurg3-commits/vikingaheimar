@@ -73,89 +73,23 @@ export default function BookingPage() {
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900">
       <div className="px-4 pt-8 pb-16 sm:px-6 lg:px-8">
-        {/* Page header — desktop only */}
+
+        {/* Desktop-only header */}
         <header className="hidden lg:block mx-auto max-w-6xl text-center mb-12">
           <div className="flex justify-center mb-4">
-            <img
-              src="/logo.png"
-              alt="Víkingaheimar"
-              className="h-24 w-auto"
-            />
+            <img src="/logo.png" alt="Víkingaheimar" className="h-24 w-auto" />
           </div>
           <h1 className="font-display text-[clamp(28px,3.5vw,42px)] font-normal text-neutral-900 leading-tight">
             Book Your Visit
           </h1>
         </header>
 
-        {/* ── Mobile: widget first, then header + info ── */}
-        <div className="lg:hidden mx-auto max-w-6xl space-y-8">
-          <div
-            className="bokunWidget"
-            data-src="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
-            role="region"
-            aria-label="Booking calendar widget"
-          >
-            <noscript>
-              <p className="text-neutral-600 text-sm">
-                JavaScript is required to load the booking calendar. Please
-                enable JavaScript or{" "}
-                <a
-                  href="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
-                  className="underline text-heritage-amber"
-                >
-                  book directly on our partner site
-                </a>.
-              </p>
-            </noscript>
-          </div>
+        {/* ── Unified layout: single widget, responsive columns ── */}
+        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-11 lg:gap-12 lg:items-start lg:items-stretch">
 
-          {/* Compact header below widget on mobile */}
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Víkingaheimar" className="h-10 w-auto" />
-            <h1 className="font-display text-xl font-normal text-neutral-900">
-              Book Your Visit
-            </h1>
-          </div>
-
-          <div className="space-y-12">
-            <section aria-labelledby="included-heading-m">
-              <SectionHeading>
-                <span id="included-heading-m">What&apos;s Included</span>
-              </SectionHeading>
-              <CheckList items={included} />
-            </section>
-
-            <section aria-labelledby="info-heading-m">
-              <SectionHeading>
-                <span id="info-heading-m">Visitor Info</span>
-              </SectionHeading>
-              <dl className="space-y-2.5">
-                {info.map((item) => (
-                  <div key={item.label} className="font-text text-sm leading-relaxed text-neutral-700">
-                    <dt className="sr-only">{item.label}</dt>
-                    <dd>
-                      <span className="font-medium">{item.label}:</span>{" "}
-                      {item.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-
-            <section aria-labelledby="accessibility-heading-m">
-              <SectionHeading>
-                <span id="accessibility-heading-m">Accessibility</span>
-              </SectionHeading>
-              <CheckList items={accessibilityItems} />
-            </section>
-          </div>
-        </div>
-
-        {/* ── Desktop: two-column layout ── */}
-        <div className="hidden lg:grid mx-auto max-w-6xl grid-cols-11 gap-12 items-start lg:items-stretch">
-
-          {/* Left column: booking widget (6/11 ≈ 55%) */}
-          <div className="col-span-6">
+          {/* Left / full-width column: widget + mobile info */}
+          <div className="lg:col-span-6">
+            {/* ONE Bokun widget — shown on all screen sizes */}
             <div
               className="bokunWidget"
               data-src="https://widgets.bokun.io/online-sales/20a864e3-4bf8-45c4-864f-62c268deb95a/experience-calendar/775694"
@@ -175,52 +109,94 @@ export default function BookingPage() {
                 </p>
               </noscript>
             </div>
+
+            {/* Mobile-only: compact header + info below widget */}
+            <div className="lg:hidden mt-8 space-y-10">
+              <div className="flex items-center gap-3">
+                <img src="/logo.png" alt="Víkingaheimar" className="h-10 w-auto" />
+                <h1 className="font-display text-xl font-normal text-neutral-900">
+                  Book Your Visit
+                </h1>
+              </div>
+
+              <section aria-labelledby="included-heading-m">
+                <SectionHeading>
+                  <span id="included-heading-m">What&apos;s Included</span>
+                </SectionHeading>
+                <CheckList items={included} />
+              </section>
+
+              <section aria-labelledby="info-heading-m">
+                <SectionHeading>
+                  <span id="info-heading-m">Visitor Info</span>
+                </SectionHeading>
+                <dl className="space-y-2.5">
+                  {info.map((item) => (
+                    <div key={item.label} className="font-text text-sm leading-relaxed text-neutral-700">
+                      <dt className="sr-only">{item.label}</dt>
+                      <dd>
+                        <span className="font-medium">{item.label}:</span>{" "}
+                        {item.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+
+              <section aria-labelledby="accessibility-heading-m">
+                <SectionHeading>
+                  <span id="accessibility-heading-m">Accessibility</span>
+                </SectionHeading>
+                <CheckList items={accessibilityItems} />
+              </section>
+            </div>
           </div>
 
-          {/* Right column: map + info overlay */}
-          <div className="col-span-5">
-           <div className="relative sticky top-20">
-            <div className="relative z-0">
-              <RouteMapLoader />
-            </div>
+          {/* Right column: map + info overlay (desktop only) */}
+          <div className="hidden lg:block col-span-5">
+            <div className="relative sticky top-20">
+              <div className="relative z-0">
+                <RouteMapLoader />
+              </div>
 
-            <div className="absolute inset-0 z-10 pointer-events-none">
-              <div className="max-w-[420px] pl-8 pt-8 space-y-4 pointer-events-auto">
-                <section aria-labelledby="included-heading">
-                  <SectionHeading>
-                    <span id="included-heading">What&apos;s Included</span>
-                  </SectionHeading>
-                  <CheckList items={included} />
-                </section>
+              <div className="absolute inset-0 z-10 pointer-events-none">
+                <div className="max-w-[420px] pl-8 pt-8 space-y-4 pointer-events-auto">
+                  <section aria-labelledby="included-heading">
+                    <SectionHeading>
+                      <span id="included-heading">What&apos;s Included</span>
+                    </SectionHeading>
+                    <CheckList items={included} />
+                  </section>
 
-                <section aria-labelledby="info-heading">
-                  <SectionHeading>
-                    <span id="info-heading">Visitor Info</span>
-                  </SectionHeading>
-                  <dl className="space-y-2.5">
-                    {info.map((item) => (
-                      <div key={item.label} className="font-text text-sm leading-relaxed text-neutral-700">
-                        <dt className="sr-only">{item.label}</dt>
-                        <dd>
-                          <span className="font-medium">{item.label}:</span>{" "}
-                          {item.value}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                </section>
+                  <section aria-labelledby="info-heading">
+                    <SectionHeading>
+                      <span id="info-heading">Visitor Info</span>
+                    </SectionHeading>
+                    <dl className="space-y-2.5">
+                      {info.map((item) => (
+                        <div key={item.label} className="font-text text-sm leading-relaxed text-neutral-700">
+                          <dt className="sr-only">{item.label}</dt>
+                          <dd>
+                            <span className="font-medium">{item.label}:</span>{" "}
+                            {item.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </section>
 
-                <section aria-labelledby="accessibility-heading">
-                  <SectionHeading>
-                    <span id="accessibility-heading">Accessibility</span>
-                  </SectionHeading>
-                  <CheckList items={accessibilityItems} />
-                </section>
+                  <section aria-labelledby="accessibility-heading">
+                    <SectionHeading>
+                      <span id="accessibility-heading">Accessibility</span>
+                    </SectionHeading>
+                    <CheckList items={accessibilityItems} />
+                  </section>
+                </div>
               </div>
             </div>
-           </div>
           </div>
         </div>
+
       </div>
     </main>
   );
