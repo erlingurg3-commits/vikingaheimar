@@ -140,8 +140,9 @@ export async function GET(req: NextRequest) {
   XLSX.utils.book_append_sheet(wb, wsCal, "Calendar");
 
   const buf: Buffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+  const uint8 = new Uint8Array(buf);
 
-  return new Response(buf, {
+  return new Response(uint8, {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": `attachment; filename="vikingworld-revenue-${today}.xlsx"`,
