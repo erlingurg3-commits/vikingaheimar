@@ -121,7 +121,7 @@ export default function GroupsPageClient() {
         />
       )}
       {gjaldskraState === "open" && (
-        <GjaldskraModal onClose={() => setGjaldskraState(null)} />
+        <GjaldskraModal onClose={() => setGjaldskraState(null)} isAdmin={true} />
       )}
 
       {/* ── Footer bar ── */}

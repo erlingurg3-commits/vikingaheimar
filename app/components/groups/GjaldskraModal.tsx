@@ -1,26 +1,58 @@
 "use client";
 
-import { useEffect } from "react";
-import {
-  DAGSPAKKAR,
-  KVOLDPAKKAR,
-  SERPAKKAR,
-  CATERING,
-  FEES,
-  type Package,
-  type LineItem,
-} from "@/lib/gjaldskra";
+import { useEffect, useState, useCallback } from "react";
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+type GjaldskraRow = {
+  id: string;
+  category: "dagspakkar" | "kvoldpakkar" | "serpakkar" | "catering" | "fees";
+  sort_order: number;
+  name: string;
+  setup: string | null;
+  note: string | null;
+  includes: string | null;
+  price: string;
+  badge: string | null;
+};
+
+// ─── Editable input ───────────────────────────────────────────────────────────
+
+function EditInput({
+  value,
+  onSave,
+  placeholder,
+}: {
+  value: string | null;
+  onSave: (val: string) => void;
+  placeholder?: string;
+}) {
+  const [val, setVal] = useState(value ?? "");
+  useEffect(() => { setVal(value ?? ""); }, [value]);
+
+  return (
+    <input
+      value={val}
+      placeholder={placeholder}
+      onChange={(e) => setVal(e.target.value)}
+      onBlur={() => { if (val !== (value ?? "")) onSave(val); }}
+      className="block w-full bg-[#f0f4f8] border border-[#c5d0dc] rounded px-1.5 py-1 text-[12px] text-[#1a1a1a] outline-none focus:border-[#3a4a5c] mt-0.5"
+    />
+  );
+}
+
+// ─── Package table ────────────────────────────────────────────────────────────
 
 function PackageTable({
   title,
   rows,
   col3Header,
+  editMode,
+  onSave,
 }: {
   title: string;
-  rows: Package[];
+  rows: GjaldskraRow[];
   col3Header: string;
+  editMode: boolean;
+  onSave: (id: string, field: keyof GjaldskraRow, value: string) => void;
 }) {
   return (
     <div className="mb-6">
@@ -37,26 +69,59 @@ function PackageTable({
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={row.name} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
+              <tr key={row.id} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
+                {/* Name + badge */}
                 <td className="px-3.5 py-3 text-[#333] align-top leading-snug border-b border-[#eee] last:border-0">
-                  <span className="font-semibold">{row.name}</span>
-                  {row.badge && (
-                    <span className="ml-1.5 inline-block bg-[#eef2ee] text-[#4a6a4a] text-[10px] font-bold tracking-[0.05em] uppercase px-1.5 py-0.5 rounded-[3px] align-middle">
-                      {row.badge}
-                    </span>
+                  {editMode ? (
+                    <>
+                      <EditInput value={row.name} onSave={(v) => onSave(row.id, "name", v)} placeholder="Nafn" />
+                      <EditInput value={row.badge} onSave={(v) => onSave(row.id, "badge", v)} placeholder="Badge (valkvæmt)" />
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold">{row.name}</span>
+                      {row.badge && (
+                        <span className="ml-1.5 inline-block bg-[#eef2ee] text-[#4a6a4a] text-[10px] font-bold tracking-[0.05em] uppercase px-1.5 py-0.5 rounded-[3px] align-middle">
+                          {row.badge}
+                        </span>
+                      )}
+                    </>
                   )}
                 </td>
+
+                {/* Setup + note */}
                 <td className="px-3.5 py-3 text-[#333] align-top leading-[1.55] border-b border-[#eee] last:border-0">
-                  {row.setup}
-                  {row.note && (
-                    <><br /><span className="text-[#999] text-[12px]">{row.note}</span></>
+                  {editMode ? (
+                    <>
+                      <EditInput value={row.setup} onSave={(v) => onSave(row.id, "setup", v)} placeholder="Uppsetning" />
+                      <EditInput value={row.note} onSave={(v) => onSave(row.id, "note", v)} placeholder="Athugasemd (valkvæmt)" />
+                    </>
+                  ) : (
+                    <>
+                      {row.setup}
+                      {row.note && (
+                        <><br /><span className="text-[#999] text-[12px]">{row.note}</span></>
+                      )}
+                    </>
                   )}
                 </td>
+
+                {/* Includes */}
                 <td className="px-3.5 py-3 text-[#333] align-top leading-[1.55] border-b border-[#eee] last:border-0 hidden sm:table-cell">
-                  {row.includes}
+                  {editMode ? (
+                    <EditInput value={row.includes} onSave={(v) => onSave(row.id, "includes", v)} placeholder="Innifalið" />
+                  ) : (
+                    row.includes
+                  )}
                 </td>
+
+                {/* Price */}
                 <td className="px-3.5 py-3 align-top border-b border-[#eee] last:border-0 font-semibold text-[#1a1a1a] whitespace-nowrap">
-                  {row.price}
+                  {editMode ? (
+                    <EditInput value={row.price} onSave={(v) => onSave(row.id, "price", v)} placeholder="Verð" />
+                  ) : (
+                    row.price
+                  )}
                 </td>
               </tr>
             ))}
@@ -67,16 +132,22 @@ function PackageTable({
   );
 }
 
+// ─── Simple table (catering / fees) ──────────────────────────────────────────
+
 function SimpleTable({
   title,
-  col1: col1Header,
-  col2: col2Header,
+  col1,
+  col2,
   rows,
+  editMode,
+  onSave,
 }: {
   title: string;
   col1: string;
   col2: string;
-  rows: LineItem[];
+  rows: GjaldskraRow[];
+  editMode: boolean;
+  onSave: (id: string, field: keyof GjaldskraRow, value: string) => void;
 }) {
   return (
     <div>
@@ -84,15 +155,27 @@ function SimpleTable({
       <table className="w-full border-collapse text-[13px]">
         <thead>
           <tr className="bg-[#3a4a5c] text-white">
-            <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em]">{col1Header}</th>
-            <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em] whitespace-nowrap">{col2Header}</th>
+            <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em]">{col1}</th>
+            <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em] whitespace-nowrap">{col2}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={row.name} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
-              <td className="px-3.5 py-3 text-[#333] leading-[1.55] border-b border-[#eee] last:border-0">{row.name}</td>
-              <td className="px-3.5 py-3 font-semibold text-[#1a1a1a] whitespace-nowrap border-b border-[#eee] last:border-0">{row.price}</td>
+            <tr key={row.id} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
+              <td className="px-3.5 py-3 text-[#333] leading-[1.55] border-b border-[#eee] last:border-0">
+                {editMode ? (
+                  <EditInput value={row.name} onSave={(v) => onSave(row.id, "name", v)} placeholder="Tegund" />
+                ) : (
+                  row.name
+                )}
+              </td>
+              <td className="px-3.5 py-3 font-semibold text-[#1a1a1a] whitespace-nowrap border-b border-[#eee] last:border-0">
+                {editMode ? (
+                  <EditInput value={row.price} onSave={(v) => onSave(row.id, "price", v)} placeholder="Verð" />
+                ) : (
+                  row.price
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -103,7 +186,18 @@ function SimpleTable({
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-export default function GjaldskraModal({ onClose }: { onClose: () => void }) {
+export default function GjaldskraModal({
+  onClose,
+  isAdmin = false,
+}: {
+  onClose: () => void;
+  isAdmin?: boolean;
+}) {
+  const [rows, setRows] = useState<GjaldskraRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editMode, setEditMode] = useState(false);
+  const [saved, setSaved] = useState(false);
+
   // ESC to close + body scroll lock
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -115,13 +209,35 @@ export default function GjaldskraModal({ onClose }: { onClose: () => void }) {
     };
   }, [onClose]);
 
+  // Fetch data
+  useEffect(() => {
+    fetch("/api/gjaldskra")
+      .then((r) => r.json())
+      .then((data) => { setRows(data); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const saveField = useCallback(async (id: string, field: keyof GjaldskraRow, value: string) => {
+    setRows((prev) =>
+      prev.map((r) => r.id === id ? { ...r, [field]: value || null } : r)
+    );
+    await fetch(`/api/gjaldskra/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: value }),
+    });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  }, []);
+
+  const byCategory = (cat: GjaldskraRow["category"]) =>
+    rows.filter((r) => r.category === cat);
+
   return (
-    // Backdrop
     <div
       className="fixed inset-0 z-50 overflow-y-auto bg-[rgba(20,25,35,0.55)] flex justify-center items-start p-4 sm:p-8"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* Rate card */}
       <div className="w-full max-w-[820px] bg-white rounded shadow-[0_8px_40px_rgba(0,0,0,0.22)] overflow-hidden my-4">
 
         {/* Header */}
@@ -130,11 +246,26 @@ export default function GjaldskraModal({ onClose }: { onClose: () => void }) {
             <h2 className="text-[18px] font-semibold text-[#1a1a1a] mb-0.5">
               Gjaldskrá — Hópar & Viðburðir
             </h2>
-            <p className="text-[12px] text-[#888] tracking-[0.04em]">
+            <p className="text-[12px] text-[#888] tracking-[0.04em] flex items-center gap-2">
               Verð 2026 · Öll verð innifalið 24% VSK
+              {saved && (
+                <span className="text-[#4a6a4a] font-medium">✓ Vistað</span>
+              )}
             </p>
           </div>
-          <div className="flex items-start gap-5 shrink-0">
+          <div className="flex items-start gap-3 shrink-0">
+            {isAdmin && (
+              <button
+                onClick={() => setEditMode((m) => !m)}
+                className={`text-[11px] font-medium px-3 py-1.5 rounded border transition-colors ${
+                  editMode
+                    ? "bg-[#3a4a5c] text-white border-[#3a4a5c]"
+                    : "bg-white text-[#3a4a5c] border-[#3a4a5c] hover:bg-[#f0f4f8]"
+                }`}
+              >
+                {editMode ? "Loka breytingum" : "Breyta"}
+              </button>
+            )}
             <div className="text-right">
               <p className="text-[17px] font-bold text-[#1a1a1a] tracking-[0.06em] uppercase">
                 Víkingaheimar
@@ -153,25 +284,20 @@ export default function GjaldskraModal({ onClose }: { onClose: () => void }) {
 
         {/* Body */}
         <div className="px-6 sm:px-9 py-7">
-          <PackageTable title="Dagspakkar"  rows={DAGSPAKKAR}  col3Header="Tækjabúnaður" />
-          <PackageTable title="Kvöldpakkar" rows={KVOLDPAKKAR} col3Header="Innifalið" />
-          <PackageTable title="Sérpakkar"   rows={SERPAKKAR}   col3Header="Lýsing" />
+          {loading ? (
+            <p className="text-[13px] text-[#999] py-8 text-center">Hleður...</p>
+          ) : (
+            <>
+              <PackageTable title="Dagspakkar"  rows={byCategory("dagspakkar")}  col3Header="Tækjabúnaður" editMode={editMode} onSave={saveField} />
+              <PackageTable title="Kvöldpakkar" rows={byCategory("kvoldpakkar")} col3Header="Innifalið"    editMode={editMode} onSave={saveField} />
+              <PackageTable title="Sérpakkar"   rows={byCategory("serpakkar")}   col3Header="Lýsing"       editMode={editMode} onSave={saveField} />
 
-          {/* Catering + Fees — side by side on desktop, stacked on mobile */}
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <SimpleTable
-              title="Veitingar (á mann)"
-              col1="Tegund"
-              col2="Verð"
-              rows={CATERING}
-            />
-            <SimpleTable
-              title="Gjöld & skilmálar"
-              col1="Atriði"
-              col2="Gjald"
-              rows={FEES}
-            />
-          </div>
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <SimpleTable title="Veitingar (á mann)" col1="Tegund" col2="Verð" rows={byCategory("catering")} editMode={editMode} onSave={saveField} />
+                <SimpleTable title="Gjöld & skilmálar"  col1="Atriði" col2="Gjald" rows={byCategory("fees")}    editMode={editMode} onSave={saveField} />
+              </div>
+            </>
+          )}
 
           <p className="mt-5 pt-4 border-t border-[#eee] text-[11px] text-[#999] italic leading-relaxed">
             * Öll verð innifalið VSK. Lágmarksfjöldi gesta og lágmarksveitingaeyðsla geta gilt á föstudag og
@@ -180,7 +306,7 @@ export default function GjaldskraModal({ onClose }: { onClose: () => void }) {
           </p>
         </div>
 
-        {/* Footer CTA */}
+        {/* Footer */}
         <div className="px-6 sm:px-9 py-5 border-t border-[#e5e5e3] flex flex-wrap justify-between items-center gap-4">
           <div className="text-[13px] text-[#444]">
             <strong className="block text-[#1a1a1a] font-semibold mb-0.5">
