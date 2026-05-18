@@ -54,12 +54,13 @@ export async function GET(req: NextRequest) {
 
   if (source === "all" || source === "teya") {
     tasks.push(
-      supabaseAdmin
-        .from("teya_settlements")
-        .select("settlement_date, sales, net_amount, fees")
-        .gte("settlement_date", from)
-        .lte("settlement_date", to)
-        .then(({ data }) => {
+      Promise.resolve(
+        supabaseAdmin
+          .from("teya_settlements")
+          .select("settlement_date, sales, net_amount, fees")
+          .gte("settlement_date", from)
+          .lte("settlement_date", to)
+      ).then(({ data }) => {
           for (const row of data ?? []) {
             const d = row.settlement_date as string;
             streams.teya.gross += (row.sales as number) ?? 0;
