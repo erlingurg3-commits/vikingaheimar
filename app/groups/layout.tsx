@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 export default function GroupsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isEvents = pathname.startsWith("/groups/events");
+  const isEvents = pathname?.startsWith("/groups/events") ?? false;
 
   return (
     <>
