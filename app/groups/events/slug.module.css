@@ -1,0 +1,171 @@
+.eventDetailPage {
+  background: #0a0a0a;
+  color: #e8e2d9;
+  font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+  font-weight: 300;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.bgLogo {
+  position: absolute;
+  top: -14vw;
+  right: -18vw;
+  width: 75vw;
+  max-width: 1400px;
+  height: auto;
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  clip-path: inset(0 0 28% 0);
+}
+
+.eventDetailPage > section,
+.eventDetailPage > div {
+  position: relative;
+  z-index: 1;
+}
+
+.eventHero {
+  padding: 60px 60px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svgFrame {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.eventSvg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 40px;
+}
+
+.eventMeta {
+  padding: 48px 60px 0;
+  max-width: 860px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: #8a7a5a;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.headline {
+  font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+  font-size: clamp(38px, 5.5vw, 64px);
+  font-weight: 300;
+  line-height: 1.05;
+  color: #f0ece4;
+  margin-bottom: 16px;
+}
+
+.tagline {
+  font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+  font-size: 20px;
+  font-weight: 300;
+  color: rgba(232, 226, 217, 0.45);
+  line-height: 1.65;
+  max-width: 560px;
+}
+
+.eventContact {
+  padding: 48px 60px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+  margin-top: 48px;
+}
+
+.contactCopy {
+  font-size: 13px;
+  color: rgba(232, 226, 217, 0.35);
+  margin-bottom: 20px;
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+.contactLinks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contactLink {
+  font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
+  font-size: 18px;
+  font-weight: 300;
+  color: #e8e2d9;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.contactLink:hover {
+  color: #c9b07a;
+}
+
+.vl {
+  width: 0.5px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.eventFooter {
+  padding: 20px 60px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eventFooter span {
+  font-size: 11px;
+  color: rgba(232, 226, 217, 0.18);
+  letter-spacing: 0.05em;
+}
+
+.vlFooter {
+  width: 0.5px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .eventHero,
+  .eventMeta,
+  .eventContact,
+  .eventFooter {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .eventHero {
+    padding-top: 40px;
+  }
+  .eventMeta {
+    padding-top: 32px;
+  }
+  .contactLinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .vl {
+    display: none;
+  }
+}
