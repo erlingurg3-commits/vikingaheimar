@@ -11,12 +11,30 @@
  */
 
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { fetchAllBookings } from "@/lib/bokun/client";
 import {
   buildForecastComparisons,
   computeTopStrip,
   computeAnnualTotals,
 } from "@/lib/forecast/engine";
 import type { ForecastPayload, ForecastMonthlyRow } from "@/lib/forecast/types";
+
+function visitMonth(ms: number): number {
+  return new Date(
+    new Intl.DateTimeFormat("en-CA", { timeZone: "Atlantic/Reykjavik" })
+      .format(new Date(ms))
+      .slice(0, 7) + "-01T12:00:00Z"
+  ).getUTCMonth() + 1;
+}
+
+function visitYear(ms: number): number {
+  return parseInt(
+    new Intl.DateTimeFormat("en-CA", { timeZone: "Atlantic/Reykjavik" })
+      .format(new Date(ms))
+      .slice(0, 4),
+    10
+  );
+}
 
 export const runtime = "nodejs";
 export const revalidate = 300; // 5-minute cache
