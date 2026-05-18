@@ -1,6 +1,13 @@
 import { listCalendarEvents } from "@/lib/google-calendar";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+interface CalendarEvent {
+  start?: { dateTime?: string; date?: string };
+  end?: { dateDateTime?: string; date?: string };
+  summary?: string;
+  description?: string;
+}
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -32,7 +39,7 @@ export async function GET() {
   const year = 2026;
 
   // ── 1. Calendar (always live) ──────────────────────────────────
-  const events = await listCalendarEvents(
+  const events: CalendarEvent[] = await listCalendarEvents(
     CALENDAR_ID,
     `${year}-01-01T00:00:00Z`,
     `${year}-12-31T23:59:59Z`
