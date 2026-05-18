@@ -45,14 +45,20 @@ function PackageTable({
   title,
   rows,
   col3Header,
+  category,
   editMode,
   onSave,
+  onDelete,
+  onAdd,
 }: {
   title: string;
   rows: GjaldskraRow[];
   col3Header: string;
+  category: GjaldskraRow["category"];
   editMode: boolean;
   onSave: (id: string, field: keyof GjaldskraRow, value: string) => void;
+  onDelete: (id: string) => void;
+  onAdd: (category: GjaldskraRow["category"]) => void;
 }) {
   return (
     <div className="mb-6">
@@ -61,6 +67,7 @@ function PackageTable({
         <table className="w-full border-collapse text-[13px]">
           <thead>
             <tr className="bg-[#3a4a5c] text-white">
+              {editMode && <th className="w-7" />}
               <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em]">Pakki</th>
               <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em]">Uppsetning</th>
               <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em] hidden sm:table-cell">{col3Header}</th>
@@ -70,6 +77,19 @@ function PackageTable({
           <tbody>
             {rows.map((row, i) => (
               <tr key={row.id} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
+                {/* Delete button */}
+                {editMode && (
+                  <td className="px-1 align-top pt-3 border-b border-[#eee]">
+                    <button
+                      onClick={() => onDelete(row.id)}
+                      title="Eyða röð"
+                      className="text-[#ccc] hover:text-red-400 transition-colors text-[16px] leading-none"
+                    >
+                      ×
+                    </button>
+                  </td>
+                )}
+
                 {/* Name + badge */}
                 <td className="px-3.5 py-3 text-[#333] align-top leading-snug border-b border-[#eee] last:border-0">
                   {editMode ? (
@@ -128,6 +148,14 @@ function PackageTable({
           </tbody>
         </table>
       </div>
+      {editMode && (
+        <button
+          onClick={() => onAdd(category)}
+          className="mt-2 text-[11px] text-[#3a4a5c] hover:text-[#2c3a4a] border border-dashed border-[#c5d0dc] hover:border-[#3a4a5c] rounded px-3 py-1.5 transition-colors w-full"
+        >
+          + Bæta við röð
+        </button>
+      )}
     </div>
   );
 }
@@ -139,15 +167,21 @@ function SimpleTable({
   col1,
   col2,
   rows,
+  category,
   editMode,
   onSave,
+  onDelete,
+  onAdd,
 }: {
   title: string;
   col1: string;
   col2: string;
   rows: GjaldskraRow[];
+  category: GjaldskraRow["category"];
   editMode: boolean;
   onSave: (id: string, field: keyof GjaldskraRow, value: string) => void;
+  onDelete: (id: string) => void;
+  onAdd: (category: GjaldskraRow["category"]) => void;
 }) {
   return (
     <div>
@@ -155,6 +189,7 @@ function SimpleTable({
       <table className="w-full border-collapse text-[13px]">
         <thead>
           <tr className="bg-[#3a4a5c] text-white">
+            {editMode && <th className="w-7" />}
             <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em]">{col1}</th>
             <th className="text-left px-3.5 py-2.5 font-semibold text-[12px] tracking-[0.03em] whitespace-nowrap">{col2}</th>
           </tr>
@@ -162,6 +197,17 @@ function SimpleTable({
         <tbody>
           {rows.map((row, i) => (
             <tr key={row.id} className={i % 2 === 1 ? "bg-[#fafafa]" : "bg-white"}>
+              {editMode && (
+                <td className="px-1 align-top pt-3 border-b border-[#eee]">
+                  <button
+                    onClick={() => onDelete(row.id)}
+                    title="Eyða röð"
+                    className="text-[#ccc] hover:text-red-400 transition-colors text-[16px] leading-none"
+                  >
+                    ×
+                  </button>
+                </td>
+              )}
               <td className="px-3.5 py-3 text-[#333] leading-[1.55] border-b border-[#eee] last:border-0">
                 {editMode ? (
                   <EditInput value={row.name} onSave={(v) => onSave(row.id, "name", v)} placeholder="Tegund" />
@@ -180,6 +226,14 @@ function SimpleTable({
           ))}
         </tbody>
       </table>
+      {editMode && (
+        <button
+          onClick={() => onAdd(category)}
+          className="mt-2 text-[11px] text-[#3a4a5c] hover:text-[#2c3a4a] border border-dashed border-[#c5d0dc] hover:border-[#3a4a5c] rounded px-3 py-1.5 transition-colors w-full"
+        >
+          + Bæta við röð
+        </button>
+      )}
     </div>
   );
 }
@@ -226,6 +280,26 @@ export default function GjaldskraModal({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ [field]: value }),
     });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  }, []);
+
+  const deleteRow = useCallback(async (id: string) => {
+    if (!confirm("Eyða þessari röð?")) return;
+    setRows((prev) => prev.filter((r) => r.id !== id));
+    await fetch(`/api/gjaldskra/${id}`, { method: "DELETE" });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1800);
+  }, []);
+
+  const addRow = useCallback(async (category: GjaldskraRow["category"]) => {
+    const res = await fetch("/api/gjaldskra", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ category, name: "Nýr pakki", price: "0 kr" }),
+    });
+    const newRow: GjaldskraRow = await res.json();
+    setRows((prev) => [...prev, newRow]);
     setSaved(true);
     setTimeout(() => setSaved(false), 1800);
   }, []);
@@ -288,13 +362,13 @@ export default function GjaldskraModal({
             <p className="text-[13px] text-[#999] py-8 text-center">Hleður...</p>
           ) : (
             <>
-              <PackageTable title="Dagspakkar"  rows={byCategory("dagspakkar")}  col3Header="Tækjabúnaður" editMode={editMode} onSave={saveField} />
-              <PackageTable title="Kvöldpakkar" rows={byCategory("kvoldpakkar")} col3Header="Innifalið"    editMode={editMode} onSave={saveField} />
-              <PackageTable title="Sérpakkar"   rows={byCategory("serpakkar")}   col3Header="Lýsing"       editMode={editMode} onSave={saveField} />
+              <PackageTable title="Dagspakkar"  rows={byCategory("dagspakkar")}  col3Header="Tækjabúnaður" category="dagspakkar"  editMode={editMode} onSave={saveField} onDelete={deleteRow} onAdd={addRow} />
+              <PackageTable title="Kvöldpakkar" rows={byCategory("kvoldpakkar")} col3Header="Innifalið"    category="kvoldpakkar" editMode={editMode} onSave={saveField} onDelete={deleteRow} onAdd={addRow} />
+              <PackageTable title="Sérpakkar"   rows={byCategory("serpakkar")}   col3Header="Lýsing"       category="serpakkar"   editMode={editMode} onSave={saveField} onDelete={deleteRow} onAdd={addRow} />
 
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <SimpleTable title="Veitingar (á mann)" col1="Tegund" col2="Verð" rows={byCategory("catering")} editMode={editMode} onSave={saveField} />
-                <SimpleTable title="Gjöld & skilmálar"  col1="Atriði" col2="Gjald" rows={byCategory("fees")}    editMode={editMode} onSave={saveField} />
+                <SimpleTable title="Veitingar (á mann)" col1="Tegund" col2="Verð" rows={byCategory("catering")} category="catering" editMode={editMode} onSave={saveField} onDelete={deleteRow} onAdd={addRow} />
+                <SimpleTable title="Gjöld & skilmálar"  col1="Atriði" col2="Gjald" rows={byCategory("fees")}    category="fees"     editMode={editMode} onSave={saveField} onDelete={deleteRow} onAdd={addRow} />
               </div>
             </>
           )}
