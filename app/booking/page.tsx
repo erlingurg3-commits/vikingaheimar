@@ -72,9 +72,9 @@ function CheckList({ items }: { items: string[] }) {
 export default function BookingPage() {
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900">
-      <div className="px-4 py-16 sm:px-6 lg:px-8">
-        {/* Page header — full-width centered */}
-        <header className="mx-auto max-w-6xl text-center mb-12">
+      <div className="px-4 pt-8 pb-16 sm:px-6 lg:px-8">
+        {/* Page header — desktop only */}
+        <header className="hidden lg:block mx-auto max-w-6xl text-center mb-12">
           <div className="flex justify-center mb-4">
             <img
               src="/logo.png"
@@ -87,7 +87,7 @@ export default function BookingPage() {
           </h1>
         </header>
 
-        {/* ── Mobile: widget + info, no map ── */}
+        {/* ── Mobile: widget first, then header + info ── */}
         <div className="lg:hidden mx-auto max-w-6xl space-y-8">
           <div
             className="bokunWidget"
@@ -107,6 +107,14 @@ export default function BookingPage() {
                 </a>.
               </p>
             </noscript>
+          </div>
+
+          {/* Compact header below widget on mobile */}
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Víkingaheimar" className="h-10 w-auto" />
+            <h1 className="font-display text-xl font-normal text-neutral-900">
+              Book Your Visit
+            </h1>
           </div>
 
           <div className="space-y-12">
