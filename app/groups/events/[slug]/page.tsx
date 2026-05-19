@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getEventBySlug, events } from "@/lib/events";
 import type { Metadata } from "next";
 import styles from "../slug.module.css";
+// import EclipseMap from "@/app/components/events/EclipseMap";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -37,17 +38,6 @@ export default async function EventDetailPage({ params }: Props) {
         className={styles.bgLogo}
       />
 
-      {/* ── SVG Hero ── */}
-      <section className={styles.eventHero}>
-        <div className={styles.svgFrame}>
-          <img
-            src={event.svgPath}
-            alt={event.title}
-            className={styles.eventSvg}
-          />
-        </div>
-      </section>
-
       {/* ── Event title & intro ── */}
       <section className={styles.eventMeta}>
         {event.date && <p className={styles.eyebrow}>{event.date}</p>}
@@ -68,34 +58,46 @@ export default async function EventDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* ── Timing table ── */}
+      {/* ── SVG poster + timing ── */}
       {event.timing && event.timing.length > 0 && (
-        <div className={styles.timingSection}>
-          <p className={styles.sectionLabel}>Eclipse timing · Reykjavík</p>
-          <div className={styles.timingRows}>
-            {event.timing.map((row) => (
-              <div
-                key={row.phase}
-                className={`${styles.timingRow} ${row.highlight ? styles.timingRowHighlight : ""}`}
-              >
-                <span className={styles.timingPhase}>{row.phase}</span>
-                <span className={styles.timingDivider} />
-                <span className={styles.timingTime}>{row.time}</span>
-              </div>
-            ))}
+        <div className={styles.eclipseSection}>
+          {/* Left: event SVG poster */}
+          <div className={styles.eclipseMapCol}>
+            <img
+              src={event.svgPath}
+              alt={event.title}
+              className={styles.eventSvgFull}
+            />
           </div>
-        </div>
-      )}
 
-      {/* ── Content sections ── */}
-      {event.sections && event.sections.length > 0 && (
-        <div className={styles.sectionsBlock}>
-          {event.sections.map((section) => (
-            <div key={section.heading} className={styles.contentSection}>
-              <h2 className={styles.sectionHeading}>{section.heading}</h2>
-              <p className={styles.sectionBody}>{section.body}</p>
+          {/* Right: timing rows + content sections */}
+          <div className={styles.eclipseTimingCol}>
+            <p className={styles.sectionLabel}>Eclipse timing · Reykjavík</p>
+            <div className={styles.timingRows}>
+              {event.timing.map((row) => (
+                <div
+                  key={row.phase}
+                  className={`${styles.timingRow} ${row.highlight ? styles.timingRowHighlight : ""}`}
+                >
+                  <span className={styles.timingPhase}>{row.phase}</span>
+                  <span className={styles.timingDivider} />
+                  <span className={styles.timingTime}>{row.time}</span>
+                </div>
+              ))}
             </div>
-          ))}
+
+            {/* Content sections — stacked below timing */}
+            {event.sections && event.sections.length > 0 && (
+              <div className={styles.inlinesections}>
+                {event.sections.map((section) => (
+                  <div key={section.heading} className={styles.contentSection}>
+                    <h2 className={styles.sectionHeading}>{section.heading}</h2>
+                    <p className={styles.sectionBody}>{section.body}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

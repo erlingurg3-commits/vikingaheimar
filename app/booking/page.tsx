@@ -155,7 +155,7 @@ export default function BookingPage() {
           {/* Right column: map + info overlay (desktop only) */}
           <div className="hidden lg:block col-span-5">
             <div className="relative sticky top-20">
-              <div className="relative z-0">
+              <div className="relative z-0 bg-neutral-50" style={{ colorScheme: "light" }}>
                 <RouteMapLoader />
               </div>
 

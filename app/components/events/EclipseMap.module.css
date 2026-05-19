@@ -1,0 +1,58 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: #04080f;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.playBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9b07a;
+  background: transparent;
+  border: 0.5px solid rgba(201, 176, 122, 0.28);
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, opacity 0.25s;
+}
+
+.playBtn:hover:not(:disabled) {
+  border-color: rgba(201, 176, 122, 0.55);
+  color: #d4bc8a;
+}
+
+.playBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.phaseLabel {
+  font-family: var(--font-dm-sans, 'DM Sans', sans-serif);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201, 176, 122, 0.6);
+  transition: opacity 0.4s;
+}
+
+.phaseLabel[data-totality="true"] {
+  color: #c9b07a;
+}

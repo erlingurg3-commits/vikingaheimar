@@ -223,6 +223,15 @@
   z-index: 1;
 }
 
+.inlinesections {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-top: 48px;
+  padding-top: 40px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.06);
+}
+
 .contentSection {
   display: flex;
   flex-direction: column;
@@ -329,6 +338,55 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* ── Eclipse section: map + timing side-by-side ── */
+.eclipseSection {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+  margin-top: 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.eclipseMapCol {
+  padding: 48px 40px 48px 60px;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventSvgFull {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.eclipseTimingCol {
+  padding: 48px 60px 48px 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Compact SVG poster inside the right column */
+.eventSvgCompact {
+  width: 100%;
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.eventSvgCompactImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  padding: 20px;
+  object-fit: contain;
+}
+
 @media (max-width: 768px) {
   .eventHero,
   .eventMeta,
@@ -372,5 +430,19 @@
   }
   .factValue {
     font-size: 28px;
+  }
+
+  .eclipseSection {
+    grid-template-columns: 1fr;
+  }
+
+  .eclipseMapCol {
+    padding: 32px 24px;
+    border-right: none;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .eclipseTimingCol {
+    padding: 32px 24px;
   }
 }
