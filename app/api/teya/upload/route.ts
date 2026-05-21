@@ -36,9 +36,12 @@ const NUMERIC_FIELDS = new Set([
 ]);
 
 function parseISKAmount(val: string): number {
-  const cleaned = val.replace(/\./g, "").replace(/,/g, "").replace(/\s/g, "");
-  const n = parseInt(cleaned, 10);
-  return isNaN(n) ? 0 : n;
+  // Icelandic locale: "." = thousand separator, "," = decimal separator
+  // e.g. "1.234.567,50" → 1234568 ISK (rounded)
+  const s = val.trim();
+  const normalized = s.replace(/\./g, "").replace(/,/g, ".");
+  const n = parseFloat(normalized);
+  return isNaN(n) ? 0 : Math.round(n);
 }
 
 function parseSettlementDate(val: string): string | null {

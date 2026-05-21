@@ -35,11 +35,16 @@
     .header-left p { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3B6D11; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    .tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 1.5rem; }
     .tab { font-size: 13px; padding: 16px 20px; cursor: pointer; border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; background: var(--color-background-secondary); color: var(--color-text-secondary); font-weight: 400; transition: all 0.15s; text-align: center; }
     .tab.active { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); font-weight: 500; }
     .tab:hover:not(.active) { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
-    @media (max-width: 600px) { .tabs { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px) { .tabs { grid-template-columns: repeat(2, 1fr); } }
+    .upload-zone { border: 1.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; margin-bottom: 1rem; }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--color-text-primary); background: var(--color-background-secondary); }
+    .upload-zone input[type=file] { display: none; }
+    .upload-zone-label { font-size: 13px; color: var(--color-text-secondary); line-height: 1.8; }
+    .upload-zone-label strong { color: var(--color-text-primary); display: block; font-size: 14px; margin-bottom: 4px; }
     .panel { display: none; }
     .panel.active { display: block; }
     .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
@@ -59,8 +64,11 @@
     .btn.primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
     .btn.primary:hover { opacity: 0.85; }
     .btn.loading { opacity: 0.5; pointer-events: none; }
-    .agent-output { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; min-height: 160px; font-size: 13px; line-height: 1.7; color: var(--color-text-primary); background: var(--color-background-primary); white-space: pre-wrap; }
+    .agent-output { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; min-height: 160px; font-size: 13px; line-height: 1.7; color: var(--color-text-primary); background: var(--color-background-primary); white-space: pre-wrap; max-height: 360px; overflow-y: auto; position: relative; }
     .agent-output.streaming::after { content: '▋'; animation: blink 0.7s infinite; display: inline-block; }
+    .output-wrap { position: relative; }
+    .output-close { position: absolute; top: 10px; right: 10px; background: none; border: none; cursor: pointer; font-size: 14px; color: var(--color-text-secondary); line-height: 1; padding: 2px 6px; border-radius: 4px; }
+    .output-close:hover { background: var(--color-background-secondary); }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     .placeholder { color: var(--color-text-secondary); font-style: italic; }
     .chart-wrap { position: relative; width: 100%; margin-bottom: 1.5rem; }
@@ -85,6 +93,11 @@
     .log-line.error { color: #A32D2D; }
     .projector-bar { height: 6px; border-radius: 3px; background: var(--color-background-secondary); overflow: hidden; margin: 6px 0 2px; }
     .projector-fill { height: 100%; border-radius: 3px; background: #3B6D11; transition: width 0.8s ease; }
+    .cell-edit { outline: none; min-width: 80px; cursor: text; border-bottom: 1px dashed var(--color-border-secondary); }
+    .cell-edit:focus { border-bottom-color: var(--color-text-primary); background: var(--color-background-secondary); }
+    .cell-notes { outline: none; min-width: 120px; cursor: text; color: var(--color-text-secondary); font-size: 12px; }
+    .cell-notes:focus { color: var(--color-text-primary); background: var(--color-background-secondary); }
+    .overview-current-month { background: rgba(0,200,255,0.04); }
     @media (max-width: 560px) { .config-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -105,6 +118,7 @@
     <button class="tab active" onclick="switchTab('daily')">Daily revenue</button>
     <button class="tab" onclick="switchTab('monthly')">Monthly view</button>
     <button class="tab" onclick="switchTab('projector')">Revenue projector</button>
+    <button class="tab" onclick="switchTab('teya')">Teya settlements</button>
     <button class="tab" onclick="switchTab('config')">Agent config</button>
   </div>
 
@@ -126,8 +140,11 @@
     </div>
 
     <div class="section-title">Agent analysis</div>
-    <div class="agent-output" id="daily-output">
-      <span class="placeholder">Select a date and run the agent. It will reconcile Bokun bookings against the Google Calendar for that day, flag discrepancies, and give you a clear revenue picture.</span>
+    <div class="output-wrap">
+      <button class="output-close" onclick="this.nextElementSibling.innerHTML='<span class=\'placeholder\'>—</span>'; this.nextElementSibling.classList.remove('streaming')">✕</button>
+      <div class="agent-output" id="daily-output">
+        <span class="placeholder">Select a date and run the agent. It will reconcile Bokun bookings against the Google Calendar for that day, flag discrepancies, and give you a clear revenue picture.</span>
+      </div>
     </div>
 
     <hr class="divider">
@@ -158,9 +175,37 @@
     </div>
 
     <div class="section-title">Agent analysis</div>
-    <div class="agent-output" id="monthly-output">
-      <span class="placeholder">Select a month and run the agent to get a full breakdown: revenue by week, top agencies, pax concentration, and what's already locked in vs pending.</span>
+    <div class="output-wrap">
+      <button class="output-close" onclick="this.nextElementSibling.innerHTML='<span class=\'placeholder\'>—</span>'; this.nextElementSibling.classList.remove('streaming')">✕</button>
+      <div class="agent-output" id="monthly-output">
+        <span class="placeholder">Select a month and run the agent to get a full breakdown: revenue by week, top agencies, pax concentration, and what's already locked in vs pending.</span>
+      </div>
     </div>
+
+    <hr class="divider">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <div class="section-title" style="margin-bottom:0;">Year overview — pax &amp; projected income</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <select id="overview-year" style="font-size:12px;padding:4px 8px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:6px;color:var(--color-text-primary);"></select>
+        <button class="btn" style="font-size:12px;padding:6px 14px;" onclick="loadYearOverview()">Load pax from calendar</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="overview-table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th class="num">Cal pax</th>
+            <th class="num" style="color:var(--color-text-primary);">Projected income (ISK)</th>
+            <th class="num">% achieved</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="overview-tbody"></tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:var(--color-text-secondary);margin-top:6px;">Projected income and notes are editable — values auto-save to browser storage.</div>
   </div>
 
   <!-- PROJECTOR PANEL -->
@@ -168,8 +213,8 @@
     <div class="section-title">Month-end revenue projection</div>
 
     <div class="metric-grid">
-      <div class="metric"><div class="metric-label">Confirmed to date</div><div class="metric-value" id="proj-confirmed">—</div><div class="metric-sub">ISK locked in</div></div>
-      <div class="metric"><div class="metric-label">Projected total</div><div class="metric-value" id="proj-total">—</div><div class="metric-sub">ISK month-end</div></div>
+      <div class="metric"><div class="metric-label">Confirmed to date</div><div class="metric-value" id="proj-confirmed" contenteditable="true" title="Click to edit" style="outline:none; cursor:text; border-bottom: 1px dashed var(--color-border-secondary);">—</div><div class="metric-sub">ISK locked in</div></div>
+      <div class="metric"><div class="metric-label">Projected total</div><div class="metric-value" id="proj-total" contenteditable="true" title="Click to edit" style="outline:none; cursor:text; border-bottom: 1px dashed var(--color-border-secondary);">—</div><div class="metric-sub">ISK month-end</div></div>
       <div class="metric"><div class="metric-label">Confidence</div><div class="metric-value" id="proj-confidence">—</div><div class="metric-sub">based on pipeline</div></div>
       <div class="metric"><div class="metric-label">vs last month</div><div class="metric-value" id="proj-vs">—</div><div class="metric-sub">trend</div></div>
     </div>
@@ -205,8 +250,65 @@
     </div>
 
     <div class="section-title">Agent projection narrative</div>
-    <div class="agent-output" id="proj-output">
-      <span class="placeholder">The projector agent will take confirmed bookings so far this month, layer in historical pacing from your Bokun data, and model the remainder of the month using your chosen growth assumption.</span>
+    <div class="output-wrap">
+      <button class="output-close" onclick="this.nextElementSibling.innerHTML='<span class=\'placeholder\'>—</span>'; this.nextElementSibling.classList.remove('streaming')">✕</button>
+      <div class="agent-output" id="proj-output">
+        <span class="placeholder">The projector agent will take confirmed bookings so far this month, layer in historical pacing from your Bokun data, and model the remainder of the month using your chosen growth assumption.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEYA PANEL -->
+  <div id="panel-teya" class="panel">
+
+    <div class="section-title" style="margin-bottom:12px;">Upload Teya settlement CSV</div>
+    <div class="upload-zone" id="teya-dropzone" onclick="document.getElementById('teya-file-input').click()">
+      <input type="file" id="teya-file-input" accept=".csv,.txt" onchange="handleTeyaFile(this.files[0])" />
+      <div class="upload-zone-label">
+        <strong>Drop CSV file here or click to browse</strong>
+        Teya settlement export — Icelandic or English column headers accepted
+      </div>
+    </div>
+    <div id="teya-upload-status" style="font-size:12px; min-height:18px; margin-bottom:1rem;"></div>
+
+    <div class="input-row" style="margin-bottom:1rem;">
+      <div class="input-group">
+        <label>From</label>
+        <input type="date" id="teya-from" />
+      </div>
+      <div class="input-group">
+        <label>To</label>
+        <input type="date" id="teya-to" />
+      </div>
+      <button class="btn primary" onclick="loadTeyaData()">Load data</button>
+    </div>
+
+    <div class="metric-grid" id="teya-metrics">
+      <div class="metric"><div class="metric-label">Total sales</div><div class="metric-value" id="teya-m-sales">—</div><div class="metric-sub">ISK gross</div></div>
+      <div class="metric"><div class="metric-label">Net amount</div><div class="metric-value" id="teya-m-net">—</div><div class="metric-sub">ISK after fees</div></div>
+      <div class="metric"><div class="metric-label">Fees</div><div class="metric-value metric-warn" id="teya-m-fees">—</div><div class="metric-sub">ISK total fees</div></div>
+      <div class="metric"><div class="metric-label">Refunds</div><div class="metric-value" id="teya-m-refunds">—</div><div class="metric-sub">ISK refunded</div></div>
+    </div>
+
+    <div class="section-title">Settlements</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="teya-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Contract</th>
+            <th>Currency</th>
+            <th>Status</th>
+            <th class="num">Sales</th>
+            <th class="num">Refunds</th>
+            <th class="num">Fees</th>
+            <th class="num">Net</th>
+          </tr>
+        </thead>
+        <tbody id="teya-tbody">
+          <tr><td colspan="8" style="color:var(--color-text-secondary);font-size:12px;padding:16px 10px;">Upload a CSV or click Load data to view settlements.</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -271,7 +373,7 @@ document.getElementById('proj-month').value = ym;
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const idx = ['daily','monthly','projector','config'].indexOf(name);
+  const idx = ['daily','monthly','projector','teya','config'].indexOf(name);
   document.querySelectorAll('.tab')[idx].classList.add('active');
   document.getElementById('panel-' + name).classList.add('active');
 }
@@ -511,6 +613,44 @@ No markdown. Plain structured text. Be direct and sharp.`;
   btn.classList.remove('loading'); btn.textContent = 'Run agent';
 }
 
+// ── Projector helpers ────────────────────────────────────
+function parseISKInput(str) {
+  const s = (str || '').trim().replace(/\s/g, '');
+  // "1.2M" or "1,2M" (Icelandic decimal)
+  const mMatch = s.match(/^([\d.,]+)[Mm]$/);
+  if (mMatch) return Math.round(parseFloat(mMatch[1].replace(',', '.')) * 1_000_000);
+  // plain number, strip thousand separators (. in IS, , in EN)
+  const plain = s.replace(/\./g, '').replace(/,/g, '');
+  const n = parseInt(plain, 10);
+  return isNaN(n) ? 0 : n;
+}
+
+function renderProjBreakdown(confirmed, projected) {
+  const groupISK = Math.round(confirmed * 0.67);
+  const directISK = Math.round(confirmed * 0.18);
+  const walkInISK = confirmed - groupISK - directISK;
+  const remainingISK = Math.max(0, projected - confirmed);
+  document.getElementById('proj-tbody').innerHTML = `
+    <tr><td>Atlantik (group)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${groupISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(groupISK/2490)}</td></tr>
+    <tr><td>Direct bookings (Bokun)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${directISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(directISK/2990)}</td></tr>
+    <tr><td>Walk-in / other</td><td><span class="badge badge-blue">Estimate</span></td><td class="num">${walkInISK.toLocaleString('is-IS')}</td><td class="num">—</td></tr>
+    <tr><td>Remaining pipeline</td><td><span class="badge badge-amber">Projected</span></td><td class="num">${remainingISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(remainingISK/2600)}</td></tr>
+    <tr style="font-weight:500"><td>Month-end total</td><td></td><td class="num">${projected.toLocaleString('is-IS')}</td><td class="num">${Math.round(projected/2600)}</td></tr>
+  `;
+  document.getElementById('proj-vs').textContent = projected > 2_000_000 ? '+8%' : '-4%';
+}
+
+// Live edit listeners — parse whatever the user types and instantly re-render the table
+(function wireProjEdits() {
+  function readBoth() {
+    const c = parseISKInput(document.getElementById('proj-confirmed').textContent);
+    const p = parseISKInput(document.getElementById('proj-total').textContent);
+    renderProjBreakdown(c, p);
+  }
+  document.getElementById('proj-confirmed').addEventListener('input', readBoth);
+  document.getElementById('proj-total').addEventListener('input', readBoth);
+})();
+
 // ── Projector agent ─────────────────────────────────────
 async function runProjectorAgent() {
   const monthVal = document.getElementById('proj-month').value;
@@ -532,27 +672,14 @@ async function runProjectorAgent() {
   const multiplier = growth === 'conservative' ? 0.9 : growth === 'optimistic' ? 1.15 : 1.0;
   const projected = Math.round(confirmed + runRate * (daysInMonth - daysPassed) * multiplier);
   const confidence = growth === 'conservative' ? '78%' : growth === 'optimistic' ? '52%' : '64%';
-  const vsLast = projected > 2000000 ? '+8%' : '-4%';
 
   document.getElementById('proj-confirmed').textContent = (confirmed/1000000).toFixed(1)+'M';
   document.getElementById('proj-total').textContent = (projected/1000000).toFixed(1)+'M';
   document.getElementById('proj-confidence').textContent = confidence;
-  document.getElementById('proj-vs').textContent = vsLast;
   document.getElementById('proj-day-label').textContent = `Day ${daysPassed} of ${daysInMonth}`;
   document.getElementById('proj-bar').style.width = pct + '%';
 
-  const groupISK = Math.round(confirmed * 0.67);
-  const directISK = Math.round(confirmed * 0.18);
-  const walkInISK = confirmed - groupISK - directISK;
-  const remainingISK = projected - confirmed;
-
-  document.getElementById('proj-tbody').innerHTML = `
-    <tr><td>Atlantik (group)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${groupISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(groupISK/2490)}</td></tr>
-    <tr><td>Direct bookings (Bokun)</td><td><span class="badge badge-green">Confirmed</span></td><td class="num">${directISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(directISK/2990)}</td></tr>
-    <tr><td>Walk-in / other</td><td><span class="badge badge-blue">Estimate</span></td><td class="num">${walkInISK.toLocaleString('is-IS')}</td><td class="num">—</td></tr>
-    <tr><td>Remaining pipeline</td><td><span class="badge badge-amber">Projected</span></td><td class="num">${remainingISK.toLocaleString('is-IS')}</td><td class="num">${Math.round(remainingISK/2600)}</td></tr>
-    <tr style="font-weight:500"><td>Month-end total</td><td></td><td class="num">${projected.toLocaleString('is-IS')}</td><td class="num">${Math.round(projected/2600)}</td></tr>
-  `;
+  renderProjBreakdown(confirmed, projected);
 
   const monthName = new Date(year, month-1).toLocaleDateString('en-GB', {month:'long', year:'numeric'});
   const prompt = `Revenue projection for Víkingaheimar Viking Museum.
@@ -576,6 +703,220 @@ No markdown. Plain text with labels. Direct and operational.`;
 
   btn.classList.remove('loading'); btn.textContent = 'Project revenue';
 }
+
+// ── Teya settlements ─────────────────────────────────────
+function fmtISK(n) {
+  return Number(n ?? 0).toLocaleString('is-IS');
+}
+
+async function handleTeyaFile(file) {
+  if (!file) return;
+  const statusEl = document.getElementById('teya-upload-status');
+  statusEl.textContent = 'Uploading…';
+  statusEl.style.color = 'var(--color-text-secondary)';
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  try {
+    const res = await fetch('/api/teya/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || res.statusText);
+    const warn = data.errors?.length ? ` (${data.errors.length} row errors)` : '';
+    statusEl.textContent = `Imported ${data.imported} rows, skipped ${data.skipped}${warn}`;
+    statusEl.style.color = data.skipped > 0 ? '#854F0B' : '#3B6D11';
+    await loadTeyaData();
+  } catch (e) {
+    statusEl.textContent = 'Upload failed: ' + e.message;
+    statusEl.style.color = '#A32D2D';
+  }
+
+  // reset file input so the same file can be re-uploaded if needed
+  document.getElementById('teya-file-input').value = '';
+}
+
+async function loadTeyaData() {
+  const from = document.getElementById('teya-from').value;
+  const to = document.getElementById('teya-to').value;
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+
+  try {
+    const res = await fetch('/api/teya/settlements?' + params.toString());
+    if (!res.ok) throw new Error('API ' + res.status);
+    const { rows, summary } = await res.json();
+
+    document.getElementById('teya-m-sales').textContent = fmtISK(summary.totalSales);
+    document.getElementById('teya-m-net').textContent = fmtISK(summary.totalNet);
+    document.getElementById('teya-m-fees').textContent = fmtISK(summary.totalFees);
+    document.getElementById('teya-m-refunds').textContent = fmtISK(summary.totalRefunds);
+
+    const tbody = document.getElementById('teya-tbody');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--color-text-secondary);font-size:12px;padding:16px 10px;">No settlements found for the selected period.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.settlement_date}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.contract_name || ''}">${r.contract_name || r.contract_id || '—'}</td>
+        <td>${r.currency || '—'}</td>
+        <td><span class="badge ${r.status === 'Greitt' || r.status === 'Paid' ? 'badge-green' : 'badge-amber'}">${r.status || '—'}</span></td>
+        <td class="num">${fmtISK(r.sales)}</td>
+        <td class="num">${r.refunds ? fmtISK(r.refunds) : '—'}</td>
+        <td class="num">${fmtISK(r.fees)}</td>
+        <td class="num" style="font-weight:500">${fmtISK(r.net_amount)}</td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    document.getElementById('teya-tbody').innerHTML = `<tr><td colspan="8" style="color:#A32D2D;font-size:12px;padding:16px 10px;">Error loading data: ${e.message}</td></tr>`;
+  }
+}
+
+// ── Year overview table ──────────────────────────────────
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const OVERVIEW_KEY = (year, m) => `pax-overview-${year}-${String(m).padStart(2,'0')}`;
+
+function overviewLoad(year, m) {
+  try { return JSON.parse(localStorage.getItem(OVERVIEW_KEY(year, m)) || '{}'); } catch { return {}; }
+}
+
+function overviewSave(year, m, patch) {
+  const existing = overviewLoad(year, m);
+  localStorage.setItem(OVERVIEW_KEY(year, m), JSON.stringify({ ...existing, ...patch }));
+}
+
+function renderOverviewTable(year) {
+  const today = new Date();
+  const currentMonth = today.getMonth() + 1;
+  const currentYear = today.getFullYear();
+  const tbody = document.getElementById('overview-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = MONTH_NAMES.map((name, i) => {
+    const m = i + 1;
+    const d = overviewLoad(year, m);
+    const calPax = d.cal_pax != null ? d.cal_pax.toLocaleString('is-IS') : '—';
+    const projISK = d.proj_isk != null ? d.proj_isk.toLocaleString('is-IS') : '';
+    const notes = d.notes || '';
+    const isCurrent = (year === currentYear && m === currentMonth);
+    const isPast = (year < currentYear) || (year === currentYear && m < currentMonth);
+
+    let pct = '—';
+    if (d.proj_isk && d.proj_isk > 0) {
+      // Use confirmed ISK if we have it, else derive from cal_pax × avg ticket
+      const confirmedISK = d.confirmed_isk || (d.cal_pax ? d.cal_pax * 2600 : 0);
+      if (confirmedISK > 0) pct = Math.round((confirmedISK / d.proj_isk) * 100) + '%';
+    }
+
+    return `<tr class="${isCurrent ? 'overview-current-month' : ''}" data-m="${m}">
+      <td style="font-weight:${isCurrent?'500':'400'};white-space:nowrap;">${name}${isCurrent ? ' <span style="font-size:10px;color:var(--color-text-secondary);">← now</span>' : ''}</td>
+      <td class="num" id="ov-pax-${m}">${calPax}</td>
+      <td class="num"><span
+        class="cell-edit"
+        contenteditable="true"
+        id="ov-proj-${m}"
+        data-year="${year}"
+        data-month="${m}"
+        title="Click to edit projected income"
+      >${projISK}</span></td>
+      <td class="num" id="ov-pct-${m}" style="color:${isPast && pct !== '—' && parseInt(pct) >= 100 ? '#3B6D11' : isPast && pct !== '—' ? '#A32D2D' : 'inherit'}">${pct}</td>
+      <td><span
+        class="cell-notes"
+        contenteditable="true"
+        id="ov-notes-${m}"
+        data-year="${year}"
+        data-month="${m}"
+        title="Click to add notes"
+      >${notes}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Wire up save-on-input for editable cells
+  for (let m = 1; m <= 12; m++) {
+    const projEl = document.getElementById(`ov-proj-${m}`);
+    const notesEl = document.getElementById(`ov-notes-${m}`);
+    if (projEl) projEl.addEventListener('input', () => {
+      const raw = projEl.textContent.trim().replace(/\./g,'').replace(/,/g,'').replace(/\s/g,'');
+      const n = parseInt(raw, 10);
+      overviewSave(year, m, { proj_isk: isNaN(n) ? null : n });
+      updateOverviewPct(year, m);
+    });
+    if (notesEl) notesEl.addEventListener('input', () => {
+      overviewSave(year, m, { notes: notesEl.textContent.trim() });
+    });
+  }
+}
+
+function updateOverviewPct(year, m) {
+  const d = overviewLoad(year, m);
+  const pctEl = document.getElementById(`ov-pct-${m}`);
+  if (!pctEl || !d.proj_isk || d.proj_isk <= 0) { if (pctEl) pctEl.textContent = '—'; return; }
+  const confirmedISK = d.confirmed_isk || (d.cal_pax ? d.cal_pax * 2600 : 0);
+  if (!confirmedISK) { pctEl.textContent = '—'; return; }
+  const pct = Math.round((confirmedISK / d.proj_isk) * 100);
+  pctEl.textContent = pct + '%';
+}
+
+async function loadYearOverview() {
+  const year = parseInt(document.getElementById('overview-year').value, 10);
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth() + 1;
+  const maxMonth = (year < currentYear) ? 12 : currentMonth;
+
+  for (let m = 1; m <= maxMonth; m++) {
+    try {
+      const res = await fetch(`/api/calendar/monthly-pax?year=${year}&month=${m}`);
+      if (res.ok) {
+        const data = await res.json();
+        overviewSave(year, m, { cal_pax: data.total_pax });
+        const paxEl = document.getElementById(`ov-pax-${m}`);
+        if (paxEl) paxEl.textContent = data.total_pax.toLocaleString('is-IS');
+        updateOverviewPct(year, m);
+      }
+    } catch { /* skip month on error */ }
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Load pax from calendar';
+}
+
+// Init year overview year selector
+(function initOverview() {
+  const sel = document.getElementById('overview-year');
+  if (!sel) return;
+  const y = new Date().getFullYear();
+  for (let i = y - 1; i <= y + 2; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    if (i === y) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', () => renderOverviewTable(parseInt(sel.value, 10)));
+  renderOverviewTable(y);
+})();
+
+// drag-and-drop on upload zone
+(function() {
+  const zone = document.getElementById('teya-dropzone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) handleTeyaFile(file);
+  });
+})();
 </script>
 </body>
 </html>
