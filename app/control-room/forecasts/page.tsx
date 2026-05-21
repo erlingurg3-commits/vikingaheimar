@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-// ── Projected 2026 group pax ──────────────────────────────────────────────────
-const PROJECTED_PAX: Record<string, { bf: number; ent: number }> = {
+// ── Projected 2026 group pax (defaults — overridden by localStorage) ──────────
+const DEFAULT_PROJECTED_PAX: Record<string, { bf: number; ent: number }> = {
   "2026-01": { bf: 81,  ent: 33    },
   "2026-02": { bf: 178, ent: 103   },
   "2026-03": { bf: 396, ent: 97    },
@@ -17,6 +17,7 @@ const PROJECTED_PAX: Record<string, { bf: number; ent: number }> = {
   "2026-11": { bf: 35,  ent: 0     },
   "2026-12": { bf: 0,   ent: 0     },
 };
+const PAX_TARGETS_KEY = "pax-targets-2026";
 
 const MONTH_KEYS = [
   "2026-01","2026-02","2026-03","2026-04","2026-05","2026-06",
@@ -219,11 +220,19 @@ export default function ForecastsPage() {
   const [overridesLoaded, setOverridesLoaded] = useState(false);
   const [monthlyPax, setMonthlyPax] = useState<MonthlyPaxResponse | null>(null);
   const [paxLoading, setPaxLoading] = useState(true);
+  const [projectedPax, setProjectedPax] = useState<Record<string, { bf: number; ent: number }>>(DEFAULT_PROJECTED_PAX);
 
   // Load overrides from localStorage on mount
   useEffect(() => {
     setOverrides(loadOverrides());
     setOverridesLoaded(true);
+    try {
+      const saved = localStorage.getItem(PAX_TARGETS_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Record<string, { bf: number; ent: number }>;
+        setProjectedPax({ ...DEFAULT_PROJECTED_PAX, ...parsed });
+      }
+    } catch { /* ignore */ }
   }, []);
 
   // Fetch live pax breakdown
@@ -305,6 +314,17 @@ export default function ForecastsPage() {
       saveOverrides(next);
     },
     [overrides]
+  );
+
+  const handleEditPaxTarget = useCallback(
+    (mk: string, field: "bf" | "ent", value: number) => {
+      setProjectedPax((prev) => {
+        const next = { ...prev, [mk]: { ...prev[mk], [field]: value } };
+        try { localStorage.setItem(PAX_TARGETS_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+        return next;
+      });
+    },
+    []
   );
 
   const handleReset = useCallback(() => {
@@ -422,7 +442,7 @@ export default function ForecastsPage() {
                       {MONTH_KEYS.map((mk, i) => {
                         const cal = monthlyPax?.cal[mk] ?? { bf: 0, ent: 0 };
                         const bokPax = monthlyPax?.bokun[mk] ?? 0;
-                        const proj = PROJECTED_PAX[mk];
+                        const proj = projectedPax[mk];
                         const total = cal.bf + cal.ent + bokPax;
                         const isCurr = (i + 1) === currentMonth;
 
@@ -453,9 +473,20 @@ export default function ForecastsPage() {
                               )}
                             </td>
 
-                            {/* BF target */}
-                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-600">
-                              {proj.bf > 0 ? proj.bf.toLocaleString() : "—"}
+                            {/* BF target — editable */}
+                            <td className="px-3 py-1.5 text-right tabular-nums">
+                              <input
+                                type="number"
+                                min={0}
+                                defaultValue={proj.bf || ""}
+                                placeholder="—"
+                                onBlur={(e) => {
+                                  const v = parseInt(e.target.value, 10);
+                                  handleEditPaxTarget(mk, "bf", isNaN(v) ? 0 : v);
+                                }}
+                                onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                                className="w-16 bg-transparent text-right tabular-nums text-zinc-400 placeholder-zinc-700 focus:text-zinc-100 focus:outline-none focus:border-b focus:border-zinc-500 border-b border-transparent transition-colors"
+                              />
                             </td>
 
                             {/* ENT actual */}
@@ -470,9 +501,20 @@ export default function ForecastsPage() {
                               )}
                             </td>
 
-                            {/* ENT target */}
-                            <td className="px-3 py-2.5 text-right tabular-nums text-zinc-600">
-                              {proj.ent > 0 ? proj.ent.toLocaleString() : "—"}
+                            {/* ENT target — editable */}
+                            <td className="px-3 py-1.5 text-right tabular-nums">
+                              <input
+                                type="number"
+                                min={0}
+                                defaultValue={proj.ent || ""}
+                                placeholder="—"
+                                onBlur={(e) => {
+                                  const v = parseInt(e.target.value, 10);
+                                  handleEditPaxTarget(mk, "ent", isNaN(v) ? 0 : v);
+                                }}
+                                onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                                className="w-16 bg-transparent text-right tabular-nums text-zinc-400 placeholder-zinc-700 focus:text-zinc-100 focus:outline-none focus:border-b focus:border-zinc-500 border-b border-transparent transition-colors"
+                              />
                             </td>
 
                             {/* Bokun */}
@@ -493,7 +535,7 @@ export default function ForecastsPage() {
                         const t = { bf: 0, ent: 0, bok: 0, pbf: 0, pent: 0 };
                         for (const mk of MONTH_KEYS) {
                           const c = monthlyPax?.cal[mk] ?? { bf: 0, ent: 0 };
-                          const p = PROJECTED_PAX[mk];
+                          const p = projectedPax[mk];
                           t.bf += c.bf; t.ent += c.ent;
                           t.bok += monthlyPax?.bokun[mk] ?? 0;
                           t.pbf += p.bf; t.pent += p.ent;
