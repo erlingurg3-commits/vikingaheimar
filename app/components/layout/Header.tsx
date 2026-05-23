@@ -52,8 +52,8 @@ export default function Header() {
         className="fixed top-0 left-0 right-0 z-[1030]"
         style={{
           background: isTransparent ? "transparent" : "#f5f3ee",
-          borderBottom: isTransparent ? "none" : "1px solid #e2ddd7",
-          boxShadow: isTransparent ? "none" : "0 1px 24px rgba(0,0,0,0.06)",
+          borderBottom: "none",
+          boxShadow: "none",
           transition: "background 600ms ease, border-color 600ms ease, box-shadow 600ms ease",
         }}
       >

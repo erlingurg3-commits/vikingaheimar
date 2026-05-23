@@ -68,7 +68,8 @@
       "Bash(git checkout *)",
       "Bash(git commit *)",
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('lastUpdated:', d['liveActuals'].get\\('lastUpdated'\\)\\); print\\('totalRevISK:', d['liveActuals'].get\\('totalRevenueISK'\\)\\); print\\('totalPax:', d['liveActuals'].get\\('totalPax'\\)\\); [print\\(f\\\\\"{m['label']}: rev={m['revenue_booked']} pax={m['visitors_booked']}\\\\\"\\) for m in d['monthly'][:6]]\")",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Bash(git fetch *)"
     ]
   }
 }

@@ -29,7 +29,7 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
       <Header />
 
       {/* Main content area */}
-      <main id={SkipLinkId} className={`isolate ${isHome ? "pt-0" : "pt-20"} min-h-screen`}>
+      <main id={SkipLinkId} className={`isolate ${isHome ? "pt-0" : "pt-16"} min-h-screen`}>
         {children}
       </main>
 
