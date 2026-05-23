@@ -124,7 +124,7 @@ export default function IslendingurRouteMap() {
           </filter>
           {/* Same trick, but in a darker parchment tone */}
           <filter id="rm-coast-tint">
-            <feFlood floodColor="#e8e2d8" result="flood" />
+            <feFlood floodColor="#d6c9b7" result="flood" />
             <feComposite in="flood" in2="SourceAlpha" operator="in" />
           </filter>
         </defs>
@@ -152,7 +152,7 @@ export default function IslendingurRouteMap() {
           width={160}
           height={175}
           preserveAspectRatio="xMidYMid meet"
-          opacity={0.3}
+          opacity={0.38}
           filter="url(#rm-coast-tint)"
         />
 
@@ -164,7 +164,7 @@ export default function IslendingurRouteMap() {
           width={260}
           height={248}
           preserveAspectRatio="xMidYMid meet"
-          opacity={0.3}
+          opacity={0.38}
           filter="url(#rm-coast-tint)"
         />
 
@@ -176,7 +176,7 @@ export default function IslendingurRouteMap() {
           width={160}
           height={124}
           preserveAspectRatio="xMidYMid meet"
-          opacity={0.3}
+          opacity={0.38}
           filter="url(#rm-coast-tint)"
         />
 
