@@ -523,21 +523,16 @@ export default function HomePageClient() {
               </span>
             </div>
           </Link>
-          {/* Bottom fade — cards bleed into parchment below */}
-          <div
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 120,
-              background: "linear-gradient(to top, #f5f3ee 0%, transparent 100%)",
-              zIndex: 10,
-              pointerEvents: "none",
-            }}
-          />
         </div>
+        {/* Fade below cards — sits in flow, not overlaid on photos */}
+        <div
+          aria-hidden="true"
+          style={{
+            height: 80,
+            background: "linear-gradient(to bottom, rgba(8,6,4,0.7) 0%, #f5f3ee 100%)",
+            pointerEvents: "none",
+          }}
+        />
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════

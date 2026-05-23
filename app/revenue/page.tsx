@@ -25,6 +25,23 @@ import {
   ChevronRight,
 } from "lucide-react";
 import AdminNavBar from "@/app/components/admin/AdminNavBar";
+import type { ForecastPayload, ForecastComparison } from "@/lib/forecast/types";
+import { formatISK as fmtISKForecast } from "@/lib/forecast/types";
+import {
+  applyOverrides,
+  clearOverrides,
+  hasOverrides,
+  loadOverrides,
+  recomputeAnnualTotals,
+  recomputeTopStrip,
+  saveOverrides,
+  type OverrideMap,
+} from "@/lib/forecast/client-overrides";
+import ForecastTopStrip from "@/app/components/forecast/ForecastTopStrip";
+import ForecastMonthlyTable from "@/app/components/forecast/ForecastMonthlyTable";
+import RevenueCompositionBar from "@/app/components/forecast/RevenueCompositionBar";
+import ProfitabilityLayer from "@/app/components/forecast/ProfitabilityLayer";
+import ForecastDisconnected from "@/app/components/forecast/ForecastDisconnected";
 
 interface StreamData {
   gross: number;
@@ -627,6 +644,46 @@ function Detail({ label, value, highlight }: { label: string; value: string | nu
     <div className="text-xs">
       <span className="text-neutral-500">{label}: </span>
       <span className={highlight ? "text-emerald-300 font-medium" : "text-neutral-300"}>{value}</span>
+    </div>
+  );
+}
+
+// ── Forecast helpers (mirrored from control-room/forecasts) ─────────────────
+function AnnualSummary({
+  payload,
+  annualOverride,
+}: {
+  payload: ForecastPayload;
+  annualOverride: { revenue_booked: number | null; revenue_forecast: number | null; visitors_forecast: number | null; profit_loss_forecast: number | null };
+}) {
+  const at = annualOverride;
+  const bookedSharePct =
+    at.revenue_booked && at.revenue_forecast
+      ? ((at.revenue_booked / at.revenue_forecast) * 100).toFixed(0)
+      : null;
+  const items: { label: string; value: React.ReactNode }[] = [
+    { label: "Annual Revenue Plan",    value: fmtISKForecast(at.revenue_forecast, true) },
+    { label: "Annual Revenue Booked",  value: fmtISKForecast(at.revenue_booked, true) },
+    { label: "Booked Share",           value: bookedSharePct ? `${bookedSharePct}%` : "—" },
+    { label: "Annual Guests Plan",     value: at.visitors_forecast?.toLocaleString() ?? "—" },
+    {
+      label: "Annual Operating Result",
+      value: (
+        <span className={at.profit_loss_forecast !== null && at.profit_loss_forecast < 0 ? "text-amber-400" : "text-emerald-300"}>
+          {fmtISKForecast(at.profit_loss_forecast, true)}
+        </span>
+      ),
+    },
+    { label: "Version", value: <span className="text-[11px] text-zinc-400">{payload.version.name}</span> },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+      {items.map((item) => (
+        <div key={item.label} className="rounded-lg border border-zinc-800/50 bg-[#0b1623]/60 px-3 py-2.5">
+          <p className="text-[9px] uppercase tracking-widest text-zinc-600 mb-0.5">{item.label}</p>
+          <div className="text-sm font-semibold text-zinc-100 tabular-nums">{item.value}</div>
+        </div>
+      ))}
     </div>
   );
 }
