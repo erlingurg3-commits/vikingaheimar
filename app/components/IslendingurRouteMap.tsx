@@ -22,7 +22,7 @@ const WAYPOINTS: {
   dx: number;
   dy: number;
 }[] = [
-  { x: 429, y: 79, label: "Reykjavík", anchor: "end", dx: -8, dy: 4 },
+  { x: 429, y: 88, label: "Reykjavík", anchor: "end", dx: -8, dy: 4 },
   { x: 260, y: 320, label: "Grænland", sublabel: "Brattahlíð", anchor: "start", dx: 10, dy: 5 },
   { x: 340, y: 620, label: "L'Anse aux Meadows", anchor: "start", dx: 18, dy: 14 },
   { x: 240, y: 940, label: "New York", anchor: "end", dx: -10, dy: 5 },
