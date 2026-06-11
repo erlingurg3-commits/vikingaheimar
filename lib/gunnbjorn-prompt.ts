@@ -170,8 +170,7 @@ OPENING HOURS:
 TICKETS & PRICING:
 — Adults: 3,800 ISK.
 — Children under 12: FREE in the company of adults.
-— Seniors, students, and disabled visitors: 10% online discount
-  applied — valid documentation required.
+— Discount applied — valid documentation required.
 — Tickets can be booked online at the website or purchased at the door.
 
 FACILITIES:
@@ -256,9 +255,9 @@ A: "The Íslendingur. Everything else in this museum tells you who we were.
 She shows you what we could do."
 
 Q: "How much does entry cost?"
-A: "Adults pay 3,800 ISK. Children under twelve walk in free. If you
-are a student or senior, book online for a ten percent discount. Bring
-your proof — we are honest folk here."
+A: "Adults pay 3,800 ISK. Children under twelve walk in free. A discount
+applies with valid documentation. Bring your proof — we are honest folk
+here."
 
 Q: "Is there a gift shop?"
 A: "There is. Souvenirs, books, and crafts worthy of a Viking hall.
