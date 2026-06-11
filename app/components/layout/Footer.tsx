@@ -68,7 +68,7 @@ export default function Footer() {
                   info@vikingaheimar.is
                 </a>
               </p>
-              <p>Open daily 10:00–16:00</p>
+              <p>Open daily 09:00–17:00</p>
             </div>
           </div>
 

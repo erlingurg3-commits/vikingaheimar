@@ -160,7 +160,7 @@ function AtAGlanceSection() {
             style={reveal(v1)}
           >
             <p style={eyebrowStyle}>Opening Hours</p>
-            <h3 style={h3Style}>Daily 10:00–16:00</h3>
+            <h3 style={h3Style}>Daily 09:00–17:00</h3>
             <p style={bodyStyle}>Open every day of the year</p>
           </div>
 
@@ -511,7 +511,7 @@ function FinalCtaSection() {
                 ...reveal(v1),
               }}
             >
-              Open Daily 10:00–16:00
+              Open Daily 09:00–17:00
             </p>
 
             {/* Heading */}

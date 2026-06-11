@@ -31,7 +31,7 @@ const accessibilityItems = [
 
 const info = [
   { label: "Hours (Summer)", value: "09:00–17:00" },
-  { label: "Hours (Winter)", value: "10:00–16:00" },
+  { label: "Hours (Winter)", value: "09:00–17:00" },
   { label: "Children under 12", value: "FREE of charge in the company of adults" },
   { label: "Seniors / Students / Disabled", value: "40% online discount applied — valid documentation required" },
   { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 10 min from Keflavík Airport" },

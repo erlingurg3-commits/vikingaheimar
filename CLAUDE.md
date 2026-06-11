@@ -212,7 +212,7 @@ Key facts for content accuracy — do not change without checking the curator ag
 
 - Ship weight: **25 tons**
 - Phone: **+354 422 2000**
-- Hours: **10:00–16:00**
+- Hours: **09:00–17:00**
 - 2000 voyage: departed Iceland → Greenland (arrived **15 July 2000**) → L'Anse aux Meadows (arrived **28 July 2000**) → New York (arrived **5 October 2000**)
 
 ---

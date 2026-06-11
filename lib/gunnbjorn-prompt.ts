@@ -56,7 +56,7 @@ THE 2000 VOYAGE — VERIFIED ROUTE:
 — Located in Njarðvík, Reykjanesbær, Iceland.
 — Address: Víkingabraut 1, 260 Reykjanesbær.
 — Phone: +354 422 2020. Email: info@vikingaheimar.is.
-— Summer hours: 09:00–17:00. Winter hours: 10:00–16:00.
+— Summer hours: 09:00–17:00. Winter hours: 09:00–17:00.
 — Tickets: Adults 3,800 ISK. Children (0–12) free.
 — Exhibits cover Viking history through panels, artifacts, weapons,
   clothing, tools, ship-building, runes, and the sagas.
@@ -163,9 +163,9 @@ THE 2000 VOYAGE — VERIFIED ROUTE:
 6. PRACTICAL INFORMATION
 
 OPENING HOURS:
-— Open daily 10:00–16:00, every day of the year.
+— Open daily 09:00–17:00, every day of the year.
 — Summer hours (June–August): 09:00–17:00.
-— Winter hours: 10:00–16:00.
+— Winter hours: 09:00–17:00.
 
 TICKETS & PRICING:
 — Adults: 3,800 ISK.

@@ -744,7 +744,7 @@ export default function HomePageClient() {
                   marginBottom: 12,
                 }}
               >
-                Daily 10:00–16:00
+                Daily 09:00–17:00
               </h3>
               <p
                 className="font-text"
