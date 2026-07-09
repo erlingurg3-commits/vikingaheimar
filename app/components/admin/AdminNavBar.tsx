@@ -5,14 +5,17 @@ import { usePathname } from "next/navigation";
 
 const NAV_ITEMS: { label: string; href: string; external?: boolean }[] = [
   { label: "Dashboard", href: "/control-room/overview-v1" },
-  { label: "Revenue Forecast", href: "/control-room" },
-  { label: "Revenue dashboard", href: "/revenue" },
-  { label: "Capacity", href: "/control-room/capacity" },
-  { label: "Group Requests", href: "/control-room/group-requests" },
+  { label: "Breakfast", href: "/control-room/breakfast" },
+  // --- Removed from nav during Control Room reorg (pages left intact, reachable by direct URL) ---
+  // { label: "Revenue Forecast", href: "/control-room" },
+  // { label: "Revenue dashboard", href: "/revenue" },
+  // { label: "Capacity", href: "/control-room/capacity" },
+  // { label: "Group Requests", href: "/control-room/group-requests" },
+  // { label: "Air Arrivals", href: "/control-room/air-arrivals" },
+  // --- end removed ---
   { label: "Travel Agent KPIs", href: "/control-room/agents" },
   { label: "Website Behavior", href: "/control-room/behavior" },
   { label: "Cruise Intelligence", href: "/admin/cruise-intelligence" },
-  { label: "Air Arrivals", href: "/control-room/air-arrivals" },
   { label: "Group Bookings", href: "/control-room.html", external: true },
   { label: "Tourism Intelligence", href: "/control-room-v2" },
 ];
