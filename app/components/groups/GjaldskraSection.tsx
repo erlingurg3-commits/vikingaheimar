@@ -176,9 +176,9 @@ export default function GjaldskraSection() {
         <div className="gjaldskra-cta">
           <div className="cta-text">
             <p className="cta-label">Hafðu samband til að bóka eða fá tilboð</p>
-            <p className="cta-contact">erlingur@vikingworld.is · +354 893 8383</p>
+            <p className="cta-contact">info@vikingworld.is · +354 893 8383</p>
           </div>
-          <a href="mailto:erlingur@vikingworld.is" className="cta-btn">Senda fyrirspurn</a>
+          <a href="mailto:info@vikingworld.is" className="cta-btn">Senda fyrirspurn</a>
         </div>
 
       </div>

@@ -64,8 +64,8 @@ export default function Footer() {
                 </a>
               </p>
               <p>
-                <a href="mailto:info@vikingaheimar.is" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
-                  info@vikingaheimar.is
+                <a href="mailto:info@vikingworld.is" style={{ color: "rgba(255,255,255,0.40)", transition: "color 250ms" }}>
+                  info@vikingworld.is
                 </a>
               </p>
               <p>Open daily 09:00–17:00</p>

@@ -386,8 +386,8 @@ export default function GjaldskraModal({
             <strong className="block text-[#1a1a1a] font-semibold mb-0.5">
               Víkingaheimar · Víkingabraut 1, Reykjanesbær
             </strong>
-            <a href="mailto:erlingur@vikingworld.is" className="text-[#3a4a5c] hover:underline">
-              erlingur@vikingworld.is
+            <a href="mailto:info@vikingworld.is" className="text-[#3a4a5c] hover:underline">
+              info@vikingworld.is
             </a>
             {" · "}
             <a href="tel:+3548938383" className="text-[#3a4a5c] hover:underline">
@@ -395,7 +395,7 @@ export default function GjaldskraModal({
             </a>
           </div>
           <a
-            href="mailto:erlingur@vikingworld.is"
+            href="mailto:info@vikingworld.is"
             className="bg-[#3a4a5c] hover:bg-[#2c3a4a] text-white text-[13px] font-semibold px-5 py-2.5 rounded-[5px] whitespace-nowrap transition-colors"
           >
             Senda fyrirspurn
