@@ -32,7 +32,7 @@ const INCLUDED = [
 const TERMS = [
   "Öll verð eru með 24% VSK.",
   "Veitingar og bar eru ekki innifalin — tilboð gert samkvæmt óskum.",
-  "Aukastarfsfólk fyrir stærri viðburði (100+ gestir) eða barþjónustu er rukkað sérstaklega.",
+  "Aukastarfsfólk fyrir viðburði er rukkað sérstaklega.",
   "Leigutími er 5 klst. Umframtími er samkvæmt samkomulagi.",
   "Bókun er staðfest með undirrituðu samkomulagi.",
   "Afbókun innan 14 daga: 50% af leiguverði. Innan 7 daga: 100% af leiguverði.",
