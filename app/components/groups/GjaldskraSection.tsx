@@ -1,131 +1,38 @@
 "use client";
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-// Edit prices, names, and descriptions here. Touch nothing below the DATA line.
+// ─── Verð 2026 ────────────────────────────────────────────────────────────────
+// Einföld gjaldskrá: tvær leigugerðir. Breyttu verði/texta hér.
 
-const DAGSPAKKAR = [
+const PACKAGES = [
   {
-    name: "Morgunfundur",
-    meta: "2 klst · allt að 80 gestir\nþri–fös, 08:00–12:00",
-    price: "95.000 kr",
+    name: "Dagleiga",
+    meta: "Síðdegi · 5 klst\nt.d. kl. 12–17",
+    price: "250.000 kr",
     featured: false,
-    badge: null,
   },
   {
-    name: "Hálfdags ráðstefna",
-    meta: "4 klst · allt að 120 gestir\nA/V búnaður, leiðsögn",
-    price: "150.000 kr",
-    featured: false,
-    badge: null,
-  },
-  {
-    name: "Heildags ráðstefna",
-    meta: "8 klst · allt að 150 gestir\nþri–fös; veitingar fáanlegar",
-    price: "220.000 kr",
-    featured: false,
-    badge: null,
-  },
-  {
-    name: "Skóla-/hópshálfdagur",
-    meta: "3 klst · allt að 80 gestir\nutan háannatíma",
-    price: "80.000 kr",
-    featured: false,
-    badge: null,
-  },
-];
-
-const KVOLDPAKKAR = [
-  {
-    name: "Kvöldmóttaka",
-    meta: "allt að 4 klst · 150 gestir\nveitingar, bar, A/V",
-    price: "200.000 kr",
-    featured: false,
-    badge: null,
-  },
-  {
-    name: "Heilt kvöld — Úrval",
-    meta: "4–7 klst · 200 gestir\nbrúðkaup, hátíðahöld, árshátíðir",
-    price: "320.000 kr",
+    name: "Kvöldleiga",
+    meta: "Kvöld · 5 klst\nt.d. kl. 18–23",
+    price: "350.000 kr",
     featured: true,
-    badge: "Vinsælasti pakki",
-  },
-  {
-    name: "Hlýlegt kvöld",
-    meta: "allt að 4 klst · 60 gestir\nkvöldmatur, bar, A/V",
-    price: "150.000 kr",
-    featured: false,
-    badge: null,
   },
 ];
 
-const SERPAKKAR = [
-  {
-    name: "Víkingabanketapakki",
-    meta: "4 klst · 120 gestir\nþemart kvöldmatur, skemmtun",
-    price: "280.000 kr",
-    featured: true,
-    badge: "Einstakt tilboð",
-  },
-  {
-    name: "Kvikmynda-/ljósmyndataka",
-    meta: "4 klst · virka daga\naðgangur að Íslendingur",
-    price: "120.000 kr",
-    featured: false,
-    badge: null,
-  },
-  {
-    name: "Einkasafnauppbót",
-    meta: "Viðbót við hvaðan pakka\nleiðsögn um safn og skip",
-    price: "+ 40.000 kr",
-    featured: false,
-    badge: null,
-  },
+const INCLUDED = [
+  "Einkaafnot af salnum",
+  "Einn starfsmaður frá Víkingaheimum",
+  "Þrif eftir viðburð",
+  "Grunn hljóð- og myndbúnaður og uppsetning",
 ];
 
-const CATERING = [
-  { name: "Kaffi & kaffiteiti við komu", price: "1.500 kr" },
-  { name: "Hádegisverður — buffet",      price: "4.500 kr" },
-  { name: "2 rétta kvöldmatur",          price: "8.500 kr" },
-  { name: "Víkingabanket (þemart)",      price: "12.000 kr" },
-  { name: "Drykkirpakki — 3 klst",       price: "6.000 kr" },
+const TERMS = [
+  "Öll verð eru með 24% VSK.",
+  "Veitingar og bar eru ekki innifalin — tilboð gert samkvæmt óskum.",
+  "Aukastarfsfólk fyrir stærri viðburði (100+ gestir) eða barþjónustu er rukkað sérstaklega.",
+  "Leigutími er 5 klst. Umframtími er samkvæmt samkomulagi.",
+  "Bókun er staðfest með undirrituðu samkomulagi.",
+  "Afbókun innan 14 daga: 50% af leiguverði. Innan 7 daga: 100% af leiguverði.",
 ];
-
-const FEES = [
-  { name: "Þrifagjald",                  price: "25.000 kr" },
-  { name: "Öryggisgæsla (>100 gestir)",  price: "35.000 kr" },
-  { name: "Afbókun < 30 dögum",          price: "50% af leiguverði" },
-  { name: "Afbókun < 7 dögum",           price: "100% af leiguverði" },
-];
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
-type Pkg = { name: string; meta: string; price: string; featured: boolean; badge: string | null };
-
-function PackageCard({ pkg }: { pkg: Pkg }) {
-  return (
-    <div className={`pkg-card ${pkg.featured ? "pkg-featured" : ""}`}>
-      {pkg.badge && <span className="pkg-badge">{pkg.badge}</span>}
-      <p className="pkg-name">{pkg.name}</p>
-      <p className="pkg-meta">
-        {pkg.meta.split("\n").map((line, i) => (
-          <span key={i}>{line}{i < pkg.meta.split("\n").length - 1 && <br />}</span>
-        ))}
-      </p>
-      <p className="pkg-price">{pkg.price}</p>
-    </div>
-  );
-}
-
-function PackageGroup({ label, packages }: { label: string; packages: Pkg[] }) {
-  return (
-    <div className="pkg-group">
-      <p className="section-label">{label}</p>
-      <div className="pkg-grid">
-        {packages.map((p) => <PackageCard key={p.name} pkg={p} />)}
-      </div>
-    </div>
-  );
-}
 
 export default function GjaldskraSection() {
   return (
@@ -135,42 +42,47 @@ export default function GjaldskraSection() {
         {/* Header */}
         <div className="gjaldskra-header">
           <span className="eyebrow">Viðburðarsalur</span>
-          <h2 className="gjaldskra-title">Gjaldskrá — Hópar & Viðburðir</h2>
-          <p className="gjaldskra-sub">Víkingaheimar · Víkingabraut 1, Reykjanesbær · Öll verð innifalið 24% VSK</p>
+          <h2 className="gjaldskra-title">Gjaldskrá — Salarleiga</h2>
+          <p className="gjaldskra-sub">Víkingaheimar · Víkingabraut 1, Reykjanesbær · Verð 2026 · Öll verð með 24% VSK</p>
         </div>
 
-        {/* Packages */}
-        <PackageGroup label="Dagspakkar" packages={DAGSPAKKAR} />
-        <PackageGroup label="Kvöldpakkar" packages={KVOLDPAKKAR} />
-        <PackageGroup label="Sérpakkar" packages={SERPAKKAR} />
+        {/* Prices */}
+        <div className="pkg-grid">
+          {PACKAGES.map((pkg) => (
+            <div key={pkg.name} className={`pkg-card ${pkg.featured ? "pkg-featured" : ""}`}>
+              <p className="pkg-name">{pkg.name}</p>
+              <p className="pkg-meta">
+                {pkg.meta.split("\n").map((line, i) => (
+                  <span key={i}>{line}{i < pkg.meta.split("\n").length - 1 && <br />}</span>
+                ))}
+              </p>
+              <p className="pkg-price">{pkg.price}</p>
+            </div>
+          ))}
+        </div>
 
-        {/* Catering */}
+        {/* Included */}
         <div className="pkg-group">
-          <p className="section-label">Veitingar (á mann)</p>
-          <div className="list-grid">
-            {CATERING.map((item) => (
-              <div key={item.name} className="list-row">
-                <span>{item.name}</span>
-                <strong>{item.price}</strong>
+          <p className="section-label">Innifalið í verði</p>
+          <div className="included-grid">
+            {INCLUDED.map((item) => (
+              <div key={item} className="included-row">
+                <span className="tick">✓</span>
+                <span>{item}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Fees */}
+        {/* Terms */}
         <div className="pkg-group">
-          <p className="section-label">Gjöld & skilmálar</p>
-          <div className="list-grid list-grid--2col">
-            {FEES.map((item) => (
-              <div key={item.name} className="list-row">
-                <span>{item.name}</span>
-                <strong>{item.price}</strong>
-              </div>
+          <p className="section-label">Skilmálar</p>
+          <ul className="terms-list">
+            {TERMS.map((term) => (
+              <li key={term}>{term}</li>
             ))}
-          </div>
+          </ul>
         </div>
-
-        <p className="footnote">* Öll verð með VSK. Lágmarksfjöldi gesta og lágmarksveitingaeyðsla geta gilt á föstudag/laugardag kvöld.</p>
 
         {/* CTA */}
         <div className="gjaldskra-cta">
@@ -231,27 +143,26 @@ export default function GjaldskraSection() {
           font-weight: 400;
           margin: 0 0 16px;
         }
-
-        /* Package group */
         .pkg-group {
           display: flex;
           flex-direction: column;
         }
+
+        /* Price cards */
         .pkg-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 12px;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 16px;
+          max-width: 640px;
         }
-
-        /* Package card */
         .pkg-card {
           background: rgba(255, 255, 255, 0.025);
           border: 0.5px solid rgba(255, 255, 255, 0.09);
           border-radius: 4px;
-          padding: 18px;
+          padding: 24px;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 8px;
           transition: border-color 0.2s;
         }
         .pkg-card:hover {
@@ -264,21 +175,9 @@ export default function GjaldskraSection() {
         .pkg-featured:hover {
           border-color: rgba(201, 176, 122, 0.55);
         }
-        .pkg-badge {
-          font-size: 9px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          color: #1a0e00;
-          background: #c9b07a;
-          padding: 3px 8px;
-          border-radius: 2px;
-          align-self: flex-start;
-          margin-bottom: 2px;
-        }
         .pkg-name {
           font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
-          font-size: 17px;
+          font-size: 22px;
           font-weight: 400;
           color: #f0ece4;
           line-height: 1.2;
@@ -286,52 +185,62 @@ export default function GjaldskraSection() {
         }
         .pkg-meta {
           font-size: 12px;
-          color: rgba(232, 226, 217, 0.38);
+          color: rgba(232, 226, 217, 0.4);
           line-height: 1.55;
           margin: 0;
           flex-grow: 1;
         }
         .pkg-price {
-          font-size: 20px;
+          font-size: 26px;
           font-weight: 300;
           color: #c9b07a;
           font-family: var(--font-cormorant, 'Cormorant Garamond', serif);
-          margin: 4px 0 0;
+          margin: 6px 0 0;
         }
 
-        /* List rows (catering + fees) */
-        .list-grid {
+        /* Included */
+        .included-grid {
           display: grid;
-          grid-template-columns: 1fr;
-          gap: 6px;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 10px 24px;
+          max-width: 640px;
         }
-        .list-grid--2col {
-          grid-template-columns: 1fr 1fr;
-        }
-        .list-row {
+        .included-row {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 14px;
-          background: rgba(255, 255, 255, 0.025);
-          border: 0.5px solid rgba(255, 255, 255, 0.07);
-          border-radius: 3px;
-          font-size: 13px;
-          color: rgba(232, 226, 217, 0.65);
-          gap: 12px;
+          align-items: flex-start;
+          gap: 10px;
+          font-size: 14px;
+          color: rgba(232, 226, 217, 0.75);
+          line-height: 1.5;
         }
-        .list-row strong {
-          color: #e8e2d9;
-          font-weight: 400;
-          white-space: nowrap;
+        .tick {
+          color: #c9b07a;
+          font-size: 12px;
+          margin-top: 2px;
         }
 
-        /* Footnote */
-        .footnote {
-          font-size: 11px;
-          color: rgba(232, 226, 217, 0.2);
-          margin: -24px 0 0;
+        /* Terms */
+        .terms-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          max-width: 640px;
+        }
+        .terms-list li {
+          position: relative;
+          padding-left: 16px;
+          font-size: 12px;
+          color: rgba(232, 226, 217, 0.4);
           line-height: 1.6;
+        }
+        .terms-list li::before {
+          content: "·";
+          position: absolute;
+          left: 4px;
+          color: rgba(232, 226, 217, 0.3);
         }
 
         /* CTA */
@@ -347,6 +256,7 @@ export default function GjaldskraSection() {
           gap: 24px;
           flex-wrap: wrap;
           margin-bottom: 72px;
+          max-width: 640px;
         }
         .cta-label {
           font-size: 11px;
@@ -387,9 +297,6 @@ export default function GjaldskraSection() {
           .gjaldskra-inner {
             padding: 0 24px;
             gap: 40px;
-          }
-          .list-grid--2col {
-            grid-template-columns: 1fr;
           }
           .gjaldskra-cta {
             flex-direction: column;
