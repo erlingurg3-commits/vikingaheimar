@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import VisitPageClient from "./VisitPageClient";
+import { getTodayLabel } from "@/lib/hours";
 
 export const metadata: Metadata = {
   title: "Visit | Víkingaheimar",
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 export default function VisitPage() {
-  return <VisitPageClient />;
+  return <VisitPageClient todayHoursLabel={getTodayLabel()} />;
 }

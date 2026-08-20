@@ -6,6 +6,11 @@ import Link from "next/link";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import NorthernLights from "@/app/components/effects/NorthernLights";
 import HeroButton from "@/app/components/ui/HeroButton";
+import TodayHours from "@/app/components/TodayHours";
+import { getSeasonalLabel, SEASONAL_NOTE } from "@/lib/hours";
+import { getAdultPriceLabel } from "@/lib/pricing";
+import SocialProof from "@/app/components/SocialProof";
+import GoogleReviews from "@/app/components/visit/GoogleReviews";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
@@ -84,6 +89,18 @@ function HeroSection() {
 
           {/* CTA */}
           <div className="hero-fade-4 mt-8">
+            <p
+              className="max-w-[520px] text-[13px] leading-relaxed mb-4"
+              style={{ color: "rgba(255,255,255,0.60)" }}
+            >
+              Adults {getAdultPriceLabel()} · Children under 12 free
+              <br />
+              Student &amp; disability discount available — present a valid
+              student ID or disability card on arrival.
+            </p>
+            <div style={{ marginBottom: 20 }}>
+              <SocialProof tone="light" align="start" />
+            </div>
             <HeroButton href="/booking" label="BOOK TICKETS" />
           </div>
 
@@ -110,7 +127,7 @@ function HeroSection() {
 /*  SECTION 2 — At a Glance                                           */
 /* ------------------------------------------------------------------ */
 
-function AtAGlanceSection() {
+function AtAGlanceSection({ todayHoursLabel }: { todayHoursLabel: string }) {
   const { ref: r1, isVisible: v1 } = useScrollReveal<HTMLDivElement>();
   const { ref: r2, isVisible: v2 } = useScrollReveal<HTMLDivElement>({ delay: 120 });
   const { ref: r3, isVisible: v3 } = useScrollReveal<HTMLDivElement>({ delay: 240 });
@@ -160,8 +177,13 @@ function AtAGlanceSection() {
             style={reveal(v1)}
           >
             <p style={eyebrowStyle}>Opening Hours</p>
-            <h3 style={h3Style}>Daily 09:00–17:00</h3>
-            <p style={bodyStyle}>Open every day of the year</p>
+            <h3 style={h3Style}>
+              <TodayHours label={todayHoursLabel} />
+            </h3>
+            <p style={bodyStyle}>{getSeasonalLabel()}</p>
+            <p style={{ ...bodyStyle, fontSize: 12, opacity: 0.8, marginTop: 4 }}>
+              {SEASONAL_NOTE}
+            </p>
           </div>
 
           {/* Column 2 — Location */}
@@ -423,9 +445,13 @@ function LayoverSection() {
           {/* Roadmap illustration — sticky on desktop, hidden on mobile */}
           <div className="hidden md:block">
             <div className="sticky top-24">
-              <img
-                src="/roadmap%20to%20vikings.png"
+              <Image
+                src="/roadmap to vikings.png"
                 alt="Roadmap to Víkingaheimar"
+                width={1200}
+                height={1600}
+                sizes="(max-width: 768px) 0px, 60vw"
+                loading="lazy"
                 style={{
                   width: "100%",
                   height: "auto",
@@ -474,7 +500,7 @@ function LayoverSection() {
 /*  SECTION 5 — Final CTA                                             */
 /* ------------------------------------------------------------------ */
 
-function FinalCtaSection() {
+function FinalCtaSection({ todayHoursLabel }: { todayHoursLabel: string }) {
   const { ref: r1, isVisible: v1 } = useScrollReveal<HTMLParagraphElement>();
   const { ref: r2, isVisible: v2 } = useScrollReveal<HTMLHeadingElement>({ delay: 120 });
   const { ref: r3, isVisible: v3 } = useScrollReveal<HTMLParagraphElement>({ delay: 240 });
@@ -511,7 +537,7 @@ function FinalCtaSection() {
                 ...reveal(v1),
               }}
             >
-              Open Daily 09:00–17:00
+              <TodayHours label={todayHoursLabel} />
             </p>
 
             {/* Heading */}
@@ -565,14 +591,18 @@ function FinalCtaSection() {
 /*  Page                                                              */
 /* ------------------------------------------------------------------ */
 
-export default function VisitPageClient() {
+export default function VisitPageClient({ todayHoursLabel }: { todayHoursLabel: string }) {
   return (
     <main>
       <HeroSection />
-      <AtAGlanceSection />
+      <AtAGlanceSection todayHoursLabel={todayHoursLabel} />
       <GettingHereSection />
       <LayoverSection />
-      <FinalCtaSection />
+      {/* Live Google rating + reviews (added 2026-08-19). Renders nothing
+          when the Places env vars are unset or Google is unreachable —
+          see app/components/visit/GoogleReviews.tsx. */}
+      <GoogleReviews />
+      <FinalCtaSection todayHoursLabel={todayHoursLabel} />
     </main>
   );
 }
