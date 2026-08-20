@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import RouteMapLoader from "@/app/booking/RouteMapLoader";
+import { getSeasonalLabel, getTodayLabel, SEASONAL_NOTE } from "@/lib/hours";
+import { getAdultPriceLabel } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Book Your Visit | Víkingaheimar",
@@ -30,14 +33,28 @@ const accessibilityItems = [
   "Elevator inside",
 ];
 
-const info = [
-  { label: "Hours (Summer)", value: "09:00–17:00" },
-  { label: "Hours (Winter)", value: "10:00–16:00" },
-  { label: "Children under 12", value: "FREE of charge in the company of adults" },
-  { label: "Discount", value: "Discount applied - valid documentation required" },
-  { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 10 min from Keflavík Airport" },
-  { label: "Parking", value: "Free on site" },
-];
+type InfoItem = { label: string; value: ReactNode };
+
+function getInfo(): InfoItem[] {
+  return [
+    {
+      label: "Hours",
+      value: (
+        <>
+          <span>{getSeasonalLabel()}</span>
+          <span style={{ display: "block", fontSize: "0.8em", opacity: 0.75, marginTop: 2 }}>
+            {getTodayLabel()} · {SEASONAL_NOTE}
+          </span>
+        </>
+      ),
+    },
+    { label: "Adults", value: getAdultPriceLabel() },
+    { label: "Children under 12", value: "FREE of charge in the company of adults" },
+    { label: "Student & disability discount", value: "Present a valid student ID or disability card on arrival." },
+    { label: "Location", value: "Víkingabraut 1, 260 Reykjanesbær — 10 min from Keflavík Airport" },
+    { label: "Parking", value: "Free on site" },
+  ];
+}
 
 /* ── Shared sub-components ── */
 
@@ -70,7 +87,10 @@ function CheckList({ items }: { items: string[] }) {
   );
 }
 
+export const revalidate = 3600;
+
 export default function BookingPage() {
+  const info = getInfo();
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900">
       <div className="px-4 pt-8 pb-16 sm:px-6 lg:px-8">

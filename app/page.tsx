@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomePageClient from "@/app/components/home/HomePageClient";
+import { getTodayLabel } from "@/lib/hours";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 3600;
+
 export default function HomePage() {
-  return <HomePageClient />;
+  return <HomePageClient todayHoursLabel={getTodayLabel()} />;
 }

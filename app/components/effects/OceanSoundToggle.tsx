@@ -41,7 +41,7 @@ export default function OceanSoundToggle() {
         ref={audioRef}
         src={encodeURI("/viking drums.m4a")}
         loop
-        preload="metadata"
+        preload="none"
       />
 
       <div

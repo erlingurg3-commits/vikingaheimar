@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import SiteLayout from "./components/layout/SiteLayout";
+import { getCurrentHours, getTodayLabel } from "@/lib/hours";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vikingaheimar.is";
 const siteName = "Víkingaheimar";
@@ -70,9 +71,9 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    icon: [{ url: '/favicon-32.png', sizes: '32x32', type: 'image/png' }],
+    shortcut: '/favicon-32.png',
+    apple: '/apple-touch-icon.png',
   },
 };
 
@@ -81,6 +82,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentHours = getCurrentHours();
   const museumSchema = {
     "@context": "https://schema.org",
     "@type": "Museum",
@@ -94,6 +96,20 @@ export default function RootLayout({
       addressCountry: "IS",
     },
     touristType: "Cultural tourism",
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: currentHours.open,
+      closes: currentHours.close,
+    },
   };
 
   return (
@@ -105,7 +121,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(museumSchema) }}
         />
-        <SiteLayout>{children}</SiteLayout>
+        <SiteLayout todayHoursLabel={getTodayLabel()}>{children}</SiteLayout>
         <Script
           src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=20a864e3-4bf8-45c4-864f-62c268deb95a"
           strategy="afterInteractive"

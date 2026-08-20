@@ -180,6 +180,7 @@ NEXT_PUBLIC_SITE_URL=
 5. **Control Room is hidden from public nav** — do not add it to any public navigation. Accessible via direct URL only.
 6. **Norse font is single weight (400) only.** Never apply `font-weight: bold` or `font-bold` to Norse text — it will render incorrectly.
 7. **Windows dev environment** — Turbopack can be unstable. If crashes loop, switch to `next dev --no-turbopack`.
+8. **Measure performance against production builds only.** Run `npm run build && npm start` before Lighthouse. Never report numbers from the dev server — dev-mode TBT and LCP are inflated and unstable.
 
 ---
 

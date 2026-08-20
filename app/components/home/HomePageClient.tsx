@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type React from "react";
+import { useEffect, useRef } from "react";
 import { ROUTES } from "@/lib/site-routes";
 import { getBookTicketsLink } from "@/lib/ticketing";
 import { trackBookTicketsClick } from "@/lib/analytics";
@@ -11,6 +12,8 @@ import NorthernLights from "@/app/components/effects/NorthernLights";
 import OceanSoundToggle from "@/app/components/effects/OceanSoundToggle";
 import IslendingurBlueprint from "@/app/components/home/IslendingurBlueprint";
 import HeroButton from "@/app/components/ui/HeroButton";
+import TodayHours from "@/app/components/TodayHours";
+import SocialProof from "@/app/components/SocialProof";
 
 
 const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
@@ -24,8 +27,44 @@ function reveal(visible: boolean, delay = 0): React.CSSProperties {
   };
 }
 
-export default function HomePageClient() {
+export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: string }) {
   const ticketLink = getBookTicketsLink();
+  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const el = heroVideoRef.current;
+    if (!el) return;
+
+    // Gate hero video: skip on small viewports and when the user
+    // prefers reduced motion. Poster image continues to render.
+    const wideEnough = window.matchMedia("(min-width: 769px)").matches;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!wideEnough || reducedMotion) return;
+
+    const FADE = 1.5;
+    const onTime = () => {
+      const remaining = el.duration - el.currentTime;
+      if (remaining <= FADE) {
+        el.style.opacity = String(remaining / FADE);
+      } else if (el.currentTime <= FADE) {
+        el.style.opacity = String(Math.min(el.currentTime / FADE, 1));
+      } else {
+        el.style.opacity = "1";
+      }
+    };
+    const onSeeked = () => { el.style.opacity = "0"; };
+    el.addEventListener("timeupdate", onTime);
+    el.addEventListener("seeked", onSeeked);
+    // Some browsers hold off .play() until we ask explicitly (esp.
+    // when autoplay attribute is removed). Fire-and-forget — muted
+    // + playsInline satisfies mobile autoplay policy where we do run.
+    el.play().catch(() => { /* ignored: user gesture required */ });
+
+    return () => {
+      el.removeEventListener("timeupdate", onTime);
+      el.removeEventListener("seeked", onSeeked);
+    };
+  }, []);
 
   const { ref: statementRef, isVisible: statementVisible } =
     useScrollReveal<HTMLDivElement>();
@@ -52,30 +91,19 @@ export default function HomePageClient() {
           backgroundColor: "#0d0c0a",
         }}
       >
-        {/* Layer 1: Onboard video — autoplay, loop, muted, cross-fade on loop */}
+        {/* Layer 1: Onboard video — loop/muted/inline; playback is
+            gated in an effect on viewport width + prefers-reduced-motion.
+            Poster renders instantly; the mp4 only loads its metadata
+            until we decide to play. */}
         <video
-          autoPlay
+          ref={heroVideoRef}
           loop
           muted
           playsInline
           aria-hidden="true"
           className="hero-video"
-          ref={(el) => {
-            if (!el) return;
-            const FADE = 1.5;
-            const onTime = () => {
-              const remaining = el.duration - el.currentTime;
-              if (remaining <= FADE) {
-                el.style.opacity = String(remaining / FADE);
-              } else if (el.currentTime <= FADE) {
-                el.style.opacity = String(Math.min(el.currentTime / FADE, 1));
-              } else {
-                el.style.opacity = "1";
-              }
-            };
-            el.addEventListener("timeupdate", onTime);
-            el.addEventListener("seeked", () => { el.style.opacity = "0"; });
-          }}
+          poster="/_next/image?url=%2FIMG_8277.jpg&w=828&q=75"
+          preload="metadata"
           style={{
             position: "absolute",
             inset: 0,
@@ -173,6 +201,11 @@ export default function HomePageClient() {
               label="BOOK TICKETS"
               onClick={() => trackBookTicketsClick({ source: "homepage-hero" })}
             />
+          </div>
+
+          {/* Social proof — under the hero CTA */}
+          <div className="hero-fade-5" style={{ marginTop: 20 }}>
+            <SocialProof tone="light" align="start" />
           </div>
 
           {/* Gunnbjörn link — hero-fade-5: subtle, minimal */}
@@ -566,7 +599,7 @@ export default function HomePageClient() {
             src="/sword.png"
             alt=""
             fill
-            sizes="900px"
+            sizes="(max-width: 768px) 60vw, 900px"
             style={{
               objectFit: "contain",
               objectPosition: "center",
@@ -744,14 +777,8 @@ export default function HomePageClient() {
                   marginBottom: 12,
                 }}
               >
-                Daily 09:00–17:00
+                <TodayHours label={todayHoursLabel} />
               </h3>
-              <p
-                className="font-text"
-                style={{ fontSize: 15, color: "#7a7672", lineHeight: 1.7 }}
-              >
-                Open every day of the year
-              </p>
             </div>
 
             {/* Divider 1 */}

@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Container from "@/app/components/primitives/Container";
+import TodayHours from "@/app/components/TodayHours";
+import { getSeasonalLabel, SEASONAL_NOTE } from "@/lib/hours";
 
-export default function Footer() {
+export default function Footer({ todayHoursLabel }: { todayHoursLabel: string }) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -68,7 +70,11 @@ export default function Footer() {
                   info@vikingworld.is
                 </a>
               </p>
-              <p>Open daily 09:00–17:00</p>
+              <p>
+                <TodayHours label={todayHoursLabel} />
+              </p>
+              <p>{getSeasonalLabel()}</p>
+              <p style={{ fontSize: 12, opacity: 0.8 }}>{SEASONAL_NOTE}</p>
             </div>
           </div>
 
@@ -110,15 +116,15 @@ export default function Footer() {
               &copy; {currentYear} Víkingaheimar. All rights reserved.
             </p>
             <div className="flex items-center justify-center md:justify-end gap-6 text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
-              <a href="#" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
+              <Link href="/privacy" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
                 Privacy Policy
-              </a>
-              <a href="#" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
+              </Link>
+              <Link href="/terms" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
                 Terms of Service
-              </a>
-              <a href="#" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
+              </Link>
+              <Link href="/cookies" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
                 Cookie Policy
-              </a>
+              </Link>
             </div>
           </div>
         </Container>

@@ -10,9 +10,10 @@ import { SkipLinkId } from "@/lib/accessibility";
 
 interface SiteLayoutProps {
   children: React.ReactNode;
+  todayHoursLabel: string;
 }
 
-export default function SiteLayout({ children }: SiteLayoutProps) {
+export default function SiteLayout({ children, todayHoursLabel }: SiteLayoutProps) {
   const pathname = usePathname() ?? "";
   const isControlRoom = pathname === "/control-room" || pathname.startsWith("/control-room/");
   const isRevenue = pathname === "/revenue" || pathname.startsWith("/revenue/");
@@ -33,7 +34,7 @@ export default function SiteLayout({ children }: SiteLayoutProps) {
         {children}
       </main>
 
-      <Footer />
+      <Footer todayHoursLabel={todayHoursLabel} />
     </>
   );
 }
