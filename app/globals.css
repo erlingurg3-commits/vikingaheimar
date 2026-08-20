@@ -1,13 +1,23 @@
 /* Import design system tokens and global styles */
 @import "../styles/design-tokens.css";
 
-/* Norse — runic display font by Joel Carrouche */
+/* Norse — runic display font by Joel Carrouche
+   DISABLED 2026-08-19 (Task 1c): duplicate font load.
+   The same file was fetched twice on every page — once here as
+   /fonts/Norse.otf (25,616 B) and once as the next/font/local copy at
+   /_next/static/media/Norse-s.p.*.otf (25,634 B). The next/font/local
+   declaration in app/layout.tsx is the one kept: content-hashed filename,
+   immutable cache headers, automatic preload. Still weight 400 only.
+   Nothing consumes the bare 'Norse' family name — every call site uses
+   var(--font-display) (set on <body> by layout.tsx) with 'Norse' only as a
+   post-var fallback, so this block is dead weight.
 @font-face {
   font-family: 'Norse';
   src: url('/fonts/Norse.otf') format('opentype');
   font-weight: 400;
   font-display: swap;
 }
+*/
 
 /* Prevent stray horizontal overflow on mobile without breaking sticky or browser zoom.
    - overflow-x: clip keeps descendant position: sticky working (unlike overflow: hidden)
