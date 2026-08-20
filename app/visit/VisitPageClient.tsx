@@ -9,7 +9,8 @@ import HeroButton from "@/app/components/ui/HeroButton";
 import TodayHours from "@/app/components/TodayHours";
 import { getSeasonalLabel, SEASONAL_NOTE } from "@/lib/hours";
 import { getAdultPriceLabel } from "@/lib/pricing";
-import SocialProof from "@/app/components/SocialProof";
+// import SocialProof from "@/app/components/SocialProof";
+//   ^ unused since 2026-08-20 — see the disabled block in HeroSection.
 import GoogleReviews from "@/app/components/visit/GoogleReviews";
 
 /* ------------------------------------------------------------------ */
@@ -98,9 +99,15 @@ function HeroSection() {
               Student &amp; disability discount available — present a valid
               student ID or disability card on arrival.
             </p>
+            {/* SocialProof disabled 2026-08-20 — we are Google-only, and its
+                TRIPADVISOR_* values were never filled in, so it returned null
+                and left this wrapper as a dead 20px gap. The live
+                <GoogleReviews /> section below carries the Google figures.
+                Wrapper commented out with it so no empty space remains.
             <div style={{ marginBottom: 20 }}>
               <SocialProof tone="light" align="start" />
             </div>
+            */}
             <HeroButton href="/booking" label="BOOK TICKETS" />
           </div>
 

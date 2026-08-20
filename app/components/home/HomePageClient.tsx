@@ -13,7 +13,8 @@ import OceanSoundToggle from "@/app/components/effects/OceanSoundToggle";
 import IslendingurBlueprint from "@/app/components/home/IslendingurBlueprint";
 import HeroButton from "@/app/components/ui/HeroButton";
 import TodayHours from "@/app/components/TodayHours";
-import SocialProof from "@/app/components/SocialProof";
+// import SocialProof from "@/app/components/SocialProof";
+//   ^ unused since 2026-08-20 — see the disabled block under the hero CTA.
 
 
 const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
@@ -203,10 +204,14 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
             />
           </div>
 
-          {/* Social proof — under the hero CTA */}
+          {/* Social proof — under the hero CTA.
+              Disabled 2026-08-20 — we are Google-only, and its TRIPADVISOR_*
+              values were never filled in, so it returned null and left this
+              wrapper as a dead 20px gap. Wrapper commented out with it.
           <div className="hero-fade-5" style={{ marginTop: 20 }}>
             <SocialProof tone="light" align="start" />
           </div>
+          */}
 
           {/* Gunnbjörn link — hero-fade-5: subtle, minimal */}
           <Link
