@@ -47,7 +47,12 @@ const PREFERRED_RATING = 5;
 const MINIMUM_RATING = 4;
 
 /** If fewer than this many five-star reviews exist, top up with four-star. */
-const MIN_CARDS = 3;
+// Lowered from 3 to 2 on 2026-08-21. Google's batch currently holds only two
+// five-star reviews, so a floor of 3 forced a four-star card back onto the
+// page — including the lukewarm "not many things to do" one this filtering
+// exists to hide. At 2 the fallback stays available for a genuinely thin
+// batch without diluting a good one. Was: const MIN_CARDS = 3;
+const MIN_CARDS = 2;
 
 export type GoogleReview = {
   author: string;
