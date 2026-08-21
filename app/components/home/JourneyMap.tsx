@@ -49,8 +49,10 @@ export default function JourneyMap() {
       : 'none'
 
   return (
+    // Cast dropped 2026-08-21 — useScrollReveal now returns a callback ref,
+    // which needs no cast. Was: ref={sectionRef as RefObject<HTMLDivElement>}
     <div
-      ref={sectionRef as RefObject<HTMLDivElement>}
+      ref={sectionRef}
       style={{
         position: 'relative',
         width: '100%',

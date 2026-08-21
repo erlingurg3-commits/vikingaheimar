@@ -18,7 +18,8 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
+// import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
+//   ^ unused since 2026-08-21 — this section no longer gates on scroll reveal.
 
 type Review = {
   author: string;
@@ -45,6 +46,8 @@ const EYEBROW = "rgba(78,168,222,0.80)";
 const INK = "#1a1a1a";
 const MUTED = "#7a7672";
 
+/* Unused since 2026-08-21 — this section renders unconditionally visible.
+   Kept for reference rather than deleted.
 function reveal(visible: boolean, delay = 0): React.CSSProperties {
   return {
     opacity: visible ? 1 : 0,
@@ -52,6 +55,7 @@ function reveal(visible: boolean, delay = 0): React.CSSProperties {
     transition: `opacity 1000ms cubic-bezier(0.25,0.1,0.25,1) ${delay}ms, transform 1000ms cubic-bezier(0.25,0.1,0.25,1) ${delay}ms`,
   };
 }
+*/
 
 /* ------------------------------------------------------------------ */
 /*  Stars                                                              */
@@ -88,8 +92,17 @@ function Stars({ value, size = 16 }: { value: number; size?: number }) {
 export default function GoogleReviews() {
   const [data, setData] = useState<ReviewsPayload | null>(null);
   const [settled, setSettled] = useState(false);
+
+  /* Scroll-reveal removed here 2026-08-21.
+     This content mounts only after /api/reviews resolves, so it is exactly the
+     case that used to strand elements at opacity:0 forever. useScrollReveal is
+     fixed now (callback ref), but review content is social proof we cannot
+     afford to have hidden by any future regression in the reveal path, so it
+     renders unconditionally visible — no opacity/transform gate at all.
+     The rest of the site keeps its scroll animations.
   const { ref: labelRef, isVisible: labelVis } = useScrollReveal<HTMLDivElement>();
   const { ref: gridRef, isVisible: gridVis } = useScrollReveal<HTMLDivElement>({ delay: 150 });
+  */
 
   useEffect(() => {
     let active = true;
@@ -126,7 +139,8 @@ export default function GoogleReviews() {
     <section style={{ backgroundColor: "#f5f3ee" }} aria-label="Google reviews">
       <div className={`${container} pb-20 md:pb-28`}>
         {/* Section label + rating summary */}
-        <div ref={labelRef} className="text-center mb-10" style={reveal(labelVis)}>
+        {/* was: ref={labelRef} style={reveal(labelVis)} — reveal gate removed 2026-08-21 */}
+        <div className="text-center mb-10">
           <p
             style={{
               color: EYEBROW,
@@ -180,11 +194,8 @@ export default function GoogleReviews() {
         </div>
 
         {/* Review cards */}
-        <div
-          ref={gridRef}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-          style={reveal(gridVis, 150)}
-        >
+        {/* was: ref={gridRef} style={reveal(gridVis, 150)} — reveal gate removed 2026-08-21 */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {data.reviews.map((review, i) => (
             <figure
               key={`${review.author}-${i}`}

@@ -344,8 +344,10 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
           3. TWO-CARD SPLIT — full bleed, edge to edge
           ═══════════════════════════════════════════════════════════════ */}
       <section style={{ backgroundColor: "#f5f3ee" }}>
+        {/* Cast dropped 2026-08-21 — useScrollReveal now returns a callback ref,
+            which needs no cast. Was: ref={cardsRef as React.RefObject<...>} */}
         <div
-          ref={cardsRef as React.RefObject<HTMLDivElement>}
+          ref={cardsRef}
           className="flex flex-col md:flex-row"
           style={{
             position: "relative",
