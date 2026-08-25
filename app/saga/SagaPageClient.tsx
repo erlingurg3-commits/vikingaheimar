@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import type React from "react";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import HeroButton from "@/app/components/ui/HeroButton";
+// Analytics on booking CTAs (added 2026-08-25)
+import { trackBookTicketsClick } from "@/lib/analytics";
 
 type Cue = { start: number; end: number; text: string };
 
@@ -726,7 +728,7 @@ export default function SagaPageClient() {
               ...reveal(ctaVisible, 250),
             }}
           >
-            <HeroButton href="/booking" label="BOOK YOUR VISIT" />
+            <HeroButton href="/booking" label="BOOK YOUR VISIT" onClick={() => trackBookTicketsClick({ source: "saga-final-cta" })} />
           </div>
         </div>
       </section>

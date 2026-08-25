@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Container from "@/app/components/primitives/Container";
+// Analytics on the header CTAs (added 2026-08-25)
+import { trackBookTicketsClick } from "@/lib/analytics";
 
 const NAV_ITEMS = [
   { label: "The Saga", href: "/saga" },
@@ -134,6 +136,7 @@ export default function Header() {
             {/* Book Your Raid — CTA style */}
             <Link
               href="/booking"
+              onClick={() => trackBookTicketsClick({ source: "header-desktop" })}
               className="font-text focus-visible:outline-2 focus-visible:outline-offset-4 rounded-sm"
               style={{
                 fontSize: 11,
@@ -259,7 +262,10 @@ export default function Header() {
           {/* Mobile CTA */}
           <Link
             href="/booking"
-            onClick={closeMenu}
+            onClick={() => {
+              trackBookTicketsClick({ source: "header-mobile" });
+              closeMenu();
+            }}
             className={`mt-8 inline-flex items-center justify-center rounded-md font-text transition-all duration-500 ${
               mobileOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}

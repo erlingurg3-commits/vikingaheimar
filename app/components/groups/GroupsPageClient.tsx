@@ -3,6 +3,8 @@
 import { useState } from "react";
 import GjaldskraModal from "./GjaldskraModal";
 import GjaldskraLoginModal from "./GjaldskraLoginModal";
+// Analytics (added 2026-08-25)
+import { trackGjaldskraOpen } from "@/lib/analytics";
 // import GjaldskraSection from "./GjaldskraSection";
 
 export default function GroupsPageClient() {
@@ -116,7 +118,12 @@ export default function GroupsPageClient() {
       {/* ── Gjaldskrá login + rate card ── */}
       {gjaldskraState === "login" && (
         <GjaldskraLoginModal
-          onSuccess={() => setGjaldskraState("open")}
+          onSuccess={() => {
+            // Fires when the rate card itself opens, not when the login
+            // prompt appears — that is the action worth measuring.
+            trackGjaldskraOpen();
+            setGjaldskraState("open");
+          }}
           onClose={() => setGjaldskraState(null)}
         />
       )}

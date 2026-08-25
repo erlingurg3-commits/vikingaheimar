@@ -9,6 +9,8 @@ import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import ScrollViking from "@/app/components/ScrollViking";
 import Gunnbjorn from "@/app/components/Gunnbjorn";
 import HeroButton from "@/app/components/ui/HeroButton";
+// Analytics on booking CTAs (added 2026-08-25)
+import { trackBookTicketsClick } from "@/lib/analytics";
 
 /* ── Scroll-reveal helper (same pattern as Saga page) ── */
 function reveal(visible: boolean, delay = 0): React.CSSProperties {
@@ -743,7 +745,7 @@ export default function VikingsPageClient() {
               ...reveal(ctaVisible, 250),
             }}
           >
-            <HeroButton href="/booking" label="BOOK YOUR RAID" />
+            <HeroButton href="/booking" label="BOOK YOUR RAID" onClick={() => trackBookTicketsClick({ source: "vikings-final-cta" })} />
 
           </div>
         </div>

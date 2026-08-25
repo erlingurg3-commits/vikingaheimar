@@ -7,6 +7,8 @@ import Input from "@/app/components/primitives/Input";
 import { SectionTitle, Body } from "@/app/components/primitives/Typography";
 import { PUBLIC_HOURLY_SLOTS } from "@/lib/capacity/checkGroupFeasibility";
 import { supabaseBrowser } from "@/lib/supabase-browser";
+// Analytics (added 2026-08-25)
+import { trackGroupsEnquirySubmit } from "@/lib/analytics";
 
 type TravelAgencyOption = {
   id: string;
@@ -169,6 +171,10 @@ export default function GroupRequestPage() {
         setError(payload.message ?? "Unable to submit request.");
         return;
       }
+
+      // Successful submit only. Payload carries the routing outcome and
+      // nothing about the enquirer — no company, name, email, date or notes.
+      trackGroupsEnquirySubmit({ outcome: payload.outcome ?? "unknown" });
 
       setRequestId(payload.requestId);
       setBookingId(payload.mockBookingId ?? null);

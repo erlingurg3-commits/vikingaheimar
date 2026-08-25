@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
+// Vercel Web Analytics (added 2026-08-25). The /next subpath is the App Router
+// build; it renders nothing and injects its script client-side, so it is
+// SSR-safe in this server component.
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import SiteLayout from "./components/layout/SiteLayout";
 import { getCurrentHours, getTodayLabel } from "@/lib/hours";
@@ -126,6 +130,8 @@ export default function RootLayout({
           src="https://widgets.bokun.io/assets/javascripts/apps/build/BokunWidgetsLoader.js?bookingChannelUUID=20a864e3-4bf8-45c4-864f-62c268deb95a"
           strategy="afterInteractive"
         />
+        {/* Vercel Web Analytics — mounted once, site-wide (2026-08-25) */}
+        <Analytics />
       </body>
     </html>
   );

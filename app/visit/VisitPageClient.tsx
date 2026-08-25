@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useScrollReveal } from "@/app/components/hooks/useScrollReveal";
 import NorthernLights from "@/app/components/effects/NorthernLights";
 import HeroButton from "@/app/components/ui/HeroButton";
+// Analytics on booking CTAs (added 2026-08-25)
+import { trackBookTicketsClick } from "@/lib/analytics";
 import TodayHours from "@/app/components/TodayHours";
 import { getSeasonalLabel, SEASONAL_NOTE } from "@/lib/hours";
 import { getAdultPriceLabel } from "@/lib/pricing";
@@ -111,7 +113,11 @@ function HeroSection() {
               <SocialProof tone="light" align="start" />
             </div>
             */}
-            <HeroButton href="/booking" label="BOOK TICKETS" />
+            <HeroButton
+              href="/booking"
+              label="BOOK TICKETS"
+              onClick={() => trackBookTicketsClick({ source: "visit-hero" })}
+            />
           </div>
 
           {/* Scroll indicator */}
@@ -586,7 +592,7 @@ function FinalCtaSection({ todayHoursLabel }: { todayHoursLabel: string }) {
               className="mt-10 flex flex-wrap items-center justify-center gap-4"
               style={reveal(v4, 360)}
             >
-              <HeroButton href="/booking" label="BOOK TICKETS" />
+              <HeroButton href="/booking" label="BOOK TICKETS" onClick={() => trackBookTicketsClick({ source: "visit-final-cta" })} />
 
               <HeroButton href="/groups" label="GROUP BOOKINGS" variant="frost" />
             </div>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+// Analytics (added 2026-08-25)
+import { trackGunnbjornOpen } from "@/lib/analytics";
 
 /* ── colour palette (matches ScrollViking) ── */
 const C = {
@@ -250,6 +252,10 @@ export default function Gunnbjorn() {
   const [warriorState, setWarriorState] = useState<WarriorState>("idle");
   const [suggestionRound, setSuggestionRound] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Gunnbjörn is always rendered inline on /vikings — there is no open/close
+  // state — so "opened" means the visitor's first question. Ref, not state,
+  // so the guard is synchronous and cannot double-fire. (2026-08-25)
+  const engagedRef = useRef(false);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -259,6 +265,12 @@ export default function Gunnbjorn() {
 
   async function askGunnbjorn(question: string) {
     if (!question.trim() || isThinking) return;
+
+    // First real engagement only — no question text, that is user content.
+    if (!engagedRef.current) {
+      engagedRef.current = true;
+      trackGunnbjornOpen();
+    }
 
     const userMsg: Message = {
       role: "user",
