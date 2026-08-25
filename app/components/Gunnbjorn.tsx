@@ -409,7 +409,7 @@ export default function Gunnbjorn() {
             className="font-text"
             style={{
               fontSize: "0.9rem",
-              color: "#6a6050",
+              color: "#a89a80",
               lineHeight: 1.7,
               maxWidth: 420,
               marginBottom: 8,
@@ -425,7 +425,7 @@ export default function Gunnbjorn() {
             className="font-text"
             style={{
               fontSize: "0.72rem",
-              color: "#4a4038",
+              color: "#8a7d68",
               fontStyle: "italic",
               marginTop: 8,
               marginBottom: 28,
@@ -464,7 +464,7 @@ export default function Gunnbjorn() {
                 <p
                   className="font-text"
                   style={{
-                    color: "#3a3028",
+                    color: "#8a7d68",
                     fontSize: "0.78rem",
                     fontStyle: "italic",
                     textAlign: "center",
@@ -628,10 +628,10 @@ export default function Gunnbjorn() {
                   onClick={() => askGunnbjorn(q)}
                   className="font-display gb-pill"
                   style={{
-                    border: "1px solid #2a2a2a",
+                    border: "1px solid #4a4234",
                     padding: "6px 14px",
-                    fontSize: "0.65rem",
-                    color: "#5a5040",
+                    fontSize: "0.72rem",
+                    color: "#c4b79c",
                     background: "transparent",
                     borderRadius: 1,
                     cursor: "pointer",
@@ -685,7 +685,7 @@ export default function Gunnbjorn() {
         .gb-rune-2 { top: 6%; right: 4%; animation: gbRuneDrift 15s ease-in-out infinite; }
         .gb-rune-3 { bottom: 10%; left: 4%; animation: gbRuneDrift 18s ease-in-out infinite; }
         .gb-rune-4 { bottom: 8%; right: 2%; animation: gbRuneDrift 14s ease-in-out infinite; }
-        .gb-input::placeholder { color: #3a3028; }
+        .gb-input::placeholder { color: #8a7d68; }
         .gb-input:focus { border-bottom-color: #d4a843 !important; }
         .gb-pill:hover { border-color: #d4a843 !important; color: #d4a843 !important; }
         .gb-thinking-dots span {
