@@ -11,7 +11,10 @@ import { getSeasonalLabel, SEASONAL_NOTE } from "@/lib/hours";
 import { getAdultPriceLabel } from "@/lib/pricing";
 // import SocialProof from "@/app/components/SocialProof";
 //   ^ unused since 2026-08-20 — see the disabled block in HeroSection.
-import GoogleReviews from "@/app/components/visit/GoogleReviews";
+// import GoogleReviews from "@/app/components/visit/GoogleReviews";
+//   ^ replaced 2026-08-25 by the Trustindex widget below. The custom section,
+//     its /api/reviews route and lib/google-reviews.ts stay on disk, dormant.
+import TrustindexReviews from "@/app/components/visit/TrustindexReviews";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
@@ -605,10 +608,13 @@ export default function VisitPageClient({ todayHoursLabel }: { todayHoursLabel: 
       <AtAGlanceSection todayHoursLabel={todayHoursLabel} />
       <GettingHereSection />
       <LayoverSection />
-      {/* Live Google rating + reviews (added 2026-08-19). Renders nothing
-          when the Places env vars are unset or Google is unreachable —
-          see app/components/visit/GoogleReviews.tsx. */}
+      {/* Reviews. Swapped 2026-08-25 from the custom Places-API section to the
+          Trustindex widget, which brings its own rating and cards and is
+          lazy-loaded ~300px before it scrolls into view.
+          Previous section (kept on disk, dormant):
       <GoogleReviews />
+      */}
+      <TrustindexReviews />
       <FinalCtaSection todayHoursLabel={todayHoursLabel} />
     </main>
   );
