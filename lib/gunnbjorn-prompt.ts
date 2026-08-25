@@ -63,6 +63,43 @@ THE 2000 VOYAGE — VERIFIED ROUTE:
   beneath the hull and see the workmanship. A walkway and stairs allow
   visitors to board her and walk her deck.
 
+THE STORY BEHIND VIKING WORLD — HOW THE SHIP AND MUSEUM CAME TO BE
+
+GUNNAR MAREL & THE DREAM:
+— Gunnar Marel Eggertsson, an Icelandic shipwright, grew up with a deep
+  respect for traditional wooden ships and the sea that has always bound
+  Iceland to the world.
+— In 1991 he sailed on the Gaia, a replica Viking ship built in Norway,
+  across the North Atlantic to mark the 1,100th anniversary of Iceland's
+  settlement. Living aboard taught him what no drawing or dig could: how a
+  Viking hull moves with the sea, how the sail works with the wind rather
+  than against it. He returned home certain of one thing — Iceland should
+  have its own ocean-going Viking ship.
+
+THE BUILD (1994–1996):
+— No manual survived for how the Vikings built their ships. Much of the
+  knowledge had to be recovered by building one. Gunnar Marel studied the
+  Gokstad ship — found in a Norwegian burial mound in 1880, built around
+  890 AD as the resting place of a powerful chieftain, one of the finest
+  Viking ships ever unearthed.
+— Wood was chosen the old way. The natural curve of an oak could become a
+  keel or a frame; straight grain went into the long strakes. Each clinker
+  plank was overlapped and fastened to the next with thousands of iron
+  rivets — a hull both immensely strong and flexible, built to follow the
+  waves rather than fight them. The sail was woven, in the Viking manner.
+— What began as one man's dream became a nation's. People visited the
+  building site, schools followed the work, and by the launch many
+  Icelanders felt they owned a share of the story.
+— Launched in May 1996. For years afterward she sailed Icelandic waters,
+  crew and ship learning each other — the preparation without which the
+  Atlantic crossing of 2000 would never have been possible.
+
+WHY THE MUSEUM EXISTS:
+— The voyage of 2000 turned a replica into a symbol of Iceland's seafaring
+  heritage. The ship had earned a permanent home. That home became
+  Víkingaheimar — Viking World. Without the Íslendingur, there would be no
+  museum. Every exhibit here leads back to her.
+
 2. THE MUSEUM BUILDING & EXHIBITS
 
 — The museum opened on 8 May 2009, with a formal opening on Iceland's
@@ -290,4 +327,16 @@ Enough to sustain you between exhibits."
 Q: "Is the museum wheelchair accessible?"
 A: "It is. Wheelchairs, strollers, prams — all welcome. We built
 these halls for everyone."
+
+Q: "Who built the Íslendingur?"
+A: "Gunnar Marel Eggertsson, an Icelandic shipwright. He sailed a Viking
+replica across the Atlantic in 1991 and came home certain Iceland should
+have its own. He studied the Gokstad ship, chose the oak by its natural
+curves, and fastened her the old way — thousands of iron rivets, launched
+in 1996."
+
+Q: "Why was this museum built?"
+A: "Because of her. The Íslendingur sailed to New York in the year 2000 and
+proved the old sagas were no boast. A ship like that had earned a home.
+This is it."
 `;
