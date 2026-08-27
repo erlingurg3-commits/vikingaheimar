@@ -15,6 +15,7 @@ const NAV_ITEMS: { label: string; href: string; external?: boolean }[] = [
   // --- end removed ---
   { label: "Travel Agent KPIs", href: "/control-room/agents" },
   { label: "Website Behavior", href: "/control-room/behavior" },
+  { label: "Website Analytics", href: "/control-room/analytics" },
   { label: "Cruise Intelligence", href: "/admin/cruise-intelligence" },
   { label: "Group Bookings", href: "/control-room.html", external: true },
   { label: "Tourism Intelligence", href: "/control-room-v2" },
