@@ -6,6 +6,10 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ScrollProgress from "./ScrollProgress";
 import SkipLink from "@/app/components/primitives/SkipLink";
+// First-party analytics (Phase 2, 2026-08-27). Mounted on the public branch
+// only — the control-room / revenue early return above must stay untracked so
+// internal dashboard use is never counted as visitor traffic.
+import PageViewTracker from "@/app/components/analytics/PageViewTracker";
 import { SkipLinkId } from "@/lib/accessibility";
 
 interface SiteLayoutProps {
@@ -27,6 +31,7 @@ export default function SiteLayout({ children, todayHoursLabel }: SiteLayoutProp
     <>
       <SkipLink />
       <ScrollProgress />
+      <PageViewTracker />
       <Header />
 
       {/* Main content area */}

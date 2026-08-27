@@ -1,4 +1,5 @@
 import { track } from "@vercel/analytics";
+import { sendTrack } from "./track-client";
 
 type AnalyticsPayload = Record<string, string | number | boolean | undefined>;
 
@@ -33,6 +34,19 @@ function emitAnalyticsEvent(eventName: string, payload?: AnalyticsPayload) {
     track(eventName, clean as Record<string, string | number | boolean>);
   } catch {
     // Analytics must never break a user interaction.
+  }
+
+  // Also record first-party (Phase 2) — same event, into web_events. Never throws.
+  try {
+    const source =
+      clean && typeof clean.source === "string" ? clean.source : null;
+    sendTrack({
+      type: eventName,
+      path: typeof window !== "undefined" ? window.location.pathname : undefined,
+      source,
+    });
+  } catch {
+    /* first-party logging must never break a user interaction */
   }
 
   if (process.env.NODE_ENV !== "production") {
