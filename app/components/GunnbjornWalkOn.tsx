@@ -107,7 +107,9 @@ export default function GunnbjornWalkOn() {
           </g>
         </g>
       </svg>
-      <span className="gwo-label">Ask Gunnbjörn <span aria-hidden="true">→</span></span>
+      <span className="gwo-label">
+        Hello dear visitor! Have a question? <strong>Click me</strong>
+      </span>
 
       <style>{`
         .gwo-root{position:fixed;left:20px;bottom:18px;width:130px;height:260px;z-index:40;display:block;text-decoration:none;cursor:pointer}
@@ -117,7 +119,10 @@ export default function GunnbjornWalkOn() {
         .gwo-leg{transform-box:fill-box;transform-origin:top center}
         .gwo-arm{transform-box:fill-box;transform-origin:top center}
         .gwo-eyes{animation:gwoGlow 1.7s ease-in-out infinite}
-        .gwo-label{position:absolute;left:104px;top:96px;white-space:nowrap;font-size:12px;font-weight:600;color:#0d0c0a;background:#d4a843;padding:5px 10px;border-radius:4px;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+        /* Speech bubble beside his head, with a tail pointing back at him. */
+        .gwo-label{position:absolute;left:100px;top:26px;width:186px;font-size:12.5px;line-height:1.45;font-weight:500;color:#0d0c0a;background:#d4a843;padding:8px 11px;border-radius:8px;pointer-events:none;box-shadow:0 3px 10px rgba(0,0,0,.45)}
+        .gwo-label strong{font-weight:700}
+        .gwo-label::after{content:"";position:absolute;left:-6px;top:16px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:7px solid #d4a843}
 
         /* walk-on (first visit) */
         .gwo-run{transform:translateX(-260px);animation:gwoWalkIn 3.3s cubic-bezier(.22,.61,.36,1) forwards}
