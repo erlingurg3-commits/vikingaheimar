@@ -40,19 +40,20 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
     // attribute) is set. React doesn't always reflect it, so set it here.
     el.muted = true;
 
-    const wideEnough = window.matchMedia("(min-width: 769px)").matches;
+    // The video now plays on phones too — the old (min-width: 769px) gate is
+    // gone. Only reduced-motion still opts out, and it reveals the poster so
+    // the hero is never black.
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // On phones and for reduced-motion we don't play the loop — but we MUST
-    // still reveal the poster frame, or the hero is just black. This is the
-    // iOS "doesn't render" fix: previously opacity stayed 0 in this branch.
-    if (!wideEnough || reducedMotion) {
+    if (reducedMotion) {
       el.style.opacity = "1";
       return;
     }
 
     const FADE = 1.5;
+    // Set by the first timeupdate — proof that playback actually began.
+    let playing = false;
     const onTime = () => {
+      playing = true;
       const remaining = el.duration - el.currentTime;
       if (remaining <= FADE) {
         el.style.opacity = String(remaining / FADE);
@@ -66,11 +67,20 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("seeked", onSeeked);
 
+    // Watchdog: on a slow mobile connection the 16MB loop can take a while to
+    // start, and the element sits at opacity 0 until the first timeupdate. If
+    // nothing is playing by now, show the poster — the hero must never be
+    // black. The fade logic still takes over if playback starts later.
+    const watchdog = setTimeout(() => {
+      if (!playing) el.style.opacity = "1";
+    }, 2000);
+
     // muted + playsInline satisfies autoplay policy. If a browser still blocks
     // it, fall back to the visible poster instead of a black hero.
     el.play().catch(() => { el.style.opacity = "1"; });
 
     return () => {
+      clearTimeout(watchdog);
       el.removeEventListener("timeupdate", onTime);
       el.removeEventListener("seeked", onSeeked);
     };
