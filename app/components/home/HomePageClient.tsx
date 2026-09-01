@@ -36,11 +36,20 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
     const el = heroVideoRef.current;
     if (!el) return;
 
-    // Gate hero video: skip on small viewports and when the user
-    // prefers reduced motion. Poster image continues to render.
+    // iOS only allows inline autoplay when the muted PROPERTY (not just the
+    // attribute) is set. React doesn't always reflect it, so set it here.
+    el.muted = true;
+
     const wideEnough = window.matchMedia("(min-width: 769px)").matches;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!wideEnough || reducedMotion) return;
+
+    // On phones and for reduced-motion we don't play the loop — but we MUST
+    // still reveal the poster frame, or the hero is just black. This is the
+    // iOS "doesn't render" fix: previously opacity stayed 0 in this branch.
+    if (!wideEnough || reducedMotion) {
+      el.style.opacity = "1";
+      return;
+    }
 
     const FADE = 1.5;
     const onTime = () => {
@@ -56,10 +65,10 @@ export default function HomePageClient({ todayHoursLabel }: { todayHoursLabel: s
     const onSeeked = () => { el.style.opacity = "0"; };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("seeked", onSeeked);
-    // Some browsers hold off .play() until we ask explicitly (esp.
-    // when autoplay attribute is removed). Fire-and-forget — muted
-    // + playsInline satisfies mobile autoplay policy where we do run.
-    el.play().catch(() => { /* ignored: user gesture required */ });
+
+    // muted + playsInline satisfies autoplay policy. If a browser still blocks
+    // it, fall back to the visible poster instead of a black hero.
+    el.play().catch(() => { el.style.opacity = "1"; });
 
     return () => {
       el.removeEventListener("timeupdate", onTime);
