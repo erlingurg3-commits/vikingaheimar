@@ -10,9 +10,16 @@ export default function GunnbjornWalkOn() {
   const [phase, setPhase] = useState<Phase>("hidden");
 
   useEffect(() => {
+    // sessionStorage, not localStorage — changed 2026-09-01.
+    //
+    // localStorage meant "once per browser, forever": a visitor saw the
+    // walk-on exactly once and every later visit got the standing pose. The
+    // walk is the point of the character, so it should greet each new visit.
+    // sessionStorage replays it per tab session while still not repeating on
+    // in-tab navigation back to the homepage.
     let seen = false;
     try {
-      seen = localStorage.getItem("vh_gunnbjorn_seen") === "1";
+      seen = sessionStorage.getItem("vh_gunnbjorn_seen") === "1";
     } catch {}
     const reduce =
       typeof window !== "undefined" &&
@@ -23,7 +30,7 @@ export default function GunnbjornWalkOn() {
     } else {
       setPhase("walk");
       try {
-        localStorage.setItem("vh_gunnbjorn_seen", "1");
+        sessionStorage.setItem("vh_gunnbjorn_seen", "1");
       } catch {}
     }
   }, []);
