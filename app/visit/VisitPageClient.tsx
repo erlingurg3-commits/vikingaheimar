@@ -17,6 +17,12 @@ import { getAdultPriceLabel } from "@/lib/pricing";
 //   ^ replaced 2026-08-25 by the Trustindex widget below. The custom section,
 //     its /api/reviews route and lib/google-reviews.ts stay on disk, dormant.
 import TrustindexReviews from "@/app/components/visit/TrustindexReviews";
+import {
+  GOOGLE_RATING,
+  GOOGLE_MAPS_URL,
+  TRIPADVISOR_RANK_LABEL,
+  TRIPADVISOR_URL,
+} from "@/lib/socialProof";
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                           */
@@ -35,6 +41,38 @@ const container = "mx-auto w-full max-w-[1080px] px-8 md:px-16";
 /* ------------------------------------------------------------------ */
 /*  SECTION 1 — Hero                                                  */
 /* ------------------------------------------------------------------ */
+
+/**
+ * Credibility badge — added 2026-08-31.
+ *
+ * Plain text, no platform logos or brand colours, which keeps us clear of
+ * Tripadvisor's brand-display requirements. Values are hand-maintained in
+ * lib/socialProof.ts; re-check them quarterly and bump LAST_VERIFIED.
+ */
+function Accolades() {
+  const link: React.CSSProperties = {
+    textDecoration: "none",
+    color: "rgba(255,255,255,0.75)",
+  };
+  const strong: React.CSSProperties = {
+    color: "rgba(255,255,255,0.95)",
+    fontWeight: 500,
+  };
+  return (
+    <div className="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
+      <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" style={link}>
+        <span style={strong}>{GOOGLE_RATING}★</span> on Google
+      </a>
+      <span
+        aria-hidden="true"
+        style={{ width: 1, height: 12, background: "rgba(255,255,255,0.20)" }}
+      />
+      <a href={TRIPADVISOR_URL} target="_blank" rel="noopener noreferrer" style={link}>
+        <span style={strong}>{TRIPADVISOR_RANK_LABEL}</span> on Tripadvisor
+      </a>
+    </div>
+  );
+}
 
 function HeroSection() {
   return (
@@ -106,13 +144,14 @@ function HeroSection() {
             </p>
             {/* SocialProof disabled 2026-08-20 — we are Google-only, and its
                 TRIPADVISOR_* values were never filled in, so it returned null
-                and left this wrapper as a dead 20px gap. The live
-                <GoogleReviews /> section below carries the Google figures.
-                Wrapper commented out with it so no empty space remains.
+                and left this wrapper as a dead 20px gap. Superseded 2026-08-31
+                by the purpose-built <Accolades /> badge below; SocialProof
+                itself stays dormant and unrendered.
             <div style={{ marginBottom: 20 }}>
               <SocialProof tone="light" align="start" />
             </div>
             */}
+            <Accolades />
             <HeroButton
               href="/booking"
               label="BOOK TICKETS"
