@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 // Analytics (added 2026-08-25)
-import { trackGunnbjornOpen } from "@/lib/analytics";
+import { trackGunnbjornOpen, trackBookTicketsClick } from "@/lib/analytics";
 
 /* ── colour palette (matches ScrollViking) ── */
 const C = {
@@ -643,6 +644,34 @@ export default function Gunnbjorn() {
               ))}
             </div>
           )}
+
+          {/* Book CTA — added 2026-09-01. Gunnbjörn's walk-on drops visitors
+              here, so give them somewhere to go once he has answered. Shown
+              always, not gated on !isThinking like the pills above. */}
+          <div style={{ marginTop: 22 }}>
+            <Link
+              href="/booking"
+              onClick={() => trackBookTicketsClick({ source: "gunnbjorn-chat" })}
+              className="font-display gb-book"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 20px",
+                fontSize: "0.78rem",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                color: "#0d0c0a",
+                background: "#d4a843",
+                borderRadius: 2,
+                transition: "background 300ms, transform 300ms",
+              }}
+            >
+              Book your visit
+              <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -688,6 +717,7 @@ export default function Gunnbjorn() {
         .gb-input::placeholder { color: #8a7d68; }
         .gb-input:focus { border-bottom-color: #d4a843 !important; }
         .gb-pill:hover { border-color: #d4a843 !important; color: #d4a843 !important; }
+        .gb-book:hover { background: #e6bd5c !important; transform: translateY(-1px); }
         .gb-thinking-dots span {
           display: inline-block;
           font-size: 1.5rem;
