@@ -10,6 +10,10 @@ import SkipLink from "@/app/components/primitives/SkipLink";
 // only — the control-room / revenue early return above must stay untracked so
 // internal dashboard use is never counted as visitor traffic.
 import PageViewTracker from "@/app/components/analytics/PageViewTracker";
+// Homepage-only walk-on character (2026-09-01). Mounted here, outside
+// <main className="isolate">, so it is not trapped in that stacking context
+// and stays reliably clickable.
+import GunnbjornWalkOn from "@/app/components/GunnbjornWalkOn";
 import { SkipLinkId } from "@/lib/accessibility";
 
 interface SiteLayoutProps {
@@ -40,6 +44,8 @@ export default function SiteLayout({ children, todayHoursLabel }: SiteLayoutProp
       </main>
 
       <Footer todayHoursLabel={todayHoursLabel} />
+
+      {isHome && <GunnbjornWalkOn />}
     </>
   );
 }
