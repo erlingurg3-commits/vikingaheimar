@@ -10,6 +10,14 @@ export default function GunnbjornWalkOn() {
   const [phase, setPhase] = useState<Phase>("hidden");
 
   useEffect(() => {
+    // Desktop only — on phones/tablets he covered too much of the screen.
+    // phase stays "hidden", so the component renders nothing at all below
+    // 1024px rather than merely hiding him with CSS.
+    const desktop =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(min-width: 1024px)").matches;
+    if (!desktop) return;
+
     // sessionStorage, not localStorage — changed 2026-09-01.
     //
     // localStorage meant "once per browser, forever": a visitor saw the
@@ -158,10 +166,14 @@ export default function GunnbjornWalkOn() {
         @keyframes gwoGlow{0%,100%{opacity:.65}50%{opacity:1}}
         @keyframes gwoLabelIn{to{opacity:1}}
 
+        /* Dead since 2026-09-01 — the component no longer mounts below 1024px,
+           so this phone-sized layout can never apply. Kept rather than deleted
+           in case he is ever re-enabled on small screens.
         @media (max-width:639px){
           .gwo-root{left:10px;bottom:10px;width:92px;height:184px}
           .gwo-label{display:none}
         }
+        */
         @media (prefers-reduced-motion:reduce){
           .gwo-run{transform:translateX(0);animation:none}
           .gwo-run .gwo-figure,.gwo-run .gwo-legFront,.gwo-run .gwo-legBack,
