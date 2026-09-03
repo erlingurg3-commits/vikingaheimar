@@ -112,9 +112,16 @@ export default function Footer({ todayHoursLabel }: { todayHoursLabel: string })
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
         <Container size="xl" className="py-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 text-center md:text-left">
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
-              &copy; {currentYear} Víkingaheimar. All rights reserved.
-            </p>
+            <div>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
+                &copy; {currentYear} Víkingaheimar. All rights reserved.
+              </p>
+              <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.22)" }}>
+                Kt. 660326-1970 · VSK nr. 161019
+              </p>
+            </div>
+            {/* Legal links hidden until the pages are written — restore when
+                /privacy, /terms and /cookies exist.
             <div className="flex items-center justify-center md:justify-end gap-6 text-xs" style={{ color: "rgba(255,255,255,0.30)" }}>
               <Link href="/privacy" style={{ color: "rgba(255,255,255,0.30)", transition: "color 250ms" }}>
                 Privacy Policy
@@ -126,6 +133,7 @@ export default function Footer({ todayHoursLabel }: { todayHoursLabel: string })
                 Cookie Policy
               </Link>
             </div>
+            */}
           </div>
         </Container>
       </div>
