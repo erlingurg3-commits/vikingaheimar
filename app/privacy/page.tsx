@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { LegalShell, LegalSection, LegalTodo } from "@/app/components/legal/LegalShell";
 
 export const metadata: Metadata = {
@@ -6,10 +7,16 @@ export const metadata: Metadata = {
   description:
     "How Víkingaheimar collects, uses, and protects personal data.",
   alternates: { canonical: "/privacy" },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: false },
 };
 
+// Flip to true when the Privacy Policy is finalised. While false the route
+// returns 404 so the unfinished draft is not public. The JSX below is kept.
+const PUBLISHED = false;
+
 export default function PrivacyPage() {
+  if (!PUBLISHED) notFound();
+
   return (
     <LegalShell
       title="Privacy Policy"
