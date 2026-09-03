@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { label: "The Saga", href: "/saga" },
   { label: "Visit", href: "/visit" },
   { label: "The Vikings", href: "/vikings" },
+  { label: "What to Expect", href: "/what-to-expect" },
 ] as const;
 
 export default function Header() {

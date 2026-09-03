@@ -264,6 +264,21 @@ export default function Gunnbjorn() {
     }
   }, [messages]);
 
+  // Deep-link support: /vikings?ask=... auto-asks that question once (used by
+  // the "What to Expect" cards). window.location keeps it SSR-safe.
+  const askedFromUrlRef = useRef(false);
+  useEffect(() => {
+    if (askedFromUrlRef.current) return;
+    try {
+      const q = new URLSearchParams(window.location.search).get("ask");
+      if (q && q.trim()) {
+        askedFromUrlRef.current = true;
+        setTimeout(() => askGunnbjorn(q), 400);
+      }
+    } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function askGunnbjorn(question: string) {
     if (!question.trim() || isThinking) return;
 
