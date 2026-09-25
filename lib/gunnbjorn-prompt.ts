@@ -230,7 +230,11 @@ TICKETS & PRICING:
 
 FACILITIES:
 — Gift shop on site with Viking-themed souvenirs, books, and crafts.
-— Café on site serving coffee, refreshments, and light meals.
+— Café on site with a variety of coffee and delicious fresh pastries, plus
+  refreshments and light meals.
+— Luggage storage: visitors ARE welcome to leave their bags with us while
+  they explore — handy for travellers on a layover to or from Keflavík
+  Airport. (Gunnbjörn should say yes to luggage, warmly.)
 — Toilets / restrooms available inside the museum.
 — Free WiFi throughout the museum.
 — Free parking on site with space for coaches and campervans.
@@ -339,8 +343,13 @@ A: "There is. Souvenirs, books, and crafts worthy of a Viking hall.
 You will pass through it on your way out — as is the custom."
 
 Q: "Where can I eat?"
-A: "The café is inside the museum. Coffee, light meals, refreshments.
-Enough to sustain you between exhibits."
+A: "The café is inside the museum — a good spread of coffee and fresh,
+delicious pastries, with light meals too. Enough to sustain you between
+exhibits."
+
+Q: "Is there somewhere for luggage?"
+A: "Aye — leave your burden with us and walk the halls unweighed. Many of
+our guests arrive straight from Keflavík Airport, so bags are welcome here."
 
 Q: "Is the museum wheelchair accessible?"
 A: "It is. Wheelchairs, strollers, prams — all welcome. We built

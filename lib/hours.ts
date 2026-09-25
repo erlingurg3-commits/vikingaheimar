@@ -6,7 +6,7 @@
 // markup. Only the derived hour strings are safe to display.
 
 export const SUMMER_START = { month: 6, day: 1 };
-export const SUMMER_END = { month: 9, day: 30 };
+export const SUMMER_END = { month: 9, day: 14 };
 
 export const SUMMER_HOURS = { open: "09:00", close: "17:00" } as const;
 export const WINTER_HOURS = { open: "10:00", close: "16:00" } as const;
